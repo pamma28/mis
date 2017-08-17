@@ -1,0 +1,70 @@
+.tokchi-dropdown {
+	box-sizing: border-box;
+	font-family: sans-serif;
+	z-index: 2000;
+	background: #fff;
+	cursor: pointer;
+	min-width: 250px;
+	max-height: 190px;
+	overflow-y: auto;
+	font-size: 10px;
+	color: #525252;
+	list-style: none;
+	padding: 0;
+	box-shadow: 3px 3px 15px rgba(0,0,0,.8);
+}
+
+.tokchi-dropdown-item {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 8px 5px;
+	margin: 0;
+	background-color: #fff;
+	font-size: 14px;
+	margin: 0;
+	font-weight: bold;
+	font-style: normal;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.tokchi-dropdown-item div {
+	font-size: 10px;
+	font-weight: normal;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.tokchi-dropdown-item-selected {
+	background-color: #5989E4;
+	color: #fff;
+}
+
+.tokchi-token {
+	font-family: sans-serif;
+	overflow: hidden;
+	display: inline-block;
+	height: auto !important;
+	height: 10px;
+	margin: 2px;
+	padding: 0px 2px;
+	background-color: #F5F5F5;
+	color: #4B4F54;
+	cursor: default;
+	font-size: 12px;
+	border: solid 1px #D3DEEC;
+	border-radius: 2px;
+	white-space: nowrap;
+	vertical-align: middle;
+}
+
+.tokchi-token-close-button {
+	vertical-align: middle;
+	color: #4B4F54;
+	font-weight: bold;
+    opacity: 0.5;
+    font-size: 12px;
+    padding: 0;
+    margin-left: 5px;
+	cursor: pointer;
+}

@@ -1,0 +1,20 @@
+<?php echo form_open(base_url('Organizer/Question/saveanswer'),array('name'=>'addanswer', 'method'=>'POST','class'=>'form-horizontal'));?>
+<div class="modal-header">
+   <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+   <h4><i class="fa fa-plus"></i> Add Answer</h4>
+</div>
+<div class="modal-body">
+	
+	<?=$rdata;?>
+</div>
+<div class="modal-footer">
+	<a class="btn btn-default btn-ok btn" data-dismiss="modal">Close</a>
+	<?=$insub.$inid.$inbtn;?>
+</div>
+<?php echo form_close();?>
+<script>
+
+$('.selectpicker').selectpicker({
+	size: 3
+	});
+</script>

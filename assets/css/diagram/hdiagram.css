@@ -1,0 +1,77 @@
+.process-diagram {
+    height: 50px;
+    margin-bottom: 10px;
+    padding: 10px 0;
+    text-align: center;
+}
+.pr-diag-steps {
+    list-style: outside none none;
+    margin: 0;
+    padding: 0;
+}
+.pr-diag-step {
+    background: white none repeat scroll 0 0;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    font-size: 14px;
+    height: 48px;
+    line-height: 48px;
+    margin-left: 30px;
+    padding-left: 43px;
+    padding-right: 10px;
+    position: relative;
+}
+.pr-diag-step:first-child {
+    margin-left: 0;
+}
+.pr-diag-step:first-child::before {
+    content: none;
+}
+.pr-diag-step::before {
+    color: #cccccc;
+    content: "?";
+    font-size: 33px;
+    left: -34px;
+    position: absolute;
+}
+.pr-diag-step--done {
+    background-color: #87d35f;
+    color: white;
+}
+.pr-diag-step__icn {
+    background-image: url("/images/icon_sprites_150223.png");
+    background-position: -9999px 0;
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 48px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 40px;
+}
+.pr-diag-step__icn--paid {
+    background-position: 10px -2268px;
+}
+.pr-diag-step__icn--paid-done {
+    background-position: 10px -2228px;
+}
+.pr-diag-step__icn--delivered {
+    background-position: 10px -2348px;
+}
+.pr-diag-step__icn--delivered-done {
+    background-position: 10px -2308px;
+}
+.pr-diag-step__icn--received {
+    background-position: 10px -2428px;
+}
+.pr-diag-step__icn--received-done {
+    background-position: 10px -2388px;
+}
+.pr-diag-step__icn--finished {
+    background-position: 10px -2508px;
+}
+.pr-diag-step__icn--finished-done {
+    background-position: 10px -2468px;
+}
