@@ -19,26 +19,38 @@
 						  <!-- small box -->
 						  <div class="small-box bg-aqua">
 							<div class="inner">
-							  <h3><?=$totpds;?></h3>
+							  <h3><?=$totpds;?> <sub style="font-size: 20px"> out of <?=$quota;?></sub></h3>
 							  <p>Registered Member</p>
 							</div>
 							<div class="icon">
 							  <i class="fa fa-copy"></i>
 							</div>
 							<a class="small-box-footer" href="#">More info <i class="fa fa-arrow-circle-right"></i></a>
+							<div class="progress bg-gray">
+							  <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="<?=$progressreg;?>" aria-valuemin="0" aria-valuemax="100" style="width: <?=$progressreg;?>%">
+								<span class="text-bold"><?=$progressreg;?>% Complete</span>
+							  </div>
+							</div>
 						  </div>
 					</div><!-- ./col -->
 					<div class="col-lg-3 col-xs-6">
 						  <!-- small box -->
 						  <div class="small-box bg-green">
 							<div class="inner">
-							  <h3><?=$totfullpay;?><sup style="font-size: 20px"></sup></h3>
+							  <h3><?=$totfullpay;?><sub style="font-size: 20px">  out of <?=$quota;?></sub></h3>
 							  <p>Full Payment</p>
+
 							</div>
 							<div class="icon">
 							  <i class="fa fa-ticket"></i>
 							</div>
+
 							<a class="small-box-footer" href="#">More info <i class="fa fa-arrow-circle-right"></i></a>
+							<div class="progress bg-gray">
+							  <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="<?=$progresspay;?>" aria-valuemin="0" aria-valuemax="100" style="width: <?=$progresspay;?>%">
+								<span class="text-bold"><?=$progresspay;?>% Complete</span>
+							  </div>
+							</div>
 						  </div>
 					</div><!-- ./col -->
 					<div class="col-lg-6 col-xs-12">
@@ -55,12 +67,7 @@
 						  </div>
 					</div><!-- ./col --> 
 				</div>
-				<p class="text-bold text-success text-center">Progress Total Fully Paid Registrant of <?=$thisperiod;?> Period</p>
-					<div class="progress">
-					  <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="<?=$progressreg;?>" aria-valuemin="0" aria-valuemax="100" style="width: <?=$progressreg;?>%">
-						<span class="text-bold"><?=$progressreg;?>% Complete</span>
-					  </div>
-					</div>
+				
 				
 				</div>
 			</div>

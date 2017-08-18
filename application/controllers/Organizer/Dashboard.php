@@ -20,9 +20,11 @@ class Dashboard extends Org_Controller {
 		$data['totpds']= $this->Mpds->totalpds();
 		$data['totfullpay']= $this->Mpds->totalfullpay();
 		$data['totmoney']=$this->convertmoney->convert($this->Mpay->totalmoney());
-		$progress = ($data['totfullpay']/$this->Msetting->getset('quota'))*100;
-		$data['progressreg']=$progress;
+		$quota = $this->Msetting->getset('quota');
+		$data['progresspay']=($data['totfullpay']/$quota)*100;
+		$data['progressreg']=($data['totpds']/$quota)*100;
 		$data['thisperiod']=$this->Msetting->getset('period');
+		$data['quota'] = $quota;
 		
 		//catch chart data
 		$data['regfac'] = json_encode($this->Mchart->getregfac_yearly());
