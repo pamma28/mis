@@ -44,7 +44,7 @@
 								<div class="panel-body">
 									<h4 class="text-center"><b>Result</b></h4>
 									<hr class="divider"/>
-									<h2 class="text-center"><i class="fa fa-wpforms"></i> <span id="finalresult"></span></h2>
+									<h2 class="text-center"> <span id="finalresult">NA</span></h2>
 								</div>
 							</div>
 						</div>

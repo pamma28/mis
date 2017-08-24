@@ -624,7 +624,7 @@ class Result extends Org_Controller {
 
 		//detail all question and answers taken
 		$arrq = explode(',',$dbres[0]['q_randquest']);
-		$colq = ['question','subject','question.idsubject','q_bundle','idqtype'];
+		$colq = ['question','subject','question.idsubject','q_bundle','qtype.idqtype','qmanual'];
 		foreach ($arrq as $k => $v) {
 			$arrdetailq = $this->Mq->getmyquestdetail($colq,$v)[0];
 
@@ -633,6 +633,7 @@ class Result extends Org_Controller {
 			$finalquestion[$k]['question'] = $arrdetailq->question;
 			$finalquestion[$k]['subject'] = $arrdetailq->subject;
 			$finalquestion[$k]['idqtype'] = $arrdetailq->idqtype;
+			$finalquestion[$k]['qmanual'] = $arrdetailq->qmanual;
 
 			//get all answer
 			$tmparridanswer = $this->Mq->getrandanswer($v,$id);
@@ -646,9 +647,11 @@ class Result extends Org_Controller {
 					}
 				//picked answer if any
 				$pickedanswer = $this->Mq->getpickedanswer($v,$id);
+				$mark = $this->Mq->getmarkanswer($v,$id);
 			
 			$finalquestion[$k]['pickedanswer'] = $pickedanswer;	
 			$finalquestion[$k]['allanswer'] = $answer;
+			$finalquestion[$k]['answermark'] = $mark;
 
 		}
 		$data['generatedq'] = $finalquestion;

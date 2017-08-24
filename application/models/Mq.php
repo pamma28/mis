@@ -505,6 +505,13 @@ class Mq extends CI_Model{
 		return $this->db->get('answer')->row()->key_ans;
 	}
 
+	public function getmarkanswer($idq,$idres){
+		$this->db->select('rtrue');
+		$this->db->where('idresult',$idres);
+		$this->db->where('idq',$idq);
+		return $this->db->get('resultqa')->row()->rtrue;
+	}
+
 	public function updateqa($data,$idres,$idq){
 		$this->db->where('idresult',$idres);
 		$this->db->where('idq',$idq);
