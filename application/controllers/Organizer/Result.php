@@ -665,7 +665,6 @@ class Result extends Org_Controller {
 	
 	
 	public function assessresult(){					
-		//========= fetch test result details
 		$this->load->model('Mq');
 		//detail test result
 		$col = ['jdate','jstart','jsesi','tname','tduration','jroom','a.uname as mem','b.uname as org','q_randcode','q_tmpscore','q_randquest','jactive'];
@@ -675,12 +674,7 @@ class Result extends Org_Controller {
 
 		//detail all question and answers taken
 		$arrq = explode(',',$dbres[0]['q_randquest']);
-		$colq = ['question','subject','question.idsubject','q_bundle','idqtype'];
-
-		//get all manual correction
-		$arrmanual = $this->Mresult->getmanualcorrectthistest($id);
-		$data['manual']= array_column($arrmanual,'idq');
-
+		$colq = ['question','subject','question.idsubject','q_bundle','qtype.idqtype','qmanual'];
 		foreach ($arrq as $k => $v) {
 			$arrdetailq = $this->Mq->getmyquestdetail($colq,$v)[0];
 
@@ -689,6 +683,7 @@ class Result extends Org_Controller {
 			$finalquestion[$k]['question'] = $arrdetailq->question;
 			$finalquestion[$k]['subject'] = $arrdetailq->subject;
 			$finalquestion[$k]['idqtype'] = $arrdetailq->idqtype;
+			$finalquestion[$k]['qmanual'] = $arrdetailq->qmanual;
 
 			//get all answer
 			$tmparridanswer = $this->Mq->getrandanswer($v,$id);
@@ -702,80 +697,26 @@ class Result extends Org_Controller {
 					}
 				//picked answer if any
 				$pickedanswer = $this->Mq->getpickedanswer($v,$id);
+				$mark = $this->Mq->getmarkanswer($v,$id);
 			
-
 			$finalquestion[$k]['pickedanswer'] = $pickedanswer;	
 			$finalquestion[$k]['allanswer'] = $answer;
+			$finalquestion[$k]['answermark'] = $mark;
 
 		}
 		$data['generatedq'] = $finalquestion;
-		// ============== Fetch data ============
-		$col = ['jdate','jstart','jsesi','tname','tduration','jroom','a.uname','q_tmpscore','q_randcode'];
-		$id = $this->input->get('id');
-		$g = $this->Mresult->detailresult($col,$id);
-		// ========= form edit ================ 
-		$r[] = '<label class="form-control" disabled>'.$g[0]['tname'].'</label>';
-		$r[] = '<label class="form-control" disabled>'.$g[0]['jdate'].'</label>';
-		$r[] = '<label class="form-control" disabled>'.$g[0]['jstart'].'</label>';
-		$r[] = '<label class="form-control" disabled>'.$g[0]['jsesi'].'</label>';
-		$r[] = '<label class="form-control" disabled>'.$g[0]['tduration'].'</label>';
-		$r[] = '<label class="form-control" disabled>'.$g[0]['jroom'].'</label>';
-		$r[] = '<label class="form-control" disabled>'.$g[0]['uname'].'</label>';
-		$r[] = '<label class="form-control" disabled>'.$g[0]['q_tmpscore'].'</label>';
-		$r[] = '<label class="form-control" disabled>'.$g[0]['q_randcode'].'</label>';
-			
-		$fscore = array('name'=>'finalscore',
-						'id'=>'Final',
-						'required'=>'required',
-						'placeholder'=>'Score',
-						'value'=>'',
-						'class'=>'form-control',
-						'size'=>'50');
-		$r[] = form_input($fscore);
-		
-		
-		
+
 		$data['inid'] = form_hidden('fid',$id);
 		$fsend = array(	'id'=>'submit',
 						'value'=>'Update',
 						'class'=>'btn btn-primary',
 						'type'=>'submit');
 		$data['inbtn'] = form_submit($fsend);
-		
-		//set row title
-		$row = $this->returncolomn($col);
-		//set table template
-		$tmpl = array ( 'table_open'  => '',
-					'heading_row_start'   => '',
-                    'heading_row_end'     => '',
-                    'heading_cell_start'  => '',
-                    'heading_cell_end'    => '',
-
-                    'row_start'           => '',
-                    'row_end'             => '',
-                    'cell_start'          => '',
-                    'cell_end'            => '',
-					'table_close'         => ''
-
-					);
-		$this->table->set_template($tmpl);
-		//=========== generate edit form =========================
-		$a = 0;
-		foreach($row as $key)
-		{
-			$dtable[$a] = array(
-					"dtcol"=>'<div class="form-group"><label for="l'.$key.'" class="col-sm-3 control-label"><b>'.$key.'</b></label>',
-					"dtval"=>'<div class="col-sm-9">'.$r[$a].'</div></div>'
-					);
-			$a++;
-		}
-		$data['rdata']=$this->table->generate($dtable);
-		
 		//=============== Template ============
 		$data['jsFiles'] = array(
-							'selectpicker/select.min','moment/moment.min','daterange/daterangepicker','print/printThis','inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions');
+							'slider-range/bootstrap-slider');
 		$data['cssFiles'] = array(
-							'selectpicker/select.min','daterange/daterangepicker');  
+							'slider-range/bootstrap-slider');  
 		// =============== view handler ============
 		$data['title']="Asess Test Result";
 		$data['topbar'] = $this->load->view('dashboard/topbar', NULL, TRUE);
