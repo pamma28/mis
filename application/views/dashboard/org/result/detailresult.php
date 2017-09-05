@@ -56,10 +56,10 @@
 
 							$t++;
 						}
-						($v['answermark']) ? $mark ='<p class="text-center"><b><i>Correct</i></b></p>': $mark= '<p class="text-center"><b><i>Incorrect</i></b></p>';
+						($v['answermark']=='1') ? $mark ='<p class="text-center"><b><i><span class="fa fa-check fa-success"></span> Correct</i></b></p>': $mark= '<p class="text-center"><b><i><span class="fa fa-ban fa-danger"></span> Incorrect</i></b></p>';
 					} else {
 						print('<div class="col-md-12 col-sm-12"><pre><p>'.$v['pickedanswer'].'</p></pre></div>');
-						$mark = form_input('nilai') ;
+						$mark = '<p class="text-center"><i>Not Yet</i></p>' ;
 					}
 
 					echo '</div></div><div class="col-md-2 col-sm-2"><div class="box"><h4 class="text-center"><b>Mark</b></h4><div class="box-body">'.$mark.'</div></div></div></div>';

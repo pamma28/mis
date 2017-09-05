@@ -7,6 +7,7 @@
     </ol>
 </section>
 
+<?php echo form_open(base_url('Organizer/Result/updateassesment'),array('name'=>'upasses', 'method'=>'POST','class'=>'form-horizontal'));?>
 <!-- Main content -->
 <section class="content">
   <div class="box">
@@ -65,10 +66,10 @@
 
               $t++;
             }
-            ($v['answermark']) ? $mark ='<p class="text-center"><b><i>Correct</i></b></p>': $mark= '<p class="text-center"><b><i>Incorrect</i></b></p>';
+            ($v['answermark']=='1') ? $mark ='<p class="text-center"><b><i><span class="fa fa-check fa-success"></span> Correct</i></b></p>': $mark= '<p class="text-center"><b><i><span class="fa fa-ban fa-danger"></span> Incorrect</i></b></p>';
           } else {
-            print('<div class="col-md-12 col-sm-12"><pre><p>'.$v['pickedanswer'].'</p></pre></div>');
-            $mark = '<div class="text-center" width="20%"><input class="markorg" id="mark'.$a.'" data-slider-id="markSlider" type="text" data-slider-min="0" data-slider-max="10" data-slider-step="0.25" data-slider-value="0" /></div>' ;
+            print('<div class="col-md-12 col-sm-12"><pre><p>'.$v['pickedanswer'].'</p></pre></div>'.form_hidden('arrq[]',$v['idq']));
+            $mark = '<div class="text-center" width="20%"><input class="markorg" name="mark[]" id="mark'.$a.'" data-slider-id="markSlider" type="text" data-slider-min="0" data-slider-max="10" data-slider-step="0.25" data-slider-value="'.($v['answermark']*10).'" /></div>' ;
           }
 
           echo '</div></div><div class="col-md-2 col-sm-2"><div class="box"><h4 class="text-center"><b>Mark</b></h4><div class="box-body">'.$mark.'</div></div></div></div>';
@@ -81,21 +82,21 @@
   <span class="bg-danger">Picked</span>
   <span class="bg-primary">Key Answer</span>
     
-      <?php echo form_open(base_url('Organizer/PDS/updatepds'),array('name'=>'uplogin', 'method'=>'POST','class'=>'form-horizontal'));?>
-    	
+      
     	
     	
   </div>
-    <div class="box-footer">
+    <div class="box-footer text-center">
+    <p><b><i>*Please make sure the assesment is done before you click submit.</i></b></p>
       <?=$inid;?>
-      <a class="btn btn-default btn-ok btn" data-dismiss="modal">Close</a>
       <?=$inbtn;?>
     </div>
     
   </div>
 </section>
-<script>
-  
+<?php echo form_close();?>
+
+<script>  
 $(document).ready(function(){
      $(".markorg").slider({
         tooltip: 'always',

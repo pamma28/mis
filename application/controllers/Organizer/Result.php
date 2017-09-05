@@ -708,8 +708,8 @@ class Result extends Org_Controller {
 
 		$data['inid'] = form_hidden('fid',$id);
 		$fsend = array(	'id'=>'submit',
-						'value'=>'Update',
-						'class'=>'btn btn-primary',
+						'value'=>'Submit',
+						'class'=>'btn btn-primary btn-lg',
 						'type'=>'submit');
 		$data['inbtn'] = form_submit($fsend);
 		//=============== Template ============
@@ -727,35 +727,49 @@ class Result extends Org_Controller {
 	
 	}
 	
-	public function updatepds(){
-		if ($this->input->post('fuser')!=null){
-		$us = $this->input->post('fuser');
-		$fdata = array (
-					'uname' => $this->input->post('ffullname'),					
-					'uupdate' => date("Y-m-d H:i:s"),
-					'idjk' => $this->input->post('fjk'),
-					'unim' => $this->input->post('fnim'),
-					'idfac' => $this->input->post('ffaculty'),
-					'ubplace' => $this->input->post('fbplace'),
-					'ubdate' => $this->input->post('fbdate'),
-					'uemail' => $this->input->post('femail'),
-					'uhp' => $this->input->post('fhp'),
-					'ubbm' => $this->input->post('fsocmed'),
-					'uaddrnow' => $this->input->post('faddrnow'),
-					'uaddhome' => $this->input->post('faddrhome'),
-					'ustatus' => $this->input->post('fstats'),
-					'ulunas' => '0'
-					);
-		$r = $this->Mpds->updatepds($fdata,$us);
+	public function updateassesment(){
+		if ($this->input->post('fid')!=null){
+		$idresult = $this->input->post('fid');
+		$arrq = $this->input->post('arrq[]');
+		$arrmark = $this->input->post('mark[]');
+		foreach ($arrq as $k=>$v) {
+			$fdata = array (
+						'rtrue' => ($arrmark[$k]/10)
+						);
+			$this->Mresult->updateresult($fdata,$idresult,$v);
+			}
+
+		$fpic= $this->session->userdata('user');
+		$arrdetail = $this->Mresult->getScoreMember($idresult,$fpic);
+		$qscore = $arrdetail->q_score;
+		$member = $arrdetail->uuser;
+		$level = $this->determineLevel($qscore);
+			
+			$flevel = array(
+				'idlevel'=>$level
+				);
+		$r = $this->Mresult->updateLevelMember($flevel,$member);
 		}
 		if ($r){
-		$this->session->set_flashdata('v','Update Registration Data Success');
+		$this->session->set_flashdata('v','Assesment Success');
 		} else {		
-		$this->session->set_flashdata('x','Update Registration Data Failed');
+		$this->session->set_flashdata('x','Assesment Failed');
 		}
-		redirect(base_url('Organizer/PDS'));
+		redirect(base_url('Organizer/Result'));
 	}
 	
+	public function determineLevel($score){
+		$arrlevel = $this->Mresult->getLevel();
+		$level = 0;
+		foreach ($arrlevel as $k => $v) {
+			if(($score<=$v['lvlup']) and ($score > $v['lvllow'])){
+				$level = $v['idlevel'];
+			} 
+		}
+		return $level;
+
+	}
+
 	public function updateselected(){
 		if($this->input->post('fusers')!=''){
 				$users = $this->input->post('fusers');
