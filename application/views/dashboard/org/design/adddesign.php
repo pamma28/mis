@@ -12,4 +12,16 @@
 	<a class="btn btn-default btn-ok btn" data-dismiss="modal">Close</a>
 	<?=$inbtn;?>
 </div>
+<script type="text/javascript">
+	$(function() {
+    $('#iddefault').bootstrapToggle({
+		size: "small",
+		onstyle: "primary",
+		offstyle: "default",
+		width: 100,
+		height: 35,
+		default:false
+	});
+  })
+</script>
 <?php echo form_close();?>

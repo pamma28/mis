@@ -13,4 +13,7 @@
 	<a class="btn btn-default btn-ok btn" data-dismiss="modal">Close</a>
 	<?=$inbtn;?>
 </div>
+<script type="text/javascript">
+	
+</script>>
 <?php echo form_close();?>

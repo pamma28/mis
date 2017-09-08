@@ -277,9 +277,9 @@ class Design extends Org_Controller {
 				
 		//=============== Template ============
 		$data['jsFiles'] = array(
-							'selectpicker/select.min','print/printThis');
+							'toggle/bootstrap2-toggle.min','print/printThis');
 		$data['cssFiles'] = array(
-							'selectpicker/select.min','ihover/ihover.min');  
+							'toggle/bootstrap2-toggle.min','ihover/ihover.min');  
 		// =============== view handler ============
 		$data['title']="Certificate Design";
 		$data['topbar'] = $this->load->view('dashboard/topbar', NULL, TRUE);
@@ -354,17 +354,16 @@ class Design extends Org_Controller {
 						'class'=>'form-control'
 						));
 		
-		$optdef = array(
-				''=>'Please Select',
-				'0'=>'Not Default',
-				'1'=>'Default'
-				);
-			$fdef = array('name'=>'fdef',
-						'id'=>'desdef',
-						'required'=>'required',
-						'value'=>set_value('fdef'),
-						'class'=>'form-control');
-		$r[] = form_dropdown($fdef,$optdef,set_value('fdef'));
+		$r[] = form_checkbox(array(
+							'name'=>'fdef',
+							'data-toggle'=>'toggle',
+							'data-on'=>'<b>Default</b>',
+							'data-off'=>'<b>Not Default</b>',
+							'data-size'=>'small',
+							'id'=>'iddefault',
+							'checked'=>'',
+							'value'=>'1')
+							);
 		
 		
 			$fdesc = array('name'=>'fdesc',
@@ -503,20 +502,14 @@ class Design extends Org_Controller {
 		redirect(base_url('Organizer/Design'));
 	}
 	
+
 	public function updateselected(){
 		if($this->input->post('fid')!=''){
 				$id = $this->input->post('fid');
 				$type = $this->input->post('ftype');
-				if ($type!='2') 
-				{
-					$dtuser= explode(',',$users);
-					$totuser = count($dtuser);
-					$r = $this->Mlogin->updateselected($dtuser,$type);
-					$this->session->set_flashdata('v','Update '.$totuser.' Selected Member Account success.<br/>Details: '.$r['v'].' success and '.$r['x'].' error(s)');
-				} else {
-					$r = $this->Mcerti->updatedefault($id);
+				$r = $this->Mcerti->updatedefault($id);
 					$this->session->set_flashdata('v','Make Default Success');
-				}
+				
 		} else{
 		$this->session->set_flashdata('x','No data selected, update Selected Member Account Failed.');
 		}
@@ -524,34 +517,75 @@ class Design extends Org_Controller {
 	}
 		
 	public function savedesign(){
-		if($_FILES['fdesfile']['name']!=null){
-			$fhashfile = md5($_FILES['fdesfile']['name']);
-		// config upload
-            $config['upload_path'] = FCPATH.'upload/design/';
-            $config['allowed_types'] = 'jpeg|jpg|png';
-            $config['file_name'] = $fhashfile;
-            $config['max_size'] = 0;
-            $this->load->library('upload', $config);
-		
-		// save file and add to database
-			if ($this->upload->do_upload('fdesfile')){
-				// set new design variable
-				$fdtdes = array(
-					'desfile'=>$this->upload->data()['file_name'],
-					'desdateup'=>date("Y-m-d H:i:s"),
-					'uuser'=>$this->session->userdata('user'),
-					'desname'=>$this->input->post('fdesname'),
-					'desnote'=>$this->input->post('fdesc'),
-					'cerdefault'=>$this->input->post('fdef')
-					);
-				$t[]='Upload Design Success';
-				//add to database
-				($this->Mcerti->savedesign($fdtdes)) ? $t[]='Add Certificate Design Success' : $t[]='Add Certificate Design Failed'; 
+		if($_FILES['fdesfile']['name']!=null){		
+            $file_name = $_FILES['fdesfile']['tmp_name'];
+			list($width,$height,$type,$attr) = getimagesize($file_name);
+			
+			// check image landscape and resize it if too big
+			if($height<$width){
+
+					// config upload
+            		$maxDim = 1000;
+					$fhashfile = md5(date('Y-m-d h:i:sa').$_FILES['fdesfile']['name']);
+		            $config['upload_path'] = FCPATH.'upload/design/';
+		            $config['allowed_types'] = 'jpeg|jpg|png';
+		            $config['file_name'] = $fhashfile;
+		            $config['max_size'] = 0;
+		            $this->load->library('upload', $config);
+
+		            //manipulate height n width if too big
+						if (($height > $maxDim) or ($width>$maxDim)){
+								$target_filename = $file_name;
+					            $ratio = $width/$height;
+					            if( $ratio > 1) {
+					                $new_width = $maxDim;
+					                $new_height = $maxDim/$ratio;
+					            } else {
+					                $new_width = $maxDim*$ratio;
+					                $new_height = $maxDim;
+					            }
+					            $src = imagecreatefromstring( file_get_contents( $file_name ) );
+					            $dst = imagecreatetruecolor( $new_width, $new_height );
+					            imagecopyresampled( $dst, $src, 0, 0, 0, 0, $new_width, $new_height, $width, $height );
+					            imagedestroy( $src );
+					            // adjust format as needed
+					            if (($type=='2') or ($type=='3')){
+					            	imagejpeg($dst, $target_filename);
+					            } else {
+					            imagepng( $dst, $target_filename );
+					            } 
+								imagedestroy( $dst );
+					            
+						}
+
+					// save file and add to database
+					if ($this->upload->do_upload('fdesfile')){
+						// set new design variable
+						$fdtdes = array(
+							'desfile'=>$this->upload->data()['file_name'],
+							'desdateup'=>date("Y-m-d H:i:s"),
+							'uuser'=>$this->session->userdata('user'),
+							'desname'=>$this->input->post('fdesname'),
+							'desnote'=>$this->input->post('fdesc'),
+							'cerdefault'=>$this->input->post('fdef')
+							);
+						$t[]='Upload Design Success';
+						//add to database
+						$insertid = $this->Mcerti->savedesign($fdtdes);
+						($insertid <> null) ? $t[]='Add Certificate Design Success' : $t[]='Add Certificate Design Failed'; 
+						if ($fdtdes['cerdefault']){
+							$this->Mcerti->updatedefault($insertid);
+						}
+				
+					$this->session->set_flashdata('v',implode(' and ',$t));	
+					} else {
+					$t[]='Upload Certificate Design Failed';
+					$this->session->set_flashdata('x',implode(' and ',$t));
+					}
 				
 			} else {
-			$t[]='Upload Certificate Design Failed';
+				$this->session->set_flashdata('x','The Design Files Should in Lanscape.');	
 			} 
-		$this->session->set_flashdata('v',implode(' and ',$t));
 		} else {
 			$this->session->set_flashdata('x','Directly Access is not Allowed.');
 		}
@@ -561,15 +595,20 @@ class Design extends Org_Controller {
 	public function deletedesign(){
 		$id = $this->input->get('id');
 		$filename = $this->Mcerti->getnamedes($id);
-			//delete file
-			$path = FCPATH.'upload/design/' . $filename;
-			unlink($path);
-		$r = $this->Mcerti->deletedes($id);
-        unlink($path);		
-	if ($r){
-		$this->session->set_flashdata('v','Delete Success');
-		} else{
-		$this->session->set_flashdata('x','Delete Failed');
+		$default = $this->Mcerti->getDefault($id);
+		if(!$default){
+				//delete file
+				$path = FCPATH.'upload/design/' . $filename;
+				unlink($path);
+			$r = $this->Mcerti->deletedes($id);
+	        unlink($path);		
+			if ($r){
+				$this->session->set_flashdata('v','Delete Success.');
+				} else{
+				$this->session->set_flashdata('x','Delete Failed.');
+				}
+		} else {
+			$this->session->set_flashdata('x','Delete Failed, Default Certificate Design Can Not be Deleted.');	
 		} 
 		redirect(base_url('Organizer/Design'));
 	}

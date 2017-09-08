@@ -122,7 +122,8 @@ class Mcerti extends CI_Model{
 	}
 	
 	public function savedesign($fdata = null){
-		return $this->db->insert('certidesign',$fdata);
+		$this->db->insert('certidesign',$fdata);
+		return $this->db->insert_id(); 
 	}
 	
 	public function deletecerti($id){
@@ -293,6 +294,11 @@ class Mcerti extends CI_Model{
 		return $this->db->get('certidesign')->row()->desfile;
 	}
 	
+	public function getDefault($id){
+		$this->db->select('cerdefault');
+		$this->db->where('iddes',$id);
+		return $this->db->get('certidesign')->row()->cerdefault;
+	}
 	
 	public function getalluser(){
 		$this->db->select('uuser');
