@@ -59,7 +59,7 @@
 			</div>
 		</div>		
 	</div>
-	<div class="box-body table-responsive">
+	<div class="box-body" >
 		
 		<div class="form-inline">
 		<div class="input-group">

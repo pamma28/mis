@@ -810,19 +810,38 @@ margin-left:10px;
 	width:50px;
 	margin-left:-115px;
 }
+.design-check{
+	float:left;
+	position: relative;
+	top: 10px;
+	left: 5px;
+	z-index: 10;
+}
 .design-default{
 	position:relative;
-	top:25px;
-	left:-25px;
+	top:50px;
+	left:-35px;
 	width:90px;
 	height:20px;
 	margin-top:-20px;
 	z-index:5;
 	border:solid 0.25px rgba(0, 0, 0, 0.3);
-	border-radius:15px 0 15px 0;
+	border-radius:12px 0;
 	box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.3);
 	background: white;
 	-webkit-transform: rotate(-45deg); 
     -moz-transform: rotate(-45deg);  
     filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=-5);
+    float: right;
+}
+.design-toogle{
+	float:left;
+	position: absolute;
+	top: 10px;
+	left: 285px;
+	z-index: 10;
+}
+
+.clearfix{
+clear: both;
 }

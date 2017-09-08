@@ -172,7 +172,7 @@ class Design extends Org_Controller {
 				//manipulation checkbox
 				$ctable = form_checkbox(array(
 							'name'=>'check[]',
-							'class'=>'ciduser',
+							'class'=>'ciduser design-check',
 							'value'=>$temp[$key]['iddes']
 							));
 				$tempfile=$temp[$key]['desfile'];
@@ -182,7 +182,7 @@ class Design extends Org_Controller {
 				unset($temp[$key]['iddes']);
 				//set row
 				if (($key%2)==0){
-				$result=$result.'<div class="">';
+				$result=$result.'';
 				}
 				//set default certificate
 				($temp[$key]['cerdefault']==1) ? $cerdef='<div class="design-default">
@@ -190,15 +190,15 @@ class Design extends Org_Controller {
 							</div>': $cerdef='';
 				($temp[$key]['cerdefault']==0) ? $btndefault='<a data-target=".bs-selecteddata" data-toggle="modal" data-title="Make Default" data-icon="fa fa-check" data-btn="btn btn-sm btn-success" data-finput="2" data-fconfirm="'.$enc.'" class="btn btn-sm text-success" href="#"><i class="fa fa-check"></i> Make Default</a><br/>':$btndefault='';
 				//set template gallery
-				$result=$result.'<div class="col-sm-4 col-md-4 col-xs-12">
-					<!-- normal -->
-					<div class="design-menu">
-						<div class="col-md-10 col-sm-10 col-xs-8">
+				$result=$result.'<div class="col-sm-6 col-md-4 col-xs-12">
+						<!-- normal -->
+		
+							<div class="pull-left">
 							'.$ctable.$cerdef.'
 							<div class="hidden">'.$temp[$key]['desname'].'</div>
-						</div>
-			
-						<div class="col-md-2 col-sm-2 col-xs-4">	
+							</div>
+
+							<div class="pull-left design-toogle">
 							<button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown" aria-expanded="false">
 							<span class="fa fa-gear"></span>
 							<span class="sr-only">Toggle Dropdown</span>
@@ -208,23 +208,27 @@ class Design extends Org_Controller {
 								<a href="'.base_url('Organizer/Design/preview?id=').$enc.'" alt="Print Preview Data" class="btn btn-sm text-info" role="button" data-toggle="modal" data-target="#DetailModal"><i class="fa fa-print"></i> Print</a><br/>
 								<a href="'.base_url('Organizer/Design/editdesign?id=').$enc.'" alt="Edit Data" class="btn btn-sm text-primary" role="button" data-toggle="modal" data-target="#DetailModal"><i class="fa fa-edit"></i> Edit</a><br/>
 								<a href="#" data-href="'.base_url('Organizer/Design/deletedesign?id=').$enc.'" alt="Delete Data" data-toggle="modal" data-target="#confirm-delete" class="btn btn-sm text-danger"><i class="fa fa-trash-o"></i> Delete</a>
-								
+							</div>	
 							</div>
+
+						<div class="design-menu">
+							<div class="col-md-12 col-sm-12 col-xs-12">
+							<div class="ih-item square effect6 from_top_and_bottom">
+							<a href="#">
+								<div class="img"><img src="'.base_url('upload/design/'.$tempfile).'" alt="img">
+								</div>
+								<div class="info">
+									<h3>'.$temp[$key]['desname'].'</h3>
+									<h4><small>Uploaded by '.$temp[$key]['uploader'].'<br/> on '.$temp[$key]['desdateup'].'</small></h4>
+									<p>'.$temp[$key]['desnote'].'</p>
+								</div>
+							</a>
+						</div>
+
 						</div>
 					</div>
-					<br/>
 					
-					<div class="ih-item square effect6 from_top_and_bottom">
-						<a href="#">
-							<div class="img"><img src="'.base_url('upload/design/'.$tempfile).'" alt="img">
-							</div>
-							<div class="info">
-								<h3>'.$temp[$key]['desname'].'</h3>
-								<h4><small>Uploaded by '.$temp[$key]['uploader'].'<br/> on '.$temp[$key]['desdateup'].'</small></h4>
-								<p>'.$temp[$key]['desnote'].'</p>
-							</div>
-						</a>
-					</div>
+					
 					<!-- end normal -->
 				</div>';
 				
@@ -233,7 +237,7 @@ class Design extends Org_Controller {
 				
 				//set close row
 				if (($key%2)==0){
-				$result=$result.'</div>';
+				$result=$result;
 				}
 				}
 		$data['listdata'] = $result;
