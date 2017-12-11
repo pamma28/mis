@@ -287,6 +287,20 @@ class Transfer extends Org_Controller {
 				"dtval"=>' : '.$dbres[0][$col[$a]]
 				);
 			
+			if ($key=='Date Transfered'){
+						$dtable[$a] = array(
+						"dtcol"=>'<b>'.$key.'</b>',
+						"dtval"=>' : '.date('d-M-Y, H:i',strtotime($dbres[0][$col[$a]]))
+						);
+				}
+
+			if ($key=='Date Processed'){
+						$dtable[$a] = array(
+						"dtcol"=>'<b>'.$key.'</b>',
+						"dtval"=>' : '.date('d-M-Y, H:i',strtotime($dbres[0][$col[$a]]))
+						);
+				}
+
 			if ($key=='Status'){
 						$dtable[$a] = array(
 						"dtcol"=>'<b>'.$key.'</b>',

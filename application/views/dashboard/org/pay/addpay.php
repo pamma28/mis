@@ -10,23 +10,24 @@
 <section class="content">
 	<div class="box">
 	<h2 align="center">Payment Cashier</h2>
-		<?php if ($this->session->flashdata('v')!=null){ ?>
-			<div style="padding:0 20px;">
-			<div class="alert alert-success alert-dismissible" role="alert">
-				<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<?=$this->session->flashdata('v');?>
-			</div>
-			</div>
-			<?php } else if ($this->session->flashdata('x')!=null){ ?>
-			<div style="padding:0 20px;">
-			<div class="alert alert-danger alert-dismissible" role="alert">
-				<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<?=$this->session->flashdata('x');?>
-			</div>		
-			</div>		
-			<?php } ?>
+		
 	<div class="row">
 		<div class="col-md-8">
+				<?php if ($this->session->flashdata('v')!=null){ ?>
+				<div style="padding:0 20px;">
+				<div class="alert alert-success alert-dismissible" role="alert">
+					<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<?=$this->session->flashdata('v');?>
+				</div>
+				</div>
+				<?php } else if ($this->session->flashdata('x')!=null){ ?>
+				<div style="padding:0 20px;">
+				<div class="alert alert-danger alert-dismissible" role="alert">
+					<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<?=$this->session->flashdata('x');?>
+				</div>		
+				</div>		
+				<?php } ?>
 		<?php echo form_open(base_url('Organizer/Payment/savepay'),array('name'=>'addpay', 'method'=>'POST'));?>
 			<div class="panel panel-primary">
 			<div class="panel-heading">
@@ -71,7 +72,8 @@
 					</div>
 					<div class="form-group">
 						<label class="col-sm-3 control-label"><?=$col[4];?></label>
-						<div class="col-sm-9"><?=$paid;?></div>
+						<div class="col-sm-9"><?=$paid;?>
+						<small><i>*Please add (-) minus into nominal paid, if transaction is withdrawal.</i></small></div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-3 control-label"><?=$col[3];?></label>
