@@ -195,7 +195,7 @@ class Test extends Org_Controller {
 								'id'=>'selectedtype',
 								'name'=>'ftype'
 								));
-			$data['factselected'] = site_url('Organizer/PDS/updateselected');
+			$data['factselected'] = site_url('Organizer/Test/updateselected');
 			
 		
 		//=============== setting registration phase ============
@@ -438,12 +438,19 @@ class Test extends Org_Controller {
 				$type = $this->input->post('ftype');
 				$dtuser= explode(',',$users);
 				$totuser = count($dtuser);
-			$r = $this->Mlogin->updateselected($dtuser,$type);
-			$this->session->set_flashdata('v','Update '.$totuser.' Selected Member Account success.<br/>Details: '.$r['v'].' success and '.$r['x'].' error(s)');
+			if ($type == '0') {
+				$s=0;$x=0;
+				foreach ($dtuser as $v) {
+					$res= $this->Mtest->deletetest($v);
+					($res) ? $s++:$x++;
+				}
+			}
+				
+			$this->session->set_flashdata('v','Update '.$totuser.' Selected Test Data Success.<br/>Details: '.$s.' Success and '.$x.' Error(s)');
 		} else{
-		$this->session->set_flashdata('x','No data selected, update Selected Member Account Failed.');
+		$this->session->set_flashdata('x','No Data Selected, Update Selected Test Data Failed.');
 		}
-		redirect(base_url('Organizer/PDS'));
+		redirect(base_url('Organizer/Test'));
 	}
 		
 	public function savetest(){

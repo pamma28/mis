@@ -225,7 +225,7 @@ class Payment extends Org_Controller {
 							'value'=>$temp[$key]['idtrans']
 							));
 				array_unshift($temp[$key],$ctable);
-				$temp[$key]['tnotrans']='<span class="idname">'.$temp[$key]['tnotrans'].'</span>';
+				$temp[$key]['tnotrans']='<span class="idname hidden"> '.$temp[$key]['tnotrans'].', '.$temp[$key]['mname'].' ('.$temp[$key]['tpaid'].')</span>'.$temp[$key]['tnotrans'];
 				$temp[$key]['tdate']=date('d-M-Y', strtotime($value['tdate'])).'<br/>'.date('H:i:s', strtotime($value['tdate']));
 				//manipulation menu
 				$enc = $value['idtrans'];
@@ -956,10 +956,17 @@ class Payment extends Org_Controller {
 				$type = $this->input->post('ftype');
 				$dtuser= explode(',',$users);
 				$totuser = count($dtuser);
-			$r = $this->Mlogin->updateselected($dtuser,$type);
-			$this->session->set_flashdata('v','Update '.$totuser.' Selected Member Account success.<br/>Details: '.$r['v'].' success and '.$r['x'].' error(s)');
+			if ($type == '0') {
+				$s=0;$x=0;
+				foreach ($dtuser as $v) {
+					$res= $this->Mpay->deletepay($v);
+					($res) ? $s++:$x++;
+				}
+			}
+				
+			$this->session->set_flashdata('v','Update '.$totuser.' Selected Payment Data Success.<br/>Details: '.$s.' success and '.$x.' error(s)');
 		} else{
-		$this->session->set_flashdata('x','No data selected, update Selected Member Account Failed.');
+		$this->session->set_flashdata('x','No Data Selected, Update Selected Payment Data Failed.');
 		}
 		redirect(base_url('Organizer/Payment'));
 	}

@@ -353,4 +353,5 @@ class Mpay extends CI_Model{
 	$this->db->where('a.uuser',$user);
 	return $this->db->get('transaksi')->result_array();
 	}
+
 }

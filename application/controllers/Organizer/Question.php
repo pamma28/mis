@@ -388,7 +388,7 @@ class Question extends Org_Controller {
 				$tans = $this->Mq->populateanswer($colans,$value['idq']);
 				$tempans = array(); $keyans='';
 					foreach($tans as $vans){
-					if ($vans['key_ans']=='1') {($keyans='<small><i><b>Key Answer: '.$vans['answer'].'</b></i></small>');}
+					if ($vans['key_ans']=='1') {($keyans='<small class="label label-success"><i><b>Key Answer: '.$vans['answer'].'</b></i></small>');}
 					($keyans!=null)?($keyexist='1'):($keyexist='');
 					$linkans= base_url('Organizer/Question/deleteanswer?ans='.$vans['idans']);
 					$editans = '<a href="'.base_url('Organizer/Question/editanswer?ans=').$vans['idans'].'" data-target="#DetailModal" data-key="'.$keyexist.'" class="btn btn-default btn-xs" data-toggle="modal" role="button" alt="Edit Answer"><i class="fa fa-edit"></i></a>';

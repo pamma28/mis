@@ -167,6 +167,7 @@ class Subject extends Org_Controller {
 				$enc = $value['idt'];
 				$temp[$key]['tduration']=$temp[$key]['tduration'].' minute(s)';
 				$temp[$key]['tcreated']=date('d-M-Y', strtotime($value['tcreated'])).'<br/>'.date('H:i:s', strtotime($value['tcreated']));
+				$temp[$key]['tname']='<span class="idname">'.$temp[$key]['tname'].'</span>';
 				//manipulation checkbox
 				$ctable = form_checkbox(array(
 							'name'=>'check[]',
@@ -361,7 +362,7 @@ class Subject extends Org_Controller {
 								'id'=>'selectedtype',
 								'name'=>'ftype'
 								));
-			$data['factselected'] = site_url('Organizer/PDS/updateselected');
+			$data['factselected'] = site_url('Organizer/Subject/updateselected');
 
 	
 		//=============== Template ============
@@ -788,10 +789,17 @@ class Subject extends Org_Controller {
 				$type = $this->input->post('ftype');
 				$dtuser= explode(',',$users);
 				$totuser = count($dtuser);
-			$r = $this->Mlogin->updateselected($dtuser,$type);
-			$this->session->set_flashdata('v','Update '.$totuser.' Selected Member Account success.<br/>Details: '.$r['v'].' success and '.$r['x'].' error(s)');
+			if ($type == '0') {
+				$s=0;$x=0;
+				foreach ($dtuser as $v) {
+					$res= $this->Msubject->deletesubject($v);
+					($res) ? $s++:$x++;
+				}
+			}
+				
+			$this->session->set_flashdata('v','Update '.$totuser.' Selected Subject Data Success.<br/>Details: '.$s.' Success and '.$x.' Error(s)');
 		} else{
-		$this->session->set_flashdata('x','No data selected, update Selected Member Account Failed.');
+		$this->session->set_flashdata('x','No Data Selected, Update Selected Subject Data Failed.');
 		}
 		redirect(base_url('Organizer/Subject'));
 	}
