@@ -22,14 +22,7 @@ class Subject extends Org_Controller {
 		$column=['tcreated','tname','test.idtest as idt','tduration','tktrgn'];
 		$header = $this->returncolomn($column);
 		$header[2]='Subject List Details';
-		// checkbox checkalldata
-				$checkall = form_checkbox(array(
-							'name'=>'checkall',
-							'class'=>'form-class',
-							'value'=>'all',
-							'id'=>'c_all'
-							));	
-				array_unshift($header,$checkall);
+		
 		$header[]='Menu';
 		$tmpl = array ( 'table_open'  => '<table class="table table-hover">' );
 		$this->table->set_template($tmpl);
@@ -168,13 +161,7 @@ class Subject extends Org_Controller {
 				$temp[$key]['tduration']=$temp[$key]['tduration'].' minute(s)';
 				$temp[$key]['tcreated']=date('d-M-Y', strtotime($value['tcreated'])).'<br/>'.date('H:i:s', strtotime($value['tcreated']));
 				$temp[$key]['tname']='<span class="idname">'.$temp[$key]['tname'].'</span>';
-				//manipulation checkbox
-				$ctable = form_checkbox(array(
-							'name'=>'check[]',
-							'class'=>'ciduser',
-							'value'=>$temp[$key]['idt']
-							));
-				array_unshift($temp[$key],$ctable);
+				
 					// loop subject list
 					$colsbjct = ['subject','qtot','qpercent'];
 					$dtsbjct = $this->Msubject->datasbjctbyid($colsbjct,$enc);
@@ -801,7 +788,7 @@ class Subject extends Org_Controller {
 		} else{
 		$this->session->set_flashdata('x','No Data Selected, Update Selected Subject Data Failed.');
 		}
-		redirect(base_url('Organizer/Subject'));
+		redirect(base_url('Organizer/Subject/allsubject'));
 	}
 		
 	public function savesubjecttest(){

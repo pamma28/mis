@@ -21,6 +21,7 @@ class Question extends Org_Controller {
 		$data['thisperiod']=$this->Msetting->getset('period');
 		$column=['subject','idsubject as id1','1 as id3','1 as id2'];
 		$header = $this->returncolomn($column);
+		
 		$header[1]='Subject in Test';
 		$header[2]='Total Question';
 		$header[3]='Question List Details';
@@ -31,7 +32,7 @@ class Question extends Org_Controller {
 							'value'=>'all',
 							'id'=>'c_all'
 							));	
-				array_unshift($header,$checkall);
+				//array_unshift($header,$checkall);
 		$header[]='Menu';
 		$tmpl = array ( 'table_open'  => '<table class="table table-hover">' );
 		$this->table->set_template($tmpl);
@@ -131,7 +132,7 @@ class Question extends Org_Controller {
 							'class'=>'ciduser',
 							'value'=>$temp[$key]['id1']
 							));
-				array_unshift($temp[$key],$ctable);
+				//array_unshift($temp[$key],$ctable);
 					
 					// loop subject list
 					$coltest = ['tname','qtot','qpercent'];

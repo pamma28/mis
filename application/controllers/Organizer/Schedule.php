@@ -881,17 +881,13 @@ class Schedule extends Org_Controller {
 			{
 				$r = $this->Msche->updateselected($dtuser,$type);
 			} else {
-				$v=0;$x=0;
+				$s=0;$x=0;
 					foreach($dtuser as $v){
 					$rs = $this->Msche->deletesche($v);
-					($rs) ? $v++:$x++;
+					($rs) ? $s++:$x++;
 					}
-				$r=array(
-				"v"=>$v,
-				"x"=>$x
-				);
 			}
-			$this->session->set_flashdata('v','Update '.$totuser.' Selected Schedule success.<br/>Details: '.$r['v'].' success and '.$r['x'].' error(s)');
+			$this->session->set_flashdata('v','Update '.$totuser.' Selected Schedule success.<br/>Details: '.$s.' success and '.$x.' error(s)');
 		} else{
 		$this->session->set_flashdata('x','No data selected, update Selected Schedule Failed.');
 		}

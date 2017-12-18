@@ -87,19 +87,19 @@ class Msche extends CI_Model{
 	}
 	
 	public function deletesche($fid){
-		$this->db->query('SET foreign_key_checks = 0');
+		//$this->db->query('SET foreign_key_checks = 0');
 		$this->db->where('idjdwl',$fid);
 		$r = $this->db->delete('jdwl_tes');
-		$this->db->query('SET foreign_key_checks = 1');
+		//$this->db->query('SET foreign_key_checks = 1');
 		return $r;
 	}
 	
 	public function deletemysche($fid){
-		$this->db->query('SET foreign_key_checks = 0');
+		//$this->db->query('SET foreign_key_checks = 0');
 		$this->db->where('idjdwl',$fid);
 		$this->db->where('uuser',$this->session->userdata('user'));
 		$r = $this->db->delete('jdwl_mem');
-		$this->db->query('SET foreign_key_checks = 1');
+		//$this->db->query('SET foreign_key_checks = 1');
 		return $r;
 	}
 	

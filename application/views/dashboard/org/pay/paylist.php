@@ -71,7 +71,7 @@
 					<span class="sr-only">Toggle Dropdown</span>
 					</button>
 					<ul role="menu" class="dropdown-menu">
-					<a href="#" class="btn btn-sm text-danger" data-finput="0" data-btn="btn btn-sm btn-danger" data-icon="fa fa-trash" data-title="Delete All" data-toggle="modal" data-target=".bs-selecteddata"><i class="fa fa-ban"></i> Delete All</a>
+					<a href="#" class="btn btn-sm text-danger" data-finput="0" data-btn="btn btn-sm btn-danger" data-icon="fa fa-trash" data-title="Delete All" data-toggle="modal" data-target=".bs-selecteddata"><i class="fa fa-trash"></i> Delete All</a>
 					</ul>
 			</div>
 					<a href="<?=base_url('Organizer/Payment/checklunas');?>" class="btn btn-primary btn-sm"><i class="fa fa-refresh"></i> Update Full Paid Status</a>

@@ -72,10 +72,10 @@ class Mtest extends CI_Model{
 	}
 	
 	public function deletetest($fid){
-		$this->db->query('SET foreign_key_checks = 0');
+		//$this->db->query('SET foreign_key_checks = 0');
 		$this->db->where('idtest',$fid);
 		$r = $this->db->delete('test');
-		$this->db->query('SET foreign_key_checks = 1');
+		//$this->db->query('SET foreign_key_checks = 1');
 		return $r;
 	}
 

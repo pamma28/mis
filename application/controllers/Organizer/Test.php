@@ -440,13 +440,22 @@ class Test extends Org_Controller {
 				$totuser = count($dtuser);
 			if ($type == '0') {
 				$s=0;$x=0;
+				$done = true;
 				foreach ($dtuser as $v) {
+					
 					$res= $this->Mtest->deletetest($v);
-					($res) ? $s++:$x++;
+					if ($res) 
+					{
+						$s++;
+					} else {
+						$done = false;
+						$msg = $this->db->_error_message();
+						$x++;
+					}
 				}
 			}
 				
-			$this->session->set_flashdata('v','Update '.$totuser.' Selected Test Data Success.<br/>Details: '.$s.' Success and '.$x.' Error(s)');
+			($done) ? $this->session->set_flashdata('v','Update '.$totuser.' Selected Test Data Success.<br/>Details: '.$s.' Success and '.$x.' Error(s)') : $this->session->set_flashdata('x','Update '.$totuser.' Selected Test Data Failed.<br/>Details: '.$msg);
 		} else{
 		$this->session->set_flashdata('x','No Data Selected, Update Selected Test Data Failed.');
 		}

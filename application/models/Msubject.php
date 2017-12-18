@@ -136,19 +136,19 @@ class Msubject extends CI_Model{
 	}
 	
 	public function deletesubjecttest($fs,$ft){
-		$this->db->query('SET foreign_key_checks = 0');
+		//$this->db->query('SET foreign_key_checks = 0');
 		$this->db->where('idtest',$ft);
 		$this->db->where('idsubject',$fs);
 		$r = $this->db->delete('quo_sbjct');
-		$this->db->query('SET foreign_key_checks = 1');
+		//$this->db->query('SET foreign_key_checks = 1');
 		return $r;
 	}
 	
 	public function deletesubject($id){
-		$this->db->query('SET foreign_key_checks = 0');
+		//$this->db->query('SET foreign_key_checks = 0');
 		$this->db->where('idsubject',$id);
 		$r = $this->db->delete('subject');
-		$this->db->query('SET foreign_key_checks = 1');
+		//$this->db->query('SET foreign_key_checks = 1');
 		return $r;
 	}
 	

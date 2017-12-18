@@ -43,8 +43,8 @@
                 </div>
                 <div class="box-body no-padding">
                   <ul class="nav nav-pills nav-stacked">
-                    <li><a href="#"><i class="fa fa-circle-o text-primary"></i> Broadcast Mail</a></li>
-                    <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> Single Mail</a></li>
+                    <li><a href="#"><i class="fa fa-users text-primary"></i> Broadcast Mail</a></li>
+                    <li><a href="#"><i class="fa fa-user text-yellow"></i> Single Mail</a></li>
                   </ul>
                 </div><!-- /.box-body -->
               </div><!-- /.box -->

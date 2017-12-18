@@ -275,11 +275,11 @@ class Mq extends CI_Model{
 	}
 	
 	public function deletesubject($fs,$ft){
-		$this->db->query('SET foreign_key_checks = 0');
+		//$this->db->query('SET foreign_key_checks = 0');
 		$this->db->where('idtest',$ft);
 		$this->db->where('idsubject',$fs);
 		$r = $this->db->delete('quo_sbjct');
-		$this->db->query('SET foreign_key_checks = 1');
+		//$this->db->query('SET foreign_key_checks = 1');
 		return $r;
 	}
 	
@@ -308,13 +308,13 @@ class Mq extends CI_Model{
 	}
 	
 	public function deletequest($idq){
-		$this->db->query('SET foreign_key_checks = 0');
+		//$this->db->query('SET foreign_key_checks = 0');
 			//delete answer
 			$this->db->where('idq',$idq);
 			$this->db->delete('answer');
 		$this->db->where('idq',$idq);
 		$r = $this->db->delete('question');
-		$this->db->query('SET foreign_key_checks = 1');
+		//$this->db->query('SET foreign_key_checks = 1');
 		return $r;
 	}
 	

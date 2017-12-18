@@ -183,7 +183,7 @@ class Mailbroadcast extends Org_Controller {
 		$temp = $this->Mbc->databcmail($column,$config['per_page'],$perpage,$filter);	
 				foreach($temp as $key=>$value){
 				//manipulation checkbox
-				(strpos($value['bcket'], 'Broadcast Mail') !== false) ? $lbl = '<i class="fa fa-circle-o text-primary"></i>' : $lbl ='<i class="fa fa-circle-o text-yellow"></i>';
+				(strpos($value['bcket'], 'Broadcast Mail') !== false) ? $lbl = '<i class="fa fa-users text-primary"></i>' : $lbl ='<i class="fa fa-user text-yellow"></i>';
 				$ctable = $lbl.'<br/>'.form_checkbox(array(
 							'name'=>'check[]',
 							'class'=>'ciduser bg-aqua',

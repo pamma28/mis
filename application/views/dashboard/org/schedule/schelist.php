@@ -69,8 +69,8 @@
 					<span class="sr-only">Toggle Dropdown</span>
 					</button>
 					<ul role="menu" class="dropdown-menu">
-					<a href="#" class="btn btn-sm text-danger" data-finput="1" data-btn="btn btn-sm btn-danger" data-icon="fa fa-check" data-title="Active All" data-toggle="modal" data-target=".bs-selecteddata"><i class="fa fa-check"></i> Active All</a>
-					<a href="#" class="btn btn-sm text-danger" data-finput="0" data-btn="btn btn-sm btn-danger" data-icon="fa fa-ban" data-title="Inactive All" data-toggle="modal" data-target=".bs-selecteddata"><i class="fa fa-ban"></i> Inactive All</a>
+					<a href="#" class="btn btn-sm text-danger" data-finput="1" data-btn="btn btn-sm btn-danger" data-icon="fa fa-check" data-title="Active All" data-toggle="modal" data-target=".bs-selecteddata"><i class="fa fa-check"></i> Activate All</a>
+					<a href="#" class="btn btn-sm text-danger" data-finput="0" data-btn="btn btn-sm btn-danger" data-icon="fa fa-ban" data-title="Inactive All" data-toggle="modal" data-target=".bs-selecteddata"><i class="fa fa-ban"></i> Deactive All</a>
 					<a href="#" class="btn btn-sm text-danger" data-finput="2" data-btn="btn btn-sm btn-danger" data-icon="fa fa-trash-o" data-title="Delete All" data-toggle="modal" data-target=".bs-selecteddata"><i class="fa fa-trash-o"></i> Delete All</a>
 					</ul>
 			</div>
