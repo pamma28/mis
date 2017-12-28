@@ -936,7 +936,287 @@ class Certificate extends Org_Controller {
 		$this->load->view('dashboard/org/akun/printacc', $data);
 		
 	}
+
+	public function preview(){
 	
+		//===================== table handler =============
+		$data['thisperiod']=$this->Msetting->getset('period');
+		$column=['certificate.idcerti','nocerti','uname','unim','lvlname'];
+		$header = $this->returncolomn($column);
+		unset($header[0]);
+		
+		// checkbox checkalldata
+				$checkall = form_checkbox(array(
+							'name'=>'checkall',
+							'class'=>'form-class',
+							'value'=>'all',
+							'id'=>'c_all'
+							));	
+				//array_unshift($header,$checkall);
+		//$header[]='Menu';
+		$tmpl = array ( 'table_open'  => '<table class="table table-hover header-fixed">');
+		$this->table->set_template($tmpl);
+		$this->table->set_heading($header);
+			
+		
+		//================== catch all value ================
+		$durl= $_SERVER['QUERY_STRING'];
+		parse_str($durl, $filter);
+		$tempfilter=$filter;
+		$addrpage = '';
+		$offset= isset($tempfilter['view']) ? $tempfilter['view'] : 100;
+		$perpage= isset($tempfilter['page']) ? $tempfilter['page'] : 1;
+		
+		if ($durl!=null){
+			unset($filter['view']);
+			unset($filter['page']);
+			$filter= array_filter($filter, function($filter) 
+										{return ($filter !== null && $filter !== false && $filter !== '');
+							});
+			//implode query address
+			$addrpage= http_build_query($filter);
+			$addrpage = empty($addrpage)? null:$addrpage.'&';
+			if ((array_key_exists('column',$filter)) and  (array_key_exists('search',$filter))){
+				$vc = $filter['column'];
+				$vq = $filter['search'];
+				unset($filter['column']);
+				unset($filter['search']);
+				$filter[$vc]=$vq;
+				$data['d']='';
+				}
+			else if ((empty($filter['view'])) and (!empty($filter))){
+			$data['d']='d';
+			}
+			//count rows of data (with filter/search)
+			$rows = $this->Mcerti->countcerti($filter);
+			
+		} else {
+			//count rows of data (no filter/search)
+			$rows = $this->Mcerti->countcerti();	
+		}
+		//================ filter handler ================
+		$fq = array('name'=>'search',
+						'id'=>'search',
+						'required'=>'required',
+						'placeholder'=>'Search Here',
+						'value'=> isset($tempfilter['search']) ? $tempfilter['search'] : null ,
+						'class'=>'form-control');
+		$data['inq'] = form_input($fq);
+			$optf = array(
+						'ucreated' => 'Period',
+						'nocerti' => 'Certificate No',
+						'uname' => 'Full Name',
+						'unim' => 'NIM'
+						);
+		$fc = array('name'=>'column',
+						'id'=>'col',
+						'class'=>'form-control'
+					);
+		$data['inc'] = form_dropdown($fc,$optf,isset($tempfilter['column']) ? $tempfilter['column'] : null);
+		$data['inv'] = form_hidden('view',isset($tempfilter['view']) ? $tempfilter['view'] : 10);
+		
+		$fbq = array(	'id'=>'bsearch',
+						'value'=>'search',
+						'class'=>'btn btn-primary',
+						'type'=>'submit');
+		$data['bq'] = form_submit($fbq);
+		
+		// ============= advanced filter ===============
+		$adv['Period'] = form_input(
+						array('name'=>'period',
+						'id'=>'createdon',
+						'placeholder'=>'Period of Member',
+						'value'=>isset($tempfilter['period']) ? $tempfilter['period'] : null,
+						'class'=>'form-control'));
+		
+		$adv['Certificate No'] = form_input(
+						array('name'=>'nocerti',
+						'id'=>'certino',
+						'placeholder'=>'Certificate Number',
+						'value'=>isset($tempfilter['nocerti']) ? $tempfilter['nocerti'] : null,
+						'class'=>'form-control'));
+						
+		
+		$adv['Full Name'] = form_input(
+						array('name'=>'uname',
+						'id'=>'fullname',
+						'placeholder'=>'Full Name',
+						'value'=>isset($tempfilter['uname']) ? $tempfilter['uname'] : null,
+						'class'=>'form-control'));
+		
+		$adv['NIM'] = form_input(
+						array('name'=>'unim',
+						'id'=>'NIM',
+						'placeholder'=>'NIM',
+						'value'=>isset($tempfilter['unim']) ? $tempfilter['unim'] : null,
+						'class'=>'form-control'));
+						
+			$optlevel = $this->Mcerti->getoptlevel(); 
+		$adv['Level'] = form_dropdown(
+						array('name'=>'idlevel',
+						'id'=>'Level',
+						'class'=>'form-control'),$optlevel,isset($tempfilter['idlevel']) ? $tempfilter['idlevel'] : null);
+		
+		$dtfilter = '';
+		foreach($adv as $a=>$v){
+			$dtfilter = $dtfilter.'<div class="input-group"><label>'.$a.': </label>'.$v.'</div>  ';
+		}
+		$data['advance'] = $dtfilter;
+		
+		
+		//=============== paging handler ==========
+		$config = array(
+				'base_url' => base_url().'/Organizer/Certificate/preview?'.$addrpage.'view='.$offset,
+				'total_rows' => $rows,
+				'per_page' => $offset,
+				'use_page_numbers' => true,
+				'page_query_string' =>true,
+				'query_string_segment' =>'page',
+				'num_links' => 3,
+				'cur_tag_open' => '<span class="disabled"><a href="#">',
+				'cur_tag_close' => '<span class="sr-only"></span></a></span>',
+				'next_link' => 'Next',
+				'prev_link' => 'Prev'
+				);
+		$data["urlperpage"] = base_url().'Organizer/Certificate/preview?'.$addrpage.'view=';
+		$data["perpage"] = ['10','25','50','100','all'];
+		$this->pagination->initialize($config);
+		$str_links = $this->pagination->create_links();
+		$data["links"] = explode('&nbsp;',$str_links );
+
+		//========== data manipulation =========
+	
+		$temp = $this->Mcerti->datacerti($column,$config['per_page'],$perpage,$filter);	
+				foreach($temp as $key=>$value){
+				//manipulation allow data
+				
+				//manipulation checkbox
+				$ctable = form_checkbox(array(
+							'name'=>'check[]',
+							'class'=>'ciduser',
+							'value'=>$temp[$key]['idcerti']
+							));
+				//array_unshift($temp[$key],$ctable);
+				$temp[$key]['uname']='<span class="idname">'.$temp[$key]['uname'].'</span>';
+				
+				//manipulation menu
+				$enc = $value['idcerti'];
+				unset($temp[$key]['idcerti']);
+				}
+		$data['listlogin'] = $this->table->generate($temp);
+		
+		
+		
+		//=============== setting certificate ============
+			$format = $this->Msetting->getset('certiformat');
+			$page = $this->Msetting->getset('certipage');
+			$data['fformat']= form_input(array('id'=>'setformat',
+								'class'=>'form-control',							
+								'name'=>'certiformat',							
+								'size'=>'40',							
+								'placeholder'=>'Certificate Format',							
+								'value'=>$format,							
+								'required'=>'required'));
+				$optpage = $this->Mcerti->getoptpage();
+			$data['fpage']= form_dropdown(array('id'=>'setpage',
+								'class'=>'form-control',							
+								'name'=>'certipage',							
+								'placeholder'=>'Certificate Page',							
+								'required'=>'required'),$optpage,$page);
+			$data['fbtnperiod']= form_submit(array('value'=>'Update Setting',
+								'class'=>'btn btn-primary',							
+								'id'=>'btnupdateset'));
+			$data['fsendper'] = site_url('Organizer/Certificate/savesetting');
+			
+				
+			$data['nocerti'] = $this->generatenocerti('{nocerti}/{date}/{month}/{year}');
+		//=============== Template ============
+		$data['jsFiles'] = array(
+							'selectpicker/select.min','moment/moment.min','daterange/daterangepicker','print/printThis');
+		$data['cssFiles'] = array(
+							'selectpicker/select.min','daterange/daterangepicker');  
+		// =============== view handler ============
+		$data['title']="Preview Certificate";
+		$data['topbar'] = $this->load->view('dashboard/topbar', NULL, TRUE);
+		$data['sidebar'] = $this->load->view('dashboard/org/sidebar', NULL, TRUE);
+		$data['content'] = $this->load->view('dashboard/org/certi/prevlist', $data, TRUE);
+		$this->load->view ('template/main', $data);
+	}
+	
+	public function previewcerti($id = null){
+		 ob_clean();
+		// Set the content type header - in this case image/jpeg
+		header('Content-Type: image/jpeg');
+		$height = 0;
+		$image_width = 1000;
+		$fontname = FCPATH.'assets/fonts/Capriola-Regular.ttf';
+		$filename = base_url('upload/design/83d2b8905af90b2212b27acadb993a78.jpg');
+		$texts = array(
+					array('name'=>'Full Name','size'=>'28','color'=>'black','margin'=>-30),
+					array('name'=>'Certificate Number','size'=>'12','color'=>'green','margin'=>-8),
+					array('name'=>'HAS SUCCESSFULLY COMPLETED REGULAR CLASS IN 2018','size'=>'14','color'=>'black','margin'=>55),
+					array('name'=>'BY STUDENT ENGLISH FORUM WITH THE FOLLOWING RESULT:','size'=>'14','color'=>'black','margin'=>25),
+					array('name'=>'LISTENING COMPREHENTION                            A','size'=>'14','color'=>'black','margin'=>35),
+					array('name'=>'GRAMMAR AND STRUCTURE                               A','size'=>'14','color'=>'black','margin'=>20),
+					array('name'=>'READING COMPREHENTION                               A','size'=>'14','color'=>'black','margin'=>20),
+					array('name'=>'WRITING EXPRESSION                                           A','size'=>'14','color'=>'black','margin'=>20),
+					array('name'=>'SPEAKING                                                                   A','size'=>'14','color'=>'black','margin'=>20),
+					array('name'=>'IN ELEMENTARY LEVEL','size'=>'14','color'=>'black','margin'=>35),
+					array('name'=>'       RECTOR OF UNSOED                                 PRESIDENT OF SEF 2018','size'=>'16','color'=>'black','margin'=>55),
+					array('name'=>'Dr.Ir. Achmad Iqbal, M.Si                                              Jevon Sianipar','size'=>'16','color'=>'black','margin'=>85),
+					array('name'=>'NIP 19580331 198702 1 001                                                     A1B016077      ','size'=>'14','color'=>'black','margin'=>20)
+				);
+
+		 if (isset($id))
+		 	{ 
+				// Create a blank image and add some text
+				$im = imagecreatetruecolor(120, 20);
+				$text_color = imagecolorallocate($im, 233, 14, 91);
+				imagestring($im, 1, 5, 5,  'An Image has ID', $text_color);
+
+
+		 	} else {
+
+		 		// define the base image that we lay our text on
+				$im = imagecreatefromjpeg($filename);
+
+				// setup the text colours
+				$color['black'] = imagecolorallocate($im, 0, 0, 0);
+				$color['green'] = imagecolorallocate($im, 55, 189, 102);
+
+				// this defines the starting height for the text block
+				$y = imagesy($im) - $height - 450;
+					 
+				// loop through the array and write the text
+				$u=1; $i=0;	$prevsize=0;end($texts); $last = prev($texts);
+				foreach ($texts as $value){
+					$i += $value['margin'];
+					// center the text in our image - returns the x value
+					$dimensions = imagettfbbox($value['size'], 0, $fontname, $value['name']);
+					$x = ceil(($image_width - $dimensions[4]) / 2);	
+					imagettftext($im, $value['size'], 0, $x, $y+$i+$prevsize, $color[$value['color']], $fontname, $value['name']);
+					($u==1) ?  imageline( $im, $x , $y+$i+$prevsize+3 , $x+$dimensions[4]+10 , $y+$i+$prevsize+3 ,  $color[$value['color']] ): null;
+					if ($last==$value){
+						$arrname=explode('  ', $value['name']);
+						$firstlength = imagettfbbox($value['size'], 0, $fontname, $arrname[0]);
+						imageline( $im, $x , $y+$i+$prevsize+3 , $x+$firstlength[4] , $y+$i+$prevsize+3 ,  $color[$value['color']]);
+						$secondlength = imagettfbbox($value['size'], 0, $fontname, end($arrname));
+						imageline( $im, $x+($dimensions[4]-$secondlength[4]) , $y+$i+$prevsize+3 , $x+$dimensions[4] , $y+$i+$prevsize+3 ,  $color[$value['color']]);
+						
+					}
+					// add 32px to the line height for the next text block
+					$u++; $prevsize=$value['size'];
+					
+				}
+
+		 	}
+		// Skip the filename parameter using NULL, then set the quality to 75%
+		imagejpeg($im, NULL, 75);
+
+		// Free up memory
+		imagedestroy($im);
+	}
+
 	public function checknocerti(){
 		$em = $this->input->post('nocerti');
 		echo $this->Mcerti->checknocerti($em);

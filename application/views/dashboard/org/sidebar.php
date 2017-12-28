@@ -84,8 +84,8 @@
               </a>
 			  <ul class="treeview-menu">
                 <li><span class="label label-primary pull-right">4</span><a href="<?=base_url("Organizer/Certificate");?>"><i class="fa fa-certificate fa-fw"></i> Certificate Data</a></li>
-                <li><span class="label label-info pull-right">12</span><a href="<?=base_url("Organizer/Design");?>"><i class="fa fa-image fa-fw"></i> Certificate Design</a></li>
-                <li><span class="label label-info pull-right">12</span><a href="<?=base_url("Organizer/Certificate/preview");?>"><i class="fa fa-search fa-fw"></i> Preview Certificate</a></li>
+                <li><a href="<?=base_url("Organizer/Design");?>"><i class="fa fa-image fa-fw"></i> Certificate Design</a></li>
+                <li><a href="<?=base_url("Organizer/Certificate/preview");?>"><i class="fa fa-file-image-o fa-fw"></i> Preview Certificate</a></li>
                </ul>
             </li>
 			<li class="treeview">
