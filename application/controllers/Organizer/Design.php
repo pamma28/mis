@@ -263,17 +263,17 @@ class Design extends Org_Controller {
 			$data['factprint'] = site_url('Organizer/Design/printdesign');
 		
 		//=============== setting registration phase ============
-			$price = $this->Msetting->getset('price');
-			$data['fprice']= form_input(array('id'=>'price',
+			$size = $this->Msetting->getset('sizedesign');
+			$data['fsize']= form_input(array('id'=>'size',
 								'class'=>'form-control',						
-								'name'=>'fprice',							
-								'placeholder'=>'Registration Price',							
-								'value'=>$price,							
+								'name'=>'fsize',							
+								'placeholder'=>'Maximum File Size',							
+								'value'=>$size,							
 								'required'=>'required'));
 			$data['fbtnperiod']= form_submit(array('value'=>'Update Setting',
 								'class'=>'btn btn-primary',							
 								'id'=>'btnupdateset'));
-			$data['fsendper'] = site_url('Organizer/Payment/savesetting');
+			$data['fsendper'] = site_url('Organizer/Design/savesetting');
 				
 		//=============== Template ============
 		$data['jsFiles'] = array(
@@ -523,14 +523,14 @@ class Design extends Org_Controller {
 			
 			// check image landscape and resize it if too big
 			if($height<$width){
-
+					$this->load->model('Msetting');
 					// config upload
             		$maxDim = 1000;
 					$fhashfile = md5(date('Y-m-d h:i:sa').$_FILES['fdesfile']['name']);
 		            $config['upload_path'] = FCPATH.'upload/design/';
 		            $config['allowed_types'] = 'jpeg|jpg|png';
 		            $config['file_name'] = $fhashfile;
-		            $config['max_size'] = 0;
+		            $config['max_size'] = $this->Msetting->getset('sizedesign');
 		            $this->load->library('upload', $config);
 
 		            //manipulate height n width if too big

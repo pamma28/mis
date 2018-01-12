@@ -299,6 +299,12 @@ class Mcerti extends CI_Model{
 		$this->db->where('iddes',$id);
 		return $this->db->get('certidesign')->row()->cerdefault;
 	}
+
+	public function fileDefault(){
+		$this->db->select('desfile');
+		$this->db->where('cerdefault',true);
+		return $this->db->get('certidesign')->row()->desfile;
+	}
 	
 	public function getalluser(){
 		$this->db->select('uuser');

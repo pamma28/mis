@@ -941,7 +941,7 @@ class Certificate extends Org_Controller {
 	
 		//===================== table handler =============
 		$data['thisperiod']=$this->Msetting->getset('period');
-		$column=['certificate.idcerti','nocerti','uname','unim','lvlname'];
+		$column=['certificate.idcerti as idcer','nocerti','uname','unim','lvlname'];
 		$header = $this->returncolomn($column);
 		unset($header[0]);
 		
@@ -954,7 +954,7 @@ class Certificate extends Org_Controller {
 							));	
 				//array_unshift($header,$checkall);
 		//$header[]='Menu';
-		$tmpl = array ( 'table_open'  => '<table class="table table-hover header-fixed">');
+		$tmpl = array ( 'table_open'  => '<table class="table table-hover header-fixed">','cell_start'=> '<td style="display:block">');
 		$this->table->set_template($tmpl);
 		$this->table->set_heading($header);
 			
@@ -1094,39 +1094,128 @@ class Certificate extends Org_Controller {
 				$ctable = form_checkbox(array(
 							'name'=>'check[]',
 							'class'=>'ciduser',
-							'value'=>$temp[$key]['idcerti']
+							'value'=>$temp[$key]['idcer']
 							));
 				//array_unshift($temp[$key],$ctable);
-				$temp[$key]['uname']='<span class="idname">'.$temp[$key]['uname'].'</span>';
-				
+
 				//manipulation menu
-				$enc = $value['idcerti'];
-				unset($temp[$key]['idcerti']);
+				$enc = $value['idcer'];
+
+				$temp[$key]['nocerti']='<a href="#" class="prevcerti" data-href="'.base_url().'Organizer/Certificate/previewcerti/'.$enc.'">'.$temp[$key]['nocerti'].'</a>';
+				$temp[$key]['uname']='<a href="#" class="prevcerti" data-href="'.base_url().'Organizer/Certificate/previewcerti/'.$enc.'">'.$temp[$key]['uname'].'</a>';
+				$temp[$key]['unim']='<a href="#" class="prevcerti" data-href="'.base_url().'Organizer/Certificate/previewcerti/'.$enc.'">'.$temp[$key]['unim'].'</a>';
+				$temp[$key]['lvlname']='<a href="#" class="prevcerti" data-href="'.base_url().'Organizer/Certificate/previewcerti/'.$enc.'"">'.$temp[$key]['lvlname'].'</a>';
+				
+				unset($temp[$key]['idcer']);
 				}
 		$data['listlogin'] = $this->table->generate($temp);
 		
 		
-		
 		//=============== setting certificate ============
-			$format = $this->Msetting->getset('certiformat');
-			$page = $this->Msetting->getset('certipage');
-			$data['fformat']= form_input(array('id'=>'setformat',
-								'class'=>'form-control',							
-								'name'=>'certiformat',							
-								'size'=>'40',							
-								'placeholder'=>'Certificate Format',							
-								'value'=>$format,							
+			$data['font'] = $this->Msetting->getset('fontcerti');
+			$data['ffont']= form_upload(array('name'=>'ffont',
+							'class'=>'btn btn-default btn-sm'));
+
+			$pretext = str_replace('//',"\n",$this->Msetting->getset('pretextcerti'));
+			$lvltext = $this->Msetting->getset('leveltextcerti');
+			$data['fpretext']= form_textarea(array('id'=>'setpretext',
+								'class'=>'form-control',
+								'name'=>'fcertitext',
+								'value'=>$pretext,
+								'rows'=>'2'));
+			$data['fleveltext']= form_textarea(array('id'=>'setlvltext',
+								'class'=>'form-control',
+								'name'=>'fleveltext',
+								'value'=>$lvltext,
+								'rows'=>'2'));
+			
+				$arrsize = explode(',', $this->Msetting->getset('sizecerti'));
+				$arrmargin = explode(',', $this->Msetting->getset('margincerti'));
+				$arrcolor = explode(',', $this->Msetting->getset('colorcerti'));
+				$arrcolumn = explode(',', $this->Msetting->getset('columncerti'));
+				$arrcenter = explode(',', $this->Msetting->getset('centercerti'));
+				$optcolor = array(
+							''=>'Please Select',
+							'black'=>'Black',
+							'green'=>'Green',
+							'red'=>'Red',
+							'blue'=>'Blue'
+							);
+				$optcolumn = array(
+							''=>'Please Select',
+							'1'=>'1',
+							'2'=>'2'
+							);
+				$optcenter = array(
+							''=>'Please Select',
+							'0' => 'No',
+							'1' => 'Yes'
+							);
+			foreach ($arrsize as $k => $v) {
+				$data['fsize'][$k]= form_input(array('id'=>'setsize',
+								'class'=>'form-control',					
+								'name'=>'ftextsize[]',						
+								'placeholder'=>'Font Size',					
+								'value'=>$v,
+								'size'=>2,							
 								'required'=>'required'));
-				$optpage = $this->Mcerti->getoptpage();
-			$data['fpage']= form_dropdown(array('id'=>'setpage',
+			$data['fmargin'][$k]= form_input(array('id'=>'setmargin',
+								'class'=>'form-control',					
+								'name'=>'ftextmargin[]',
+								'size'=>2,					
+								'placeholder'=>'Margin Text',				
+								'value'=>$arrmargin[$k],							
+								'required'=>'required'));
+			$data['fcolor'][$k]= form_dropdown(array('id'=>'setcolor',
 								'class'=>'form-control',							
-								'name'=>'certipage',							
-								'placeholder'=>'Certificate Page',							
-								'required'=>'required'),$optpage,$page);
+								'name'=>'fcolor[]',							
+								'placeholder'=>'Color',							
+								'required'=>'required'),$optcolor,$arrcolor[$k]);
+			$data['fcolumn'][$k]= form_dropdown(array('id'=>'setcolumn',
+								'class'=>'form-control',							
+								'name'=>'fcolumn[]',							
+								'placeholder'=>'Column',							
+								'required'=>'required'),$optcolumn,$arrcolumn[$k]);
+			$data['fcenter'][$k]= form_dropdown(array('id'=>'setcenter',
+								'class'=>'form-control',							
+								'name'=>'fcenter[]',							
+								'placeholder'=>'Justify',							
+								'required'=>'required'),$optcenter,$arrcenter[$k]);
+			}
+
+				$arrtitle = explode('--',$this->Msetting->getset('titletextcerti'));
+				$arrsignname = explode('--',$this->Msetting->getset('namesigntextcerti'));
+				$arrnosign = explode('--',$this->Msetting->getset('nosigntextcerti'));
+			foreach ($arrtitle as $k => $v) {
+				$data['ftitletext'][$k]= form_input(array('id'=>'settitle',
+								'class'=>'form-control',					
+								'name'=>'ftexttitle[]',
+								'size'=>10,					
+								'placeholder'=>'Name Title',				
+								'value'=>$arrtitle[$k],							
+								'required'=>'required'));		
+				$data['fsignnametext'][$k]= form_input(array('id'=>'setnamesign',
+								'class'=>'form-control',					
+								'name'=>'fnamesign[]',
+								'size'=>10,					
+								'placeholder'=>"Signed Full Name",				
+								'value'=>$arrsignname[$k],							
+								'required'=>'required'));
+				$data['fsignnotext'][$k]= form_input(array('id'=>'setnosign',
+								'class'=>'form-control',					
+								'name'=>'fnosign[]',
+								'size'=>10,					
+								'placeholder'=>'Signed ID Number',				
+								'value'=>$arrnosign[$k],							
+								'required'=>'required'));
+			}
+				
+				
+
 			$data['fbtnperiod']= form_submit(array('value'=>'Update Setting',
 								'class'=>'btn btn-primary',							
 								'id'=>'btnupdateset'));
-			$data['fsendper'] = site_url('Organizer/Certificate/savesetting');
+			$data['fsendper'] = site_url('Organizer/Certificate/savesettingcerti');
 			
 				
 			$data['nocerti'] = $this->generatenocerti('{nocerti}/{date}/{month}/{year}');
@@ -1144,38 +1233,51 @@ class Certificate extends Org_Controller {
 	}
 	
 	public function previewcerti($id = null){
-		 ob_clean();
+		$this->load->model(array('Msetting','Mcerti'));
+		
+		ob_clean();
 		// Set the content type header - in this case image/jpeg
 		header('Content-Type: image/jpeg');
-		$height = 0;
-		$image_width = 1000;
-		$fontname = FCPATH.'assets/fonts/Capriola-Regular.ttf';
-		$filename = base_url('upload/design/83d2b8905af90b2212b27acadb993a78.jpg');
-		$texts = array(
-					array('name'=>'Full Name','size'=>'28','color'=>'black','margin'=>-30),
-					array('name'=>'Certificate Number','size'=>'12','color'=>'green','margin'=>-8),
-					array('name'=>'HAS SUCCESSFULLY COMPLETED REGULAR CLASS IN 2018','size'=>'14','color'=>'black','margin'=>55),
-					array('name'=>'BY STUDENT ENGLISH FORUM WITH THE FOLLOWING RESULT:','size'=>'14','color'=>'black','margin'=>25),
-					array('name'=>'LISTENING COMPREHENTION                            A','size'=>'14','color'=>'black','margin'=>35),
-					array('name'=>'GRAMMAR AND STRUCTURE                               A','size'=>'14','color'=>'black','margin'=>20),
-					array('name'=>'READING COMPREHENTION                               A','size'=>'14','color'=>'black','margin'=>20),
-					array('name'=>'WRITING EXPRESSION                                           A','size'=>'14','color'=>'black','margin'=>20),
-					array('name'=>'SPEAKING                                                                   A','size'=>'14','color'=>'black','margin'=>20),
-					array('name'=>'IN ELEMENTARY LEVEL','size'=>'14','color'=>'black','margin'=>35),
-					array('name'=>'       RECTOR OF UNSOED                                 PRESIDENT OF SEF 2018','size'=>'16','color'=>'black','margin'=>55),
-					array('name'=>'Dr.Ir. Achmad Iqbal, M.Si                                              Jevon Sianipar','size'=>'16','color'=>'black','margin'=>85),
-					array('name'=>'NIP 19580331 198702 1 001                                                     A1B016077      ','size'=>'14','color'=>'black','margin'=>20)
-				);
+
+		$fontname = FCPATH.'assets/fonts/'.$this->Msetting->getset('fontcerti');
+		$filename = base_url('upload/design/'.$this->Mcerti->fileDefault());
+		$arrsize = explode(',', $this->Msetting->getset('sizecerti'));
+		$arrmargin = explode(',', $this->Msetting->getset('margincerti'));
+		$arrcolor = explode(',', $this->Msetting->getset('colorcerti'));
+		$arrcolumn = explode(',', $this->Msetting->getset('columncerti'));
+		$arrcenter = explode(',', $this->Msetting->getset('centercerti'));
+		$pretext = $this->Msetting->getset('pretextcerti');
+		$lvltext = $this->Msetting->getset('leveltextcerti');
+		$title = $this->Msetting->getset('titletextcerti');
+		$namesign = $this->Msetting->getset('namesigntextcerti');
+		$nosign = $this->Msetting->getset('nosigntextcerti');
+		
+		
+		list($image_width, $height) = getimagesize($filename);
+		
 
 		 if (isset($id))
-		 	{ 
-				// Create a blank image and add some text
-				$im = imagecreatetruecolor(120, 20);
-				$text_color = imagecolorallocate($im, 233, 14, 91);
-				imagestring($im, 1, 5, 5,  'An Image has ID', $text_color);
-
+		 	{
+		 		$this->load->model('Mcerti'); 
+		 		$arrcerti = $this->Mcerti->detailcerti(array('nocerti','uname','unim','lvlname','cread','clisten','cwrite','cgrammar','cspeak'),$id);
+				
+		 		$texts = array($arrcerti[0]['uname'],$arrcerti[0]['nocerti']);
+		 		array_push($texts, $pretext);
+		 		array_push($texts,'LISTENING COMPREHENTION--'.$arrcerti[0]['clisten'].'//GRAMMAR AND STRUCTURE--'.$arrcerti[0]['cgrammar'].'//READING COMPREHENTION--'.$arrcerti[0]['cread'].'//WRITING EXPRESSION--'.$arrcerti[0]['cwrite'].'//SPEAKING--'.$arrcerti[0]['cspeak']);
+		 		array_push($texts, str_replace('{LEVEL}', strtoupper($arrcerti[0]['lvlname']), $lvltext));
+		 		array_push($texts, $title,$namesign,$nosign);
 
 		 	} else {
+
+
+		 		$texts = array('FULL NAME','Certificate Number');
+		 		array_push($texts, $pretext);
+		 		array_push($texts,
+		 				'LISTENING COMPREHENTION--A//GRAMMAR AND STRUCTURE--A//READING COMPREHENTION--A//WRITING EXPRESSION--A//SPEAKING--A');
+		 		array_push($texts, str_replace('{LEVEL}','ELEMENTARY', $lvltext));
+		 		array_push($texts, $title,$namesign,$nosign);
+			}
+			
 
 		 		// define the base image that we lay our text on
 				$im = imagecreatefromjpeg($filename);
@@ -1185,31 +1287,84 @@ class Certificate extends Org_Controller {
 				$color['green'] = imagecolorallocate($im, 55, 189, 102);
 
 				// this defines the starting height for the text block
-				$y = imagesy($im) - $height - 450;
+				$y = imagesy($im) - $height;
 					 
 				// loop through the array and write the text
 				$u=1; $i=0;	$prevsize=0;end($texts); $last = prev($texts);
-				foreach ($texts as $value){
-					$i += $value['margin'];
-					// center the text in our image - returns the x value
-					$dimensions = imagettfbbox($value['size'], 0, $fontname, $value['name']);
-					$x = ceil(($image_width - $dimensions[4]) / 2);	
-					imagettftext($im, $value['size'], 0, $x, $y+$i+$prevsize, $color[$value['color']], $fontname, $value['name']);
-					($u==1) ?  imageline( $im, $x , $y+$i+$prevsize+3 , $x+$dimensions[4]+10 , $y+$i+$prevsize+3 ,  $color[$value['color']] ): null;
-					if ($last==$value){
-						$arrname=explode('  ', $value['name']);
-						$firstlength = imagettfbbox($value['size'], 0, $fontname, $arrname[0]);
-						imageline( $im, $x , $y+$i+$prevsize+3 , $x+$firstlength[4] , $y+$i+$prevsize+3 ,  $color[$value['color']]);
-						$secondlength = imagettfbbox($value['size'], 0, $fontname, end($arrname));
-						imageline( $im, $x+($dimensions[4]-$secondlength[4]) , $y+$i+$prevsize+3 , $x+$dimensions[4] , $y+$i+$prevsize+3 ,  $color[$value['color']]);
+				foreach ($texts as $k=>$value){
+					$i += $arrmargin[$k];
+				
+						//count how many line	
+						$arrline = explode('//', $value);
+					if ($arrcolumn[$k]=='1')	
+					{ 
+						if(count($arrline)>1){
+							$ay = $y;
+							foreach ($arrline as $a => $line) {
+								// center the text in our image - returns the x value
+								$dimensions = imagettfbbox($arrsize[$k], 0, $fontname, $line);
+								$x = ceil(($image_width - $dimensions[4]) / 2);
+								imagettftext($im, $arrsize[$k], 0, $x, $ay+$i+$prevsize, $color[$arrcolor[$k]], $fontname, $line);
+								$ay+=$arrsize[$k]+ceil($arrsize[$k]/2);
+								$y = $ay;
+							}
+						} else {
+							// center the text in our image - returns the x value
+							$dimensions = imagettfbbox($arrsize[$k], 0, $fontname, $value);
+							$x = ceil(($image_width - $dimensions[4]) / 2);
+							imagettftext($im, $arrsize[$k], 0, $x, $y+$i+$prevsize, $color[$arrcolor[$k]], $fontname, $value);
+							($u==1) ?  imageline( $im, $x , $y+$i+$prevsize+3 , $x+$dimensions[4]+10 , $y+$i+$prevsize+3 ,  $color[$arrcolor[$k]] ): null;
+						}
+					} else {
+						//if column were 2 and >1 line
+						if(count($arrline)>1){
+							$ay = $y;
+							foreach ($arrline as $a => $line) {
+								$arrtext = explode('--',$line);
+								$firsttext = imagettfbbox($arrsize[$k], 0, $fontname, $arrtext[0]);
+								$column = ceil($image_width/$arrcolumn[$k]);
+								$secondtext = imagettfbbox($arrsize[$k], 0, $fontname, $arrtext[1]);
+								
+								if($arrcenter[$k]){	
+								imagettftext($im, $arrsize[$k], 0, ceil(($column - $firsttext[4])/2), $ay+$i+$prevsize, $color[$arrcolor[$k]], $fontname, $arrtext[0]);
+								imagettftext($im, $arrsize[$k], 0, ceil(((3*$column)-$secondtext[4])/2), $ay+$i+$prevsize, $color[$arrcolor[$k]], $fontname, $arrtext[1]);
+								} else {
+									imagettftext($im, $arrsize[$k], 0, $column-ceil($column/2), $ay+$i+$prevsize, $color[$arrcolor[$k]], $fontname, $arrtext[0]);
+									imagettftext($im, $arrsize[$k], 0, $column+ceil($column/2), $ay+$i+$prevsize, $color[$arrcolor[$k]], $fontname, $arrtext[1]);
+
+								}
+								$ay += $arrsize[$k] + ceil($arrsize[$k]/2);
+								$y = $ay;
+							}
+						} else {
+							$arrtext = explode('--',$value);
+							$firsttext = imagettfbbox($arrsize[$k], 0, $fontname, $arrtext[0]);
+							$column = ceil($image_width/$arrcolumn[$k]);
+							$secondtext = imagettfbbox($arrsize[$k], 0, $fontname, $arrtext[1]);
+							if($arrcenter[$k]){	
+								imagettftext($im, $arrsize[$k], 0, ceil(($column - $firsttext[4])/2), $y+$i+$prevsize, $color[$arrcolor[$k]], $fontname, $arrtext[0]);
+								imagettftext($im, $arrsize[$k], 0, ceil(((3*$column)-$secondtext[4])/2), $y+$i+$prevsize, $color[$arrcolor[$k]], $fontname, $arrtext[1]);
+							} else {
+								imagettftext($im, $arrsize[$k], 0, $column-ceil($column/2), $y+$i+$prevsize, $color[$arrcolor[$k]], $fontname, $arrtext[0]);
+								imagettftext($im, $arrsize[$k], 0, $column+ceil($column/2), $y+$i+$prevsize, $color[$arrcolor[$k]], $fontname, $arrtext[1]);
+
+							}
+						}
 						
+						//create underline
+						if ($last==$value){
+							imageline( $im, ceil(($column - $firsttext[4])/2) , $y+$i+$prevsize+3 , ceil(($column + $firsttext[4])/2) , $y+$i+$prevsize+3 ,  $color[$arrcolor[$k]]);
+							imageline( $im, ceil(((3*$column)-$secondtext[4])/2), $y+$i+$prevsize+3 , ceil(((3*$column)+$secondtext[4])/2) , $y+$i+$prevsize+3 ,  $color[$arrcolor[$k]]);
+							
+						}
 					}
+
 					// add 32px to the line height for the next text block
-					$u++; $prevsize=$value['size'];
+					$u++; $prevsize=$arrsize[$k];
 					
 				}
 
-		 	}
+		 	
 		// Skip the filename parameter using NULL, then set the quality to 75%
 		imagejpeg($im, NULL, 75);
 
@@ -1238,11 +1393,60 @@ class Certificate extends Org_Controller {
 		$dtset=array(
 				'period'=>$this->input->post('period'));
 		$this->Msetting->savesetting($dtset);
-		$this->session->set_flashdata('v',"Update Setting Period Success.");
+		$this->session->set_flashdata('v',"Update Setting Certificate Success.");
 		} else{
-		$this->session->set_flashdata('x',"Update Setting Period Failed.");
+		$this->session->set_flashdata('x',"Update Setting Certificate Failed.");
 		}
 		redirect(base_url('Organizer/Certificate'));
+	}
+
+	public function savesettingcerti(){
+		if(is_array($_POST)){
+		$f = true;
+		$dtset=array(
+				'sizecerti'=>implode($this->input->post('ftextsize'),','),
+				'margincerti'=>implode($this->input->post('ftextmargin'),','),
+				'colorcerti'=>implode($this->input->post('fcolor'),','),
+				'columncerti'=>implode($this->input->post('fcolumn'),','),
+				'centercerti'=>implode($this->input->post('fcenter'),','),
+				'pretextcerti'=>str_replace("\n", "//", $this->input->post('fcertitext')),
+				'leveltextcerti'=>$this->input->post('fleveltext'),
+				'titletextcerti'=>implode($this->input->post('ftexttitle'),'--'),
+				'namesigncerti'=>implode($this->input->post('fnamesign'),'--'),
+				'nosigncerti'=>implode($this->input->post('fnosign'),'--')
+				);
+			//check new font
+			if (!empty($_FILES['ffont']['name'])) {
+					$arrfile =explode('.', $_FILES['ffont']['name']);
+				$ext = end($arrfile);
+				 // config upload
+	            $config['upload_path'] = FCPATH.'assets/fonts/';
+	            $config['allowed_types'] = '*';
+	            $config['max_size'] = '1000';
+	            $this->load->library('upload', $config);
+	            if (($ext == 'ttf')){
+					if ( (! $this->upload->do_upload('ffont'))){
+	                // if file validation failed, send error to view
+	                $error = 'Failed uploading new font'; $f=false;
+		            } else {
+		              // if upload success, upload new delete old font
+		              $upload_data = $this->upload->data();
+		              $dtfont = array(
+		              			'fontcerti'=>$upload_data['file_name']
+		              			);
+		              unlink($config['upload_path'].$this->Msetting->getset('fontcerti'));
+		              $this->Msetting->savesetting($dtfont);
+		          	}
+		        } else {
+		        	$error = 'Failed uploading new font'; $f=false;
+		        }
+			}
+			$this->Msetting->savesetting($dtset);
+			($f)? $this->session->set_flashdata('v',"Update Setting Design Success."):$this->session->set_flashdata('x',"Update Setting Design Failed.");
+		} else{
+		$this->session->set_flashdata('x',"Update Setting Design Failed.");
+		}
+		redirect(base_url('Organizer/Certificate/preview'));
 	}
 	
 	public function returncolomn($header) {

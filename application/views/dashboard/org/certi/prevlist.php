@@ -1,7 +1,7 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
 	
-	<h1><i class="fa fa-certificate fa-lg"></i> Certificate<small>Data</small></h1>
+	<h1><i class="fa fa-certificate fa-file-image-o"></i> Preview<small>Certificate</small></h1>
 		<ol class="breadcrumb">
             <?=set_breadcrumb();?>
 		</ol>
@@ -64,13 +64,19 @@
 				<small>
 				<?=$listlogin;?>
 				</small>
-
+				<div class="pull-left">	
+						<a role="button" class="btn btn-lg btn-info" data-toggle="collapse" href="#collapseSetting" aria-expanded="false" aria-controls="collapseSetting" id="focussetting"><span class="fa fa-gear"> Setting Certificate Texts</span></a>
+				</div>
 			</div>
 			<div class="col-md-9 col-sm-8 text-center">
-				
 					
-					<img src="<?=base_url('Organizer/Certificate/previewcerti');?>" class="img-thumbnail"/>
-					
+					<div id="loading" class="hidden">
+						<div class="circle"></div>
+						<div class="circle1"></div>
+					</div>
+					<div id="divpreview">
+						<img src="<?=base_url('Organizer/Certificate/previewcerti');?>" class="img-thumbnail" id="imgcerti" />
+					</div>
 				
 			</div>				
 		
@@ -106,38 +112,81 @@
 			<br/>
 			
 			<fieldset class="scheduler-border">
-			<legend class="scheduler-border"><a role="button" data-toggle="collapse" href="#collapseSetting" aria-expanded="false" aria-controls="collapseSetting">Setting Certificate</a></legend>
+			<legend class="scheduler-border"><a role="button" data-toggle="collapse" href="#collapseSetting" aria-expanded="false" aria-controls="collapseSetting">Setting Certificate Texts</a></legend>
+			<div id="settingbox">
 			<div id="collapseSetting" class="collapse">
 			<table class="table table-striped">
-			<form name="fsetperiod" class="form-inline" action="<?=$fsendper;?>" method="POST" >
+			<form name="fsetsetting" class="form-inline" action="<?=$fsendper;?>" method="POST" enctype="multipart/form-data" accept-charset="utf-8">
 			<tr>
-				<td colspan="2"><div class="well">
-				<h5 class="text-info"><span class="fa fa-info-circle"></span> Info Format Numbering Certificate</h5>
+				<td colspan="2">
+				<div class="well">
+				<h5 class="text-info"><span class="fa fa-wrench"></span> Setting Font</h5>
 				<dl class="dl-horizontal">
-					<dt>{nocerti}</dt> <dd>: Get Auto Numbered (Increment)</dd>
-					<dt>{date}</dt> <dd>: Get Current Date</dd>
-					<dt>{month}</dt> <dd>: Get Current Month (Roman)</dd>
-					<dt>{year}</dt> <dd>: Get Current Year</dd>
+					<dt>Current font</dt> <dd> <?=$font;?></dd>
+					<dt>Upload new font</dt> <dd><?=$ffont;?></dd>
 				</dl>
-				<p><b>Example: </b> <var>{nocerti}/{date}/{month}/{year}</var></p>
-				<p><b>Result: </b> <span class="text-success"><?=$nocerti;?></span></p>
-				</div></td>
+				<p class="label label-danger"><i><span class="fa fa-info-circle"></span> Be careful! Once new font uploaded, it will delete old font</i></p>
+				</div>
+				</td>
 			</tr>
 			<tr>
-				<td><label class="input-label" for="FormatNumber">Certificate Format Number :</label></td>
-				<td><?=$fformat;?></td>
+				<td colspan="2">
+					<div class="well">
+					<h5 class="text-info"><span class="fa fa-wrench"></span> Setting Size and Margin</h5>
+					<?php $header = array('Full Name','Certificate Number','Preface','Assessment Score','Level','Title','Signature Name','Signature No');?>
+					<table class="table table-condensed">
+						<thead>
+							<td><b>Text</b></td>
+							<td><b>Size</b></td>
+							<td><b>Margin</b></td>
+							<td><b>Color</b></td>
+							<td><b>Column</b></td>
+							<td><b>Justify</b></td>
+						</thead>
+						<?php
+							foreach ($fsize as $k => $v) {
+								echo '<tr><td>'.$header[$k].'</td>';
+								echo '<td>'.$v.'</td><td>'.$fmargin[$k].'</td><td>'.$fcolor[$k].'</td><td>'.$fcolumn[$k].'</td><td>'.$fcenter[$k].'</td></tr>';
+							}
+						?>
+						
+					</table>
+					</div>
+				</td>
 			</tr>
 			<tr>
-				<td><label class="input-label" for="Page">Certificate Template:</label></td>
-				<td><?=$fpage;?></td>
-				
+				<td colspan="2">
+				<div class="well">
+					<h5 class="text-info"><span class="fa fa-font"></span> Setting Predefined Texts</h5>
+					<table class="table table-condensed">
+						<tr>
+							<td><b>Preface Text</b><?=$fpretext;?></td>
+							<td><b>Level</b> <?=$fleveltext;?>
+							<p class="label label-info"><i><span class="fa fa-info-circle"></span> <var>{LEVEL}</var> will be replaced by actual level of its data</i></p></td>
+						</tr>
+						<tr>
+							<td><b>Name Title (Left)</b><?=$ftitletext[0];?></td>
+							<td><b>Name Title (Right)</b><?=$ftitletext[1];?></td>
+						</tr>
+						<tr>
+							<td><b>Full Name of Signature (Left)</b><?=$fsignnametext[0];?></td>
+							<td><b>Full Name of Signature (Right)</b><?=$fsignnametext[1];?></td>
+						</tr>
+						<tr>
+							<td><b>ID Number of Signature (Left)</b><?=$fsignnotext[0];?></td>
+							<td><b>ID Number of Signature (Right)</b><?=$fsignnotext[1];?></td>
+						</tr>
+					</table>
+				</div>
+				</td>
 			</tr>
+			
 			<tr>
 			<td colspan="2"><div class="text-right"><?=$fbtnperiod;?></div></td>
 			</tr>
 			</form>
 			</table>
-			</div>
+			</div></div>
 			</fieldset>
 			
 		</div>
@@ -191,84 +240,23 @@
 	
 	
 	<script type="text/javascript">
-	
-	//delete modal confirmation
-	$('#confirm-delete').on('show.bs.modal', function(e) {
-		$(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+		//select schedule	
+		$(document.body).on('click', '.prevcerti' ,function(e){
+			e.preventDefault();
+			var href = $(this).data('href');
+			$('#loading').removeClass('hidden');
+			$('#divpreview').load(href,function(){
+				$('#divpreview').empty();
+				$('#divpreview').html('<img src="'+href+'" class="img-thumbnail" id="imgcerti"/>');
+				$('#loading').addClass('hidden');
+			});
 		});
-	
-	// populate checked data and show in modal
-	$('#SelectedModal').on('show.bs.modal', function(e) {
-		$(this).find('#selectedicon').attr('class',$(e.relatedTarget).data('icon'));
-		$(this).find('#selectedtitle').text($(e.relatedTarget).data('title'));
-		$(this).find('#selectedcontent').text($(e.relatedTarget).data('title'));
-		$(this).find('#selectedbutton').attr('class',$(e.relatedTarget).data('btn'));
-		$(this).find('#selectedtype').val($(e.relatedTarget).data('finput'));
-		var tables = new Array();
-		var values = new Array();
-		$.each($("input[name='check[]']:checked"), function() {
-		tables.push('- '+$(this).parent().parent().find('.idname').text()+'<br/>');
-		values.push($(this).val());
-		$('#selecteduser').html(tables);
-		$('#selectedid').val(values);
-		});
-		});
-	
-	//details data	
-		$('#DetailModal').on("hidden.bs.modal", function (e) {
-		$(e.target).removeData("bs.modal").find(".modal-body").empty();
-		});
-			
-			
-	$(function() {
-		//Date range 
-		cb(moment().subtract(29, 'days'), moment());
 
-		$('.frange').daterangepicker({
-			locale: {format: 'YYYY-MM-DD'},
-			"startDate": new Date(),
-			"endDate": new Date(),
-			ranges: {
-			   'Today': [moment(), moment()],
-			   'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-			   'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-			   'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-			   'This Month': [moment().startOf('month'), moment().endOf('month')],
-			   'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-			}
-		}, cb);
-		
-		function cb(start, end) {
-			$('#rangedate').val(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-		}
-	});
-	
-	$('.selectall').click(function() {
-        $('.selectcol option').prop('selected', true);
-    });
-	$('.unselectall').click(function() {
-        $('.selectcol option').prop('selected', false);
-    });
-	$('.close').click(function() {
-        $('.selectcol option').prop('selected', false);
-    });
-	
-	// function check/uncheck all at once
-	$(function () {
-    $("#c_all").click(function () {
-        if ($("#c_all").is(':checked')) {
-            $("input[name='check[]']").each(function () {
-                $(this).prop("checked", true);
-            });
-
-        } else {
-            $("input[name='check[]']").each(function () {
-                $(this).prop("checked", false);
-            });
-        }
-    });
-	});
-	
+		$('#focussetting').click(function(){
+			 $('html, body').animate({
+        	scrollTop: $("#settingbox").offset().top
+    		}, 500);
+		});
 	
 	</script>
 </section>

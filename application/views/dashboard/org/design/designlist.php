@@ -112,13 +112,13 @@
 			<br/>
 			
 			<fieldset class="scheduler-border">
-			<legend class="scheduler-border"><a role="button" data-toggle="collapse" href="#collapseSetting" aria-expanded="false" aria-controls="collapseSetting">Setting Registration Phase</a></legend>
+			<legend class="scheduler-border"><a role="button" data-toggle="collapse" href="#collapseSetting" aria-expanded="false" aria-controls="collapseSetting">Setting Design Image</a></legend>
 			<div id="collapseSetting" class="collapse">
 			<form name="fsetperiod" class="form-inline" action="<?=$fsendper;?>" method="POST" >
 			<div class="form-group">
-				<label class="input-label" for="startTime">Registration Phase (Range Date) :</label>
+				<label class="input-label" for="startTime">Maximum File Size:</label>
 				<div class="input-group">
-				<span class="input-group-addon"><i class="fa fa-calendar"></i></span><?=$fregist;?>
+				<span class="input-group-addon"><i class="fa fa-file-image-o"></i></span><?=$fsize;?><span class="input-group-addon">KB</span>
 				</div>
 			</div>
 			<?=$fbtnperiod;?>
