@@ -206,7 +206,8 @@ class Transfer extends Org_Controller {
 				$enc = $value['idttrans'];
 				unset($temp[$key]['idttrans']);
 				$temp[$key]['menu']='<small><a href="'.base_url('Organizer/Transfer/detailtransfer?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Full Data" class="btn-primary btn-sm"><i class="fa fa-list-alt"></i> Details</a>  '.
-				'<a href="'.base_url('Organizer/Transfer/confirmtransfer?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Edit Data" class="btn-info btn-sm"><i class="fa fa-check-square-o"></i> Approve</a>';
+				'<a href="'.base_url('Organizer/Transfer/confirmtransfer?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" data-confirm="1" role="button" alt="Confrim Data" class="btn-info btn-sm"><i class="fa fa-check-square-o"></i> Approve</a> '.
+				'<a href="'.base_url('Organizer/Transfer/confirmtransfer?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" data-confirm="0" role="button" alt="Reject Data" class="btn-danger btn-sm"><i class="fa fa-window-close"></i> Reject</a></small>';
 				}
 		$data['listdata'] = $this->table->generate($temp);
 		
@@ -336,7 +337,7 @@ class Transfer extends Org_Controller {
 		$col=['ttdate','a.uname as mname','a.uuser','ttbank','ttname','ttnorek','ttamount','a.upaycode','ttapprove','ttket'];
 		$id = $this->input->get('id');
 		$g = $this->Mtransfer->detailtransfer($col,$id);
-		$stat = ('0'!=$g[0]['ttapprove']) ? '1': '0';
+		$stat = ($g[0]['ttapprove']) ? true: false;
 		// ========= form edit ================ 
 		$r[] = '<label class="form-control" disabled>'.$g[0]['ttdate'].'</label>';
 		$r[] = '<label class="form-control" disabled>'.$g[0]['mname'].'</label>';

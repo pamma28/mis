@@ -73,7 +73,14 @@
                 </li>
                 <li><a href="<?=base_url("Organizer/Schedule");?>"><i class="fa fa-calendar fa-fw"></i> Test Schedule</a></li>
                 <li><span class="label label-info pull-right">12</span><a href="<?=base_url("Organizer/Schedule/active");?>"><i class="fa fa-check-square-o fa-fw"></i> Activate Test</a></li>
-                <li><span class="label label-info pull-right">80</span><a href="<?=base_url("Organizer/Result");?>"><i class="fa fa-legal fa-fw"></i> Assess Test Result</a></li>
+                <li>
+                  <a href="#"><i class="fa fa-legal fa-fw"></i> Test Result <i class="fa fa-angle-left pull-right"></i></a>
+                  <ul class="treeview-menu">
+                    <li><span class="label label-info pull-right">80</span><a href="<?=base_url("Organizer/Result");?>"><i class="fa fa-circle-o fa-fw"></i> Test Result</a></li>
+                    <li><a href="<?=base_url("Organizer/Result/assessresult");?>"><i class="fa fa-circle-o fa-fw"></i> Assess Test Result</a></li>
+                  </ul>
+                </li>
+                
               </ul>
             </li>
 			<li class="treeview">

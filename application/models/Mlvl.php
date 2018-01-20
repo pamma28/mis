@@ -46,6 +46,20 @@ class Mlvl extends CI_Model{
 	$this->db->where('idlevel',$id);
 	return $this->db->get('level')->result_array();		
 	}
+
+	public function optlevel(){
+		$this->db->select('idlevel,lvlname');
+		$this->db->order_by('idlevel','desc');
+		$q = $this->db->get('level');
+		$return = array();
+		$return[''] = 'Please Select';
+		if($q->num_rows() > 0){
+        foreach($q->result_array() as $row){
+            $return[$row['idlevel']] = $row['lvlname'];
+			}
+		}
+    return $return;
+	}
 	
 	public function deletelevel($id){
 		$this->db->query('SET foreign_key_checks = 0');

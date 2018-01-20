@@ -79,11 +79,11 @@ class Result extends Org_Controller {
 						'class'=>'form-control');
 		$data['inq'] = form_input($fq);
 			$optf = array(
-						'ucreated' => 'Date Registered',
-						'uname' => 'Full Name',
-						'unim' => 'NIM',
-						'uhp' => 'Email',
-						'ustatus' => 'Status'
+						'jdate' => 'Test Date',
+						'tname' => 'Test Name',
+						'a.uname' => 'Member Name',
+						'a.unim' => 'Member NIM',
+						'b.uname' => 'Assessor'
 						);
 		$fc = array('name'=>'column',
 						'id'=>'col',
@@ -98,53 +98,49 @@ class Result extends Org_Controller {
 						'type'=>'submit');
 		$data['bq'] = form_submit($fbq);
 		
-		// ============= advanced filter ===============
-		$adv['Period'] = form_input(
-						array('name'=>'period',
-						'id'=>'period',
-						'placeholder'=>'Period',
-						'value'=>isset($tempfilter['period']) ? $tempfilter['period'] : null,
-						'class'=>'form-control'));
-		$adv['Registered'] = form_input(
-						array('name'=>'ucreated',
-						'id'=>'createdon',
-						'placeholder'=>'Date Created',
-						'value'=>isset($tempfilter['ucreated']) ? $tempfilter['ucreated'] : null,
+		// ============= advanced filter ==============
+		$adv['Test Date'] = form_input(
+						array('name'=>'jdate',
+						'id'=>'testcreated',
+						'placeholder'=>'Test Date',
+						'value'=>isset($tempfilter['jdate']) ? $tempfilter['jdate'] : null,
 						'class'=>'form-control'));
 		
-		$adv['Full Name'] = form_input(
-						array('name'=>'uname',
-						'id'=>'fullname',
-						'placeholder'=>'Full Name',
-						'value'=>isset($tempfilter['uname']) ? $tempfilter['uname'] : null,
+		$adv['Test Name'] = form_input(
+						array('name'=>'tname',
+						'id'=>'testname',
+						'placeholder'=>'Test Name',
+						'value'=>isset($tempfilter['tname']) ? $tempfilter['tname'] : null,
 						'class'=>'form-control'));
 		
-		$adv['NIM'] = form_input(
-						array('name'=>'unim',
-						'placeholder'=>'NIM',
-						'value'=>isset($tempfilter['unim']) ? $tempfilter['unim'] : null,
+		$adv['Member Name'] = form_input(
+						array('name'=>'a.uname',
+						'id'=>'memname',
+						'placeholder'=>'Member Name',
+						'value'=>isset($tempfilter['a.uname']) ? $tempfilter['a.uname'] : null,
 						'class'=>'form-control'));
+		
+		$adv['Member NIM'] = form_input(
+						array('name'=>'a.unim',
+						'placeholder'=>'Member NIM',
+						'value'=>isset($tempfilter['a.unim']) ? $tempfilter['a.unim'] : null,
+						'class'=>'form-control'));
+			
+			$this->load->model('Mlvl');
+			$optlevel = $this->Mlvl->optlevel();
+		$adv['Level'] = form_dropdown(
+						array('name'=>'idlevel',
+						'placeholder'=>'Level',
+						'class'=>'form-control'),$optlevel,isset($tempfilter['idlevel']) ? $tempfilter['idlevel'] : null);
 						
-		$adv['Phone Number'] = form_input(
-						array('name'=>'uhp',
-						'id'=>'hp',
-						'placeholder'=>'Phone Number',
-						'value'=>isset($tempfilter['uhp']) ? $tempfilter['uhp'] : null,
+		$adv['Assessor'] = form_input(
+						array('name'=>'b.uname',
+						'id'=>'assesor',
+						'placeholder'=>'Assessor Name',
+						'value'=>isset($tempfilter['b.uname']) ? $tempfilter['b.uname'] : null,
 						'class'=>'form-control'));
 		
-		$adv['Status'] = form_input(
-						array('name'=>'ustatus',
-						'id'=>'status',
-						'placeholder'=>'Status',
-						'value'=>isset($tempfilter['ustatus']) ? $tempfilter['ustatus'] : null,
-						'class'=>'form-control'));
 		
-		$adv['Fully Paid/Not'] = form_dropdown(array(
-							'name'=>'ulunas',
-							'id'=>'lunas',
-							'class'=>'form-control'),
-							array(''=>'No filter','1'=>'Fully Paid',
-							'0'=>'Not Yet'),isset($tempfilter['ulunas']) ? $tempfilter['ulunas'] : null);
 		$dtfilter = '';
 		foreach($adv as $a=>$v){
 			$dtfilter = $dtfilter.'<div class="input-group"><label>'.$a.': </label>'.$v.'</div>  ';
@@ -201,7 +197,7 @@ class Result extends Org_Controller {
 							'value'=>$temp[$key]['idresult']
 							));
 				array_unshift($temp[$key],$ctable);
-				$temp[$key]['mem']='<span class="idname">'.$temp[$key]['mem'].'</span>';
+				$temp[$key]['mem']='<span class="idname hidden">'.$temp[$key]['tname'].', '.$temp[$key]['mem'].'</span>'.$temp[$key]['mem'];
 				
 				$temp[$key]['jdate']=date('d-M-Y', strtotime($value['jdate']));
 				//manipulation menu
@@ -224,7 +220,7 @@ class Result extends Org_Controller {
 								'id'=>'selectedtype',
 								'name'=>'ftype'
 								));
-			$data['factselected'] = site_url('Organizer/PDS/updateselected');
+			$data['factselected'] = site_url('Organizer/Result/updateselected');
 		
 		// ============= import form ==============
 			$data['finfile']= form_upload(array(	'name'=>'fimport',
@@ -233,7 +229,7 @@ class Result extends Org_Controller {
 			$data['fbtnimport']= form_submit(array(	'value'=>'Import',
 							'class'=>'btn btn-primary',							
 							'id'=>'subb'));
-			$data['factimp'] = site_url('Organizer/PDS/importxls');
+			$data['factimp'] = site_url('Organizer/Result/importxls');
 			
 			
 		
@@ -285,13 +281,13 @@ class Result extends Org_Controller {
 			$data['fbtnexport']= form_submit(array('value'=>'Export',
 							'class'=>'btn btn-primary',							
 							'id'=>'subb'));
-			$data['factexp'] = site_url('Organizer/PDS/exportxls');
+			$data['factexp'] = site_url('Organizer/Result/exportxls');
 			
 		//=============== print handler ============
 			$data['fbtnprint']= form_submit(array('value'=>'Print',
 								'class'=>'btn btn-primary',							
 								'id'=>'subb'));
-			$data['factprint'] = site_url('Organizer/PDS/printpds');
+			$data['factprint'] = site_url('Organizer/Result/printresult');
 		
 		//=============== setting registration phase ============
 			$start = $this->Msetting->getset('beginregist');
@@ -306,7 +302,7 @@ class Result extends Org_Controller {
 			$data['fbtnperiod']= form_submit(array('value'=>'Update Setting',
 								'class'=>'btn btn-primary',							
 								'id'=>'btnupdateset'));
-			$data['fsendper'] = site_url('Organizer/PDS/savesetting');
+			$data['fsendper'] = site_url('Organizer/Result/savesetting');
 				
 		//=============== Template ============
 		$data['jsFiles'] = array(
@@ -664,66 +660,71 @@ class Result extends Org_Controller {
 	}
 	
 	
-	public function assessresult(){					
-		$this->load->model('Mq');
-		//detail test result
-		$col = ['jdate','jstart','jsesi','tname','tduration','jroom','a.uname as mem','b.uname as org','q_randcode','q_tmpscore','q_randquest','jactive'];
+	public function assessresult(){
 		$id = $this->input->get('id');
-		$dbres = $this->Mresult->detailresult($col,$id);
-		$data['t'] = $dbres[0];
+		if($id<>null){					
+			$this->load->model('Mq');
+			//detail test result
+			$col = ['jdate','jstart','jsesi','tname','tduration','jroom','a.uname as mem','b.uname as org','q_randcode','q_tmpscore','q_randquest','jactive'];
+			$id = $this->input->get('id');
+			$dbres = $this->Mresult->detailresult($col,$id);
+			$data['t'] = $dbres[0];
 
-		//detail all question and answers taken
-		$arrq = explode(',',$dbres[0]['q_randquest']);
-		$colq = ['question','subject','question.idsubject','q_bundle','qtype.idqtype','qmanual'];
-		foreach ($arrq as $k => $v) {
-			$arrdetailq = $this->Mq->getmyquestdetail($colq,$v)[0];
+			//detail all question and answers taken
+			$arrq = explode(',',$dbres[0]['q_randquest']);
+			$colq = ['question','subject','question.idsubject','q_bundle','qtype.idqtype','qmanual'];
+			foreach ($arrq as $k => $v) {
+				$arrdetailq = $this->Mq->getmyquestdetail($colq,$v)[0];
 
-			//get all question
-			$finalquestion[$k]['idq'] = $v;
-			$finalquestion[$k]['question'] = $arrdetailq->question;
-			$finalquestion[$k]['subject'] = $arrdetailq->subject;
-			$finalquestion[$k]['idqtype'] = $arrdetailq->idqtype;
-			$finalquestion[$k]['qmanual'] = $arrdetailq->qmanual;
+				//get all question
+				$finalquestion[$k]['idq'] = $v;
+				$finalquestion[$k]['question'] = $arrdetailq->question;
+				$finalquestion[$k]['subject'] = $arrdetailq->subject;
+				$finalquestion[$k]['idqtype'] = $arrdetailq->idqtype;
+				$finalquestion[$k]['qmanual'] = $arrdetailq->qmanual;
 
-			//get all answer
-			$tmparridanswer = $this->Mq->getrandanswer($v,$id);
-				$arridanswer = ($tmparridanswer<>'') ? explode(',',$tmparridanswer) : array();
-			$answer = array();
-				foreach ($arridanswer as $a => $b) {
-					$currentanswer = $this->Mq->getanswer(array('idans','answer','key_ans'),$b)[0];
-					$answer[$a]['idans'] = $currentanswer['idans'];
-					$answer[$a]['answer'] = $currentanswer['answer'];
-					$answer[$a]['keyanswer'] = $currentanswer['key_ans'];
-					}
-				//picked answer if any
-				$pickedanswer = $this->Mq->getpickedanswer($v,$id);
-				$mark = $this->Mq->getmarkanswer($v,$id);
-			
-			$finalquestion[$k]['pickedanswer'] = $pickedanswer;	
-			$finalquestion[$k]['allanswer'] = $answer;
-			$finalquestion[$k]['answermark'] = $mark;
+				//get all answer
+				$tmparridanswer = $this->Mq->getrandanswer($v,$id);
+					$arridanswer = ($tmparridanswer<>'') ? explode(',',$tmparridanswer) : array();
+				$answer = array();
+					foreach ($arridanswer as $a => $b) {
+						$currentanswer = $this->Mq->getanswer(array('idans','answer','key_ans'),$b)[0];
+						$answer[$a]['idans'] = $currentanswer['idans'];
+						$answer[$a]['answer'] = $currentanswer['answer'];
+						$answer[$a]['keyanswer'] = $currentanswer['key_ans'];
+						}
+					//picked answer if any
+					$pickedanswer = $this->Mq->getpickedanswer($v,$id);
+					$mark = $this->Mq->getmarkanswer($v,$id);
+				
+				$finalquestion[$k]['pickedanswer'] = $pickedanswer;	
+				$finalquestion[$k]['allanswer'] = $answer;
+				$finalquestion[$k]['answermark'] = $mark;
 
+			}
+			$data['generatedq'] = $finalquestion;
+
+			$data['inid'] = form_hidden('fid',$id);
+			$fsend = array(	'id'=>'submit',
+							'value'=>'Submit',
+							'class'=>'btn btn-primary btn-lg',
+							'type'=>'submit');
+			$data['inbtn'] = form_submit($fsend);
+			//=============== Template ============
+			$data['jsFiles'] = array(
+								'slider-range/bootstrap-slider');
+			$data['cssFiles'] = array(
+								'slider-range/bootstrap-slider');  
+			// =============== view handler ============
+			$data['title']="Asess Test Result";
+			$data['topbar'] = $this->load->view('dashboard/topbar', NULL, TRUE);
+			$data['sidebar'] = $this->load->view('dashboard/org/sidebar', NULL, TRUE);
+			$data['content'] = $this->load->view('dashboard/org/result/assess', $data, TRUE);
+			$this->load->view ('template/main', $data);
+		} else {
+			$this->session->set_flashdata('x','Cannot directly access it. Please choose one of the result below');
+			redirect(base_url('Organizer/Result/'));
 		}
-		$data['generatedq'] = $finalquestion;
-
-		$data['inid'] = form_hidden('fid',$id);
-		$fsend = array(	'id'=>'submit',
-						'value'=>'Submit',
-						'class'=>'btn btn-primary btn-lg',
-						'type'=>'submit');
-		$data['inbtn'] = form_submit($fsend);
-		//=============== Template ============
-		$data['jsFiles'] = array(
-							'slider-range/bootstrap-slider');
-		$data['cssFiles'] = array(
-							'slider-range/bootstrap-slider');  
-		// =============== view handler ============
-		$data['title']="Asess Test Result";
-		$data['topbar'] = $this->load->view('dashboard/topbar', NULL, TRUE);
-		$data['sidebar'] = $this->load->view('dashboard/org/sidebar', NULL, TRUE);
-		$data['content'] = $this->load->view('dashboard/org/result/assess', $data, TRUE);
-		$this->load->view ('template/main', $data);
-	
 	
 	}
 	
@@ -776,12 +777,18 @@ class Result extends Org_Controller {
 				$type = $this->input->post('ftype');
 				$dtuser= explode(',',$users);
 				$totuser = count($dtuser);
-			$r = $this->Mlogin->updateselected($dtuser,$type);
-			$this->session->set_flashdata('v','Update '.$totuser.' Selected Member Account success.<br/>Details: '.$r['v'].' success and '.$r['x'].' error(s)');
+				$v=0;$x=0;
+				if($type=='0'){
+					foreach ($dtuser as $k => $val) {
+						$res = $this->Mresult->deleteresult($val);
+						($res) ? $v++ : $x ++;
+					}
+				}
+			$this->session->set_flashdata('v','Update '.$totuser.' Selected Test Result Success.<br/>Details: '.$v.' success and '.$x.' error(s)');
 		} else{
-		$this->session->set_flashdata('x','No data selected, update Selected Member Account Failed.');
+		$this->session->set_flashdata('x','No Data Selected, Update Selected Test Result Failed.');
 		}
-		redirect(base_url('Organizer/PDS'));
+		redirect(base_url('Organizer/Result'));
 	}
 		
 	public function savepds(){
@@ -923,7 +930,7 @@ class Result extends Org_Controller {
 	
 	public function returncolomn($header) {
 	$find=['jdate','tname','a.uname as mem','a.unim','lvlabre','q_tmpscore','q_score','b.uname as org'];
-	$replace = ['Date Test','Test Name','Member Name','NIM','Level','Temporary Score','Final Score','Assessor'];
+	$replace = ['Test Date','Test Name','Member Name','NIM','Level','Temporary Score','Final Score','Assessor'];
 		foreach ($header as $key => $value){
 		$header[$key]  = str_replace($find, $replace, $value);
 		}

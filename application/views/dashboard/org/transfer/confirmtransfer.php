@@ -10,7 +10,7 @@
 </div>
 <div class="modal-footer">
 	<?=$inid;?>
-	<a class="btn btn-default btn-ok btn" data-dismiss="modal">Close</a>
+	<a class="btn btn-default btn-ok btn" data-dismiss="modal">Cancel</a>
 	<?=$inbtn;?>
 </div>
 <?php echo form_close();?>
@@ -19,7 +19,7 @@
     $('#idconfirm').bootstrapToggle({
 		size: "large",
 		onstyle: "success",
-		offstyle: "warning",
+		offstyle: "danger",
 		width: 300,
 		height: 50
 	});

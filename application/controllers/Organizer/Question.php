@@ -405,7 +405,7 @@ class Question extends Org_Controller {
 				unset($temp[$key]['idq']);
 				$temp[$key]['menu']='<div class="btn-group-vertical" aria-label="Question Menu" role="group"><a href="'.base_url('Organizer/Question/detailquest?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Full Data" class="btn btn-primary btn-sm" title="Details"><i class="fa fa-list-alt"></i></a>'.
 				'<a href="'.base_url('Organizer/Question/editquest?q=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Edit Data" class="btn btn-info btn-sm" title="Edit"><i class="fa fa-edit"></i></a>'.
-				'<a href="#" data-href="'.base_url('Organizer/Question/deletequest?id=').$enc.'" alt="Delete Data" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirm-delete" title="Delete"><i class="fa fa-trash"></i></a></div>';
+				'<a href="#" data-href="'.base_url('Organizer/Question/deletequest?q=').$enc.'" alt="Delete Data" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirm-delete" title="Delete"><i class="fa fa-trash"></i></a></div>';
 				}
 		$data['listlogin'] = $this->table->generate($temp);
 		
@@ -593,7 +593,7 @@ class Question extends Org_Controller {
 							'value'=>$temp[$key]['idqtype']
 							));
 				array_unshift($temp[$key],$ctable);
-				$temp[$key]['idqtype']='<span class="idname">'.$temp[$key]['idqtype'].'</span>';
+				$temp[$key]['qtype']='<span class="idname">'.$temp[$key]['qtype'].'</span>';
 				//manipulation menu
 				$temp[$key]['qmanual'] = ($value['qmanual']==0) ? '<label class="label label-default">No</label>' :  '<label class="label label-primary">Yes</label>';
 				$enc = $value['idqtype'];
@@ -614,7 +614,7 @@ class Question extends Org_Controller {
 								'id'=>'selectedtype',
 								'name'=>'ftype'
 								));
-			$data['factselected'] = site_url('Organizer/PDS/updateselected');
+			$data['factselected'] = site_url('Organizer/Question/updateselected');
 			
 		//=============== Template ============
 		$data['jsFiles'] = array(
@@ -1587,6 +1587,16 @@ class Question extends Org_Controller {
 						'value'=>'',
 						'class'=>'form-control');
 		$r[] = form_input($fqtype);
+
+			$optmanual = array(
+						'0'=>'No',
+						'1'=>'Yes'
+						);
+		$fqmanual = array('name'=>'fqmanual',
+						'id'=>'fqmanual',
+						'required'=>'required',
+						'class'=>'form-control');
+		$r[] = form_dropdown($fqmanual,$optmanual);
 		
 		
 		$fsend = array(	'id'=>'addqtype',
@@ -1597,9 +1607,10 @@ class Question extends Org_Controller {
 		$data['insub'] = form_hidden('fsub',$idsub);
 		
 		//set row title
-		$col =['1','qtype'];
+		$col =['1','qtype',''];
 		$row = $this->returncolomn($col);
 		$row[0] = 'Current Question Type';
+		$row[2] = 'Manual Correction';
 		//set table template
 		$tmpl = array ( 'table_open'  => '',
 					'heading_row_start'   => '',
@@ -2230,19 +2241,6 @@ class Question extends Org_Controller {
 		
 	}
 	
-	public function updateselected(){
-		if($this->input->post('fusers')!=''){
-				$users = $this->input->post('fusers');
-				$type = $this->input->post('ftype');
-				$dtuser= explode(',',$users);
-				$totuser = count($dtuser);
-			$r = $this->Mlogin->updateselected($dtuser,$type);
-			$this->session->set_flashdata('v','Update '.$totuser.' Selected Member Account success.<br/>Details: '.$r['v'].' success and '.$r['x'].' error(s)');
-		} else{
-		$this->session->set_flashdata('x','No data selected, update Selected Member Account Failed.');
-		}
-		redirect(base_url('Organizer/Question'));
-	}
 	
 	public function updateattach(){
 		$idsub='';
@@ -2362,7 +2360,7 @@ class Question extends Org_Controller {
 		} else {
 			$this->session->set_flashdata('x','Directly Access is not Allowed.');
 		}
-		redirect(base_url('Organizer/Question'));
+		redirect(base_url('Organizer/Question/allquestion'));
 	}
 	
 	public function savequest(){
@@ -2390,12 +2388,12 @@ class Question extends Org_Controller {
 	}
 	
 	public function savequesttype(){
-		$idsub='';
-		if($this->input->post('fsub')!=null){
 		$idsub = $this->input->post('fsub');
+		if($this->input->post('fqtype')!=null){
 				// set new data variable
 				$fdata = array(
-					'qtype'=>$this->input->post('fqtype')
+					'qtype'=>$this->input->post('fqtype'),
+					'qmanual'=>$this->input->post('fqmanual')
 					);
 			//update to database
 			$hsl = $this->Mq->addquesttype($fdata);
@@ -2404,8 +2402,8 @@ class Question extends Org_Controller {
 		} else {
 			$this->session->set_flashdata('x','Directly Access is not Allowed.');
 		}
-		($idsub!=null) ? $url = '/editquestsubject?id='.$idsub : $url=null;
-		redirect(base_url('Organizer/Question'.$url));
+		($idsub!=null) ? $url = 'editquestsubject?id='.$idsub : $url='questiontype';
+		redirect(base_url('Organizer/Question/'.$url));
 	}
 	
 	public function saveanswer(){
@@ -2546,7 +2544,8 @@ class Question extends Org_Controller {
 	}
 	
 	public function deletequest(){
-		$q = $this->input->get('id');
+		$sub = $this->input->get('s');
+		$q = $this->input->get('q');
 			//delete attach
 			$idt = $this->Mq->getattachbyq('idattach',$q)[0]['idattach'];
 			$fatt = $this->Mq->getattachfile($idt);
@@ -2560,10 +2559,11 @@ class Question extends Org_Controller {
 		$r = $this->Mq->deletequest($q);
 	if ($r){
 		$this->session->set_flashdata('v','Delete Question (Answer & Attachment if any) Success');
-		} else{
+	} else{
 		$this->session->set_flashdata('x','Delete Question  (Answer & Attachment if any) Failed');
-		} 
-		redirect(base_url('Organizer/Question/allquestion'));
+	}
+		($sub==null) ? $redir = 'allquestion' : $redir = 'editquestsubject?id='.$sub;
+		redirect(base_url('Organizer/Question/'.$redir));
 	}
 
 	public function deleteanswer(){
@@ -2577,6 +2577,33 @@ class Question extends Org_Controller {
 		} 
 	($this->input->get('s')!=null) ? redirect(base_url('Organizer/Question/editquestsubject?id='.$this->input->get('s'))): redirect(base_url('Organizer/Question/allquestion'));
 		
+	}
+
+	public function updateselected(){
+		if($this->input->post('fusers')!=''){
+				$users = $this->input->post('fusers');
+				$type = $this->input->post('ftype');
+				$dtuser= explode(',',$users);
+				$totuser = count($dtuser);
+				$v=0;$x=0;
+			if($type=='0'){
+				$h = 'Question'; $redir = base_url('Organizer/Question/allquestion');
+				foreach ($dtuser as $k => $val) {
+					$res = $this->Mq->deletequest($val);
+					($res) ? $v++ : $x ++;
+				}
+			} else if ($type=='1'){
+				$h = 'Question Type'; $redir = base_url('Organizer/Question/questiontype');
+				foreach ($dtuser as $k => $val) {
+					$res = $this->Mq->deleteqtype($val);
+					($res) ? $v++ : $x ++;
+				}
+			}
+			$this->session->set_flashdata('v','Update '.$totuser.' Selected '.$h.' success.<br/>Details: '.$v.' success and '.$x.' error(s)');
+		} else{
+		$this->session->set_flashdata('x','No data selected, update Selected '.$h.' Failed.');
+		}
+		redirect($redir);
 	}
 
 	public function savesetting(){

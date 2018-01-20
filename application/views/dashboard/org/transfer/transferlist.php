@@ -354,7 +354,18 @@
     });
 	});
 	
-	
+	$('#DetailModal').on('show.bs.modal', function(e) {
+
+        var confirm = e.relatedTarget.dataset.confirm;
+
+        $('#DetailModal').on('shown.bs.modal', function(e) {
+			if(confirm=='1'){
+				$('#idconfirm').bootstrapToggle('on');
+			}else{
+				$('#idconfirm').bootstrapToggle('off');
+			}
+        });
+    })
 	
 	</script>
 </section>

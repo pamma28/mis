@@ -850,9 +850,9 @@ class Certificate extends Org_Controller {
 				$dtuser= explode(',',$users);
 				$totuser = count($dtuser);
 			$r = $this->Mlogin->updateselected($dtuser,$type);
-			$this->session->set_flashdata('v','Update '.$totuser.' Selected Member Account success.<br/>Details: '.$r['v'].' success and '.$r['x'].' error(s)');
+			$this->session->set_flashdata('v','Update '.$totuser.' Selected Certificate Data success.<br/>Details: '.$r['v'].' success and '.$r['x'].' error(s)');
 		} else{
-		$this->session->set_flashdata('x','No data selected, update Selected Member Account Failed.');
+		$this->session->set_flashdata('x','No data selected, update Selected Certificate Data Failed.');
 		}
 		redirect(base_url('Organizer/Certificate'));
 	}
@@ -1412,8 +1412,8 @@ class Certificate extends Org_Controller {
 				'pretextcerti'=>str_replace("\n", "//", $this->input->post('fcertitext')),
 				'leveltextcerti'=>$this->input->post('fleveltext'),
 				'titletextcerti'=>implode($this->input->post('ftexttitle'),'--'),
-				'namesigncerti'=>implode($this->input->post('fnamesign'),'--'),
-				'nosigncerti'=>implode($this->input->post('fnosign'),'--')
+				'namesigntextcerti'=>implode($this->input->post('fnamesign'),'--'),
+				'nosigntextcerti'=>implode($this->input->post('fnosign'),'--')
 				);
 			//check new font
 			if (!empty($_FILES['ffont']['name'])) {

@@ -309,15 +309,23 @@ class Mq extends CI_Model{
 	
 	public function deletequest($idq){
 		//$this->db->query('SET foreign_key_checks = 0');
-			//delete answer
-			$this->db->where('idq',$idq);
-			$this->db->delete('answer');
 		$this->db->where('idq',$idq);
 		$r = $this->db->delete('question');
 		//$this->db->query('SET foreign_key_checks = 1');
 		return $r;
 	}
 	
+	public function deleteqtype($id){
+		//$this->db->query('SET foreign_key_checks = 0');
+			//delete answer
+			$this->db->where('idqtype',$id);
+			$r = $this->db->delete('qtype');
+		
+		//$this->db->query('SET foreign_key_checks = 1');
+		return $r;
+	}
+	
+
 	public function gettotpercent($id){
 		$this->db->select('sum(qpercent) as tot');
 		$this->db->where('idtest',$id);
