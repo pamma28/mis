@@ -170,6 +170,7 @@
 	<script type="text/javascript">
 	 
 	$(document).ready(function () {
+		getlist();
 		$('#senderstat').bootstrapToggle();
 	
 		$("#texteditor").summernote({
@@ -310,7 +311,7 @@
 			$('#mto,#mcc').tokchify('setValue','');
 			$('#texteditor').summernote('code','');
 		});
-});
+	});
   
 $(function(){
 

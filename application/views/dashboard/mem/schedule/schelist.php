@@ -133,7 +133,7 @@
 					$content.remove();
 					$pil.empty();
 					if (quo.text()!=0){
-					$pil.html('<a href="#mysche" data-href="<?=base_url('Member/Scheduletest/choosesche');?>"  role="button" alt="Choose" class="btn btn-default btn-xs btn-choose" title="Choose" data-id="'+idjdwl+'"><i class="fa fa-check"></i> Choose</a>');
+					$pil.html('<a href="#mysche" data-href="<?=base_url('Member/Scheduletest/choosesche');?>"  role="button" alt="Choose" class="btn btn-primary btn-xs btn-choose" title="Choose" data-id="'+idjdwl+'"><i class="fa fa-check"></i> Choose</a>');
 					} else {
 						$pil.html('<span class="label label-default disabled" data-id="'+idjdwl+'"><i class="fa fa-minus"></i> No Quota </span>');
 					}

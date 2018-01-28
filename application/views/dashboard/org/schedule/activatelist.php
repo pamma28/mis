@@ -96,12 +96,12 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4><i class="fa fa-trash"></i> Are you sure want to delete selected data?</h4>
+                <h4><i class="iconconfirm fa"></i> Are you sure want to <span id="confirmtext"></span> test?</h4>
             </div>
 			
             <div class="modal-footer">
                 <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-danger btn-ok btn-sm">Delete</a>
+                <a class="classconfirm btn btn-ok btn-sm"><span id="confirmbtn"></span></a>
             </div>
         </div>
     </div>
@@ -111,6 +111,22 @@
 	//delete modal confirmation
 	$('#confirm-delete').on('show.bs.modal', function(e) {
 		$(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+		if ($(e.relatedTarget).data('on')){
+			$(this).find('.iconconfirm').removeClass("fa-ban");
+			$(this).find('.classconfirm').removeClass("btn-warning");
+			var ico = "fa-check",
+			sty ="btn-success";
+		} else {
+			$(this).find('.iconconfirm').removeClass("fa-check");
+			$(this).find('.classconfirm').removeClass("btn-success");
+		var ico = "fa-ban",
+			sty ="btn-warning";
+			
+		}
+		$(this).find('.iconconfirm').addClass(ico);
+		$(this).find('.classconfirm').addClass(sty);
+		$(this).find('#confirmtext, #confirmbtn').text($(e.relatedTarget).data('txt'));	
+		
 		});
 	</script>
 </section>

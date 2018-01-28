@@ -149,7 +149,7 @@
                </ul>
             </li>
 			<li class="treeview">
-              <a href="<?=base_url('Admin/Impexp');?>">
+              <a href="<?=base_url('Organizer/Setting');?>">
                 <i class="fa fa-wrench"></i>
                 <span><?php echo lang('set_rc');?></span>
               </a>

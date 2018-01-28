@@ -198,21 +198,6 @@ class Test extends Org_Controller {
 			$data['factselected'] = site_url('Organizer/Test/updateselected');
 			
 		
-		//=============== setting registration phase ============
-			$start = $this->Msetting->getset('beginregist');
-			$end = $this->Msetting->getset('endregist');
-			$data['fregist']= form_input(array('id'=>'registrange',
-								'class'=>'form-control',							
-								'style'=>'width:200px',							
-								'name'=>'fregistphase',							
-								'placeholder'=>'Registration Phase',							
-								'value'=>$start.' - '.$end,							
-								'required'=>'required'));
-			$data['fbtnperiod']= form_submit(array('value'=>'Update Setting',
-								'class'=>'btn btn-primary',							
-								'id'=>'btnupdateset'));
-			$data['fsendper'] = site_url('Organizer/PDS/savesetting');
-				
 		//=============== Template ============
 		$data['jsFiles'] = array(
 							'selectpicker/select.min','moment/moment.min','daterange/daterangepicker','numeric/numeric.min');
@@ -494,22 +479,7 @@ class Test extends Org_Controller {
 		redirect(base_url('Organizer/Test'));
 	}
 
-	public function savesetting(){
-		if(null!= $this->input->post('fregistphase')){
-			$dtrange = $this->input->post('fregistphase');
-			$dtstart = mb_substr($dtrange,0,10,'utf-8');
-			$dtend = substr($dtrange,13);
-		$dtset=array(
-				'beginregist'=>$dtstart,
-				'endregist'=>$dtend
-				);
-		$this->Msetting->savesetting($dtset);
-		$this->session->set_flashdata('v',"Update Setting Range Date Registration Phase Success.");
-		} else{
-		$this->session->set_flashdata('x',"Update Setting Range Date Registration Phase Failed.");
-		}
-		redirect(base_url('Organizer/PDS'));
-	}
+	
 	
 	public function returncolomn($header) {
 	$find=['idtest','tlupdate','tcreated','tname','tduration','tktrgn','a.uname as creator','b.uname as editor','a.uuser'];

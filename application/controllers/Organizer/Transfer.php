@@ -225,13 +225,12 @@ class Transfer extends Org_Controller {
 			$data['factselected'] = site_url('Organizer/Transfer/updateselected');
 		
 		//=============== setting registration phase ============
-			$start = $this->Msetting->getset('beginpay');
-			$end = $this->Msetting->getset('endpay');
+			$payment = $this->Msetting->getset('paymentphase');
 			$data['fpay']= form_input(array('id'=>'payrange',
 								'class'=>'form-control',							
 								'name'=>'fpayphase',							
 								'placeholder'=>'Payment Phase',							
-								'value'=>$start.' - '.$end,							
+								'value'=>$payment,							
 								'required'=>'required'));
 			$data['fbtnperiod']= form_submit(array('value'=>'Update Setting',
 								'class'=>'btn btn-primary',							
@@ -575,11 +574,8 @@ class Transfer extends Org_Controller {
 	public function savesetting(){
 		if(null!= $this->input->post('fpayphase')){
 			$dtrange = $this->input->post('fpayphase');
-			$dtstart = mb_substr($dtrange,0,10,'utf-8');
-			$dtend = substr($dtrange,13);
 		$dtset=array(
-				'beginpay'=>$dtstart,
-				'endpay'=>$dtend
+				'paymentphase'=>$dtrange
 				);
 		$this->Msetting->savesetting($dtset);
 		$this->session->set_flashdata('v',"Update Setting Range Date Payment Phase Success.");

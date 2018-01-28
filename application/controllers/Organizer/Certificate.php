@@ -269,7 +269,6 @@ class Certificate extends Org_Controller {
 		
 		//=============== setting certificate ============
 			$format = $this->Msetting->getset('certiformat');
-			$page = $this->Msetting->getset('certipage');
 			$data['fformat']= form_input(array('id'=>'setformat',
 								'class'=>'form-control',							
 								'name'=>'certiformat',							
@@ -278,15 +277,17 @@ class Certificate extends Org_Controller {
 								'value'=>$format,							
 								'required'=>'required'));
 				$optpage = $this->Mcerti->getoptpage();
-			$data['fpage']= form_dropdown(array('id'=>'setpage',
-								'class'=>'form-control',							
-								'name'=>'certipage',							
-								'placeholder'=>'Certificate Page',							
-								'required'=>'required'),$optpage,$page);
+			$certi = $this->Msetting->getset('certiphase');
+			$data['fphase']= form_input(array('id'=>'certirange',
+								'class'=>'form-control',						
+								'name'=>'fcertiphase',							
+								'placeholder'=>'Certificate Distribution',							
+								'value'=>$certi,							
+								'required'=>'required'));
 			$data['fbtnperiod']= form_submit(array('value'=>'Update Setting',
 								'class'=>'btn btn-primary',							
 								'id'=>'btnupdateset'));
-			$data['fsendper'] = site_url('Organizer/Certificate/savesetting');
+			$data['fsendper'] = site_url('Organizer/Certificate/savesettingphase');
 			
 				
 			$data['nocerti'] = $this->generatenocerti('{nocerti}/{date}/{month}/{year}');
@@ -1449,6 +1450,20 @@ class Certificate extends Org_Controller {
 		redirect(base_url('Organizer/Certificate/preview'));
 	}
 	
+	public function savesettingphase(){
+		if(is_array($_POST)){
+		
+		$dtset=array(
+				'certiformat'=>$this->input->post('certiformat'),
+				'certiphase'=>$this->input->post('fcertiphase')
+				);
+			
+			$res =$this->Msetting->savesetting($dtset);
+			($res)? $this->session->set_flashdata('v',"Update Setting Certificate Success."):$this->session->set_flashdata('x',"Update Setting Certificate Failed.");
+		}
+		redirect(base_url('Organizer/Certificate/'));
+	}
+
 	public function returncolomn($header) {
 	$find=['nocerti','certidate','uname','unim','lvlname','cspeak','cread','clisten','cwrite','cgrammar'];
 	$replace = ['Certicate Number','Certificate Date','Full Name','NIM','Level','Speak','Read','Listen','Write','Grammar'];

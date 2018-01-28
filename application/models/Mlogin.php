@@ -263,4 +263,9 @@ class Mlogin extends CI_Model{
 		$this->db->where('uuser',$user);
 		return $this->db->get('user')->row()->ustatus;
 	}
+
+	public function updatereset($data=null,$email){
+		$this->db->where('uemail',$email);
+		return $this->db->update('user',$data);
+	}
 }

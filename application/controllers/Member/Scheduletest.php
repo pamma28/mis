@@ -50,9 +50,9 @@ class Scheduletest extends Mem_Controller {
 				//manipulation menu
 				$enc = $value['idjdwl'];
 					if (in_array($enc, $arrchoosen)){
-						$btn = '<span class="label label-default disabled" data-id="'.$enc.'"><i class="fa fa-minus"></i> Choosen </span>' ;
+						$btn = '<span class="label label-default disabled" data-id="'.$enc.'"><i class="fa fa-minus"></i>  Choosen </span>' ;
 					} else {
-					$btn = ($value['jquota']>0) ? '<a href="#mysche" data-href="'.base_url('Member/Scheduletest/choosesche').'"  role="button" alt="Choose" class="btn btn-default btn-xs btn-choose" title="Choose" data-id="'.$enc.'"><i class="fa fa-check"></i> Choose</a>' : '<span class="label label-default disabled"><i class="fa fa-minus"></i> No Quota </span> ';
+					$btn = ($value['jquota']>0) ? '<a href="#mysche" data-href="'.base_url('Member/Scheduletest/choosesche').'"  role="button" alt="Choose" class="btn btn-primary btn-xs btn-choose" title="Choose" data-id="'.$enc.'"><i class="fa fa-check"></i> Choose</a>' : '<span class="label label-default disabled"><i class="fa fa-minus"></i> No Quota </span> ';
 					}
 				$temp[$key]['menu'] = $btn;
 				unset($temp[$key]['idjdwl']);
@@ -77,7 +77,7 @@ class Scheduletest extends Mem_Controller {
 				//manipulation menu
 				$enc = $value['idjdwl'];
 				unset($choosen[$key]['idjdwl']);
-				$choosen[$key]['menu']= '<a data-id="'.$enc.'" title="Remove" class="btn btn-default btn-xs btn-remove" alt="Remove" role="button" href="#mylist" data-href="'.base_url('Member/Scheduletest/deletesche').'"><i class="fa fa-times-circle"></i> Remove</a>';
+				$choosen[$key]['menu']= '<a data-id="'.$enc.'" title="Remove" class="btn btn-danger btn-xs btn-remove" alt="Remove" role="button" href="#mylist" data-href="'.base_url('Member/Scheduletest/deletesche').'"><i class="fa fa-times-circle"></i> Remove</a>';
 				}
 		$data['mysche'] = $this->table->generate($choosen);
 		
@@ -125,7 +125,7 @@ class Scheduletest extends Mem_Controller {
 								foreach ($arrtest[0] as $k=>$v) {
 									$tmpres = '<td>'.$v.'</td>';
 									($k == 'jdate') ? $tmpres = '<td>'.date('D d-M-Y', strtotime($v)).'</td>' : null;
-									($k == 'Menu') ? $tmpres = '<td><a data-id="'.$fdata['idjdwl'].'" title="Remove" class="btn btn-default btn-xs btn-remove" alt="Remove" role="button" href="#mylist" data-href="'.base_url('Member/Scheduletest/deletesche').'"><i class="fa fa-times-circle"></i> Remove</a></td>' : null;
+									($k == 'Menu') ? $tmpres = '<td><a data-id="'.$fdata['idjdwl'].'" title="Remove" class="btn btn-danger btn-xs btn-remove" alt="Remove" role="button" href="#mylist" data-href="'.base_url('Member/Scheduletest/deletesche').'"><i class="fa fa-times-circle"></i> Remove</a></td>' : null;
 									$res .= $tmpres;
 								}
 							$r[] = '<h4><span class="text-primary">Choose Schedule on <b>'.$arrtest[0]['tname'].'</b> Success</span></h4>';
@@ -250,7 +250,7 @@ class Scheduletest extends Mem_Controller {
 
 	public function returncolomn($header) {
 	$find=['idjdwl','jmdate','jdate','jstart','tname','jdwl_tes.idtest','jsesi','jroom','jquota','jactive','uname'];
-	$replace = ['Schedule ID','Date Choosen','Schedule Date','Schedule Activated','Test Name','Test Name','Session','Room','Quota','Status','Last Updated by'];
+	$replace = ['Schedule ID','<span class="fa fa-calendar"></span> Date Choosen','<span class="fa fa-calendar"></span> Schedule Date','Schedule Activated','<span class="fa fa-book"></span> Test Name','<span class="fa fa-book"></span> Test Name','<span class="fa fa-clock-o"></span> Session','<span class="fa fa-building"></span> Room','<span class="fa fa-info-circle"></span> Quota','Status','Last Updated by'];
 		foreach ($header as $key => $value){
 		$header[$key]  = str_replace($find, $replace, $value);
 		}

@@ -1,7 +1,7 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
 	
-	<h1><i class="fa fa-edit fa-lg"></i> Test<small>Name</small></h1>
+	<h1><i class="fa fa-wrench fa-lg"></i> Setting<small>System</small></h1>
 		<ol class="breadcrumb">
             <?=set_breadcrumb();?>
 		</ol>
@@ -24,93 +24,55 @@
 			<?php } ?>
 		<div class="row">
 			<div class="col-md-6"> 
-				<a href="<?=base_url('Organizer/Test/addtest');?>" data-target="#DetailModal" data-toggle="modal" role="button" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add </a> 
-			</div>
-			<div class="col-md-6 text-right">
-					<?php 
-						echo form_open(current_full_url(),array('name'=>'fq', 'method'=>'GET','class'=>'form-inline'));
-					?>		
-					<div class="input-group">
-					<span class="input-group-addon">Filter</span>
-					<?php
-						echo $inc.'</div><div class="input-group">'.$inq.
-						'<span class="input-group-btn">';
-						echo $bq.$inv.'</span></div>';
-						echo form_close();
-					?>
-					<div class="text-right"><a href="<?=current_url();?>" class="label label-danger">Clear Search</a> <a class="label label-info" role="button" data-toggle="collapse" href="#collapseAdvanced" aria-expanded="<?php echo(empty($d)? 'false': 'true');?>" aria-controls="collapseExample">Advanced search</a></div>
+				<a href="<?=base_url('Organizer/PDS/addpds');?>" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add Setting</a> 
 			</div>
 		</div>
-		<div class="row">
-			<div class="<?php echo(empty($d)? 'collapse': 'collapse in');?> col-md-12" id="collapseAdvanced" aria-expanded="<?php echo(empty($d)? 'false': 'true');?>">
-			  <div class="well">
-				<?php 
-						echo form_open(current_full_url(),array('name'=>'fadvq', 'method'=>'GET','class'=>'form-inline'));
-				?>	
-					
-						<?=$advance;?>
-					<div class="text-right">
-					<?=$bq;?>
-					</div>
-				<?php 
-				echo form_close();
-				?>
-			  </div>
-			</div>
-		</div>		
+				
 	</div>
-	<div class="box-body table-responsive">
-		<div class="btn-toolbar">
-			<div class="btn-group">
-					<button class="btn btn-default btn-sm" type="button">Action:</button>
-					<button data-toggle="dropdown" class="btn btn-default dropdown-toggle btn-sm" type="button">
-					<span class="caret"></span>
-					<span class="sr-only">Toggle Dropdown</span>
-					</button>
-					<ul role="menu" class="dropdown-menu">
-					<a href="#" class="btn btn-sm text-danger" data-finput="0" data-btn="btn btn-sm btn-danger" data-icon="fa fa-ban" data-title="Delete All" data-toggle="modal" data-target=".bs-selecteddata"><i class="fa fa-trash-o"></i> Delete All</a>
-					</ul>
+	<div class="box-body">
+		<div class="row">
+			
+			<?php foreach ($settinglist as $k => $v) { ?>
+			
+			<div class="col-md-6">
+				<div class="panel panel-primary">
+					<div class="panel-heading panel-heading-sm">
+						<h3 class="panel-title text-center"><span class="fa fa-gear"></span> <b><?=$v['title'];?></b></h3>
+					</div>
+					<div class="panel-body">
+					 	<?=$v['table'];?>
+					</div>
+					<div class="panel-footer text-right">
+						<?=$v['fbtn'];?>
+					</div>
+				</div>
 			</div>
+
+			<?php } ?>
 		</div>
-		<div class="btn-group pull-right">
-		
-		</div>
-	<?=$listlogin;?>
-		
 	</div>
 		
 		<div class="box-footer clearfix">
-			<!-- Show perpage -->
-			<div class="pull-left">
-				<div class="btn-group">
-							  <button class="btn btn-default" type="button">Per Page</button>
-							  <button data-toggle="dropdown" class="btn btn-default dropdown-toggle" type="button">
-								<span class="caret"></span>
-								<span class="sr-only">Toggle Dropdown</span>
-							  </button>
-							  <ul role="menu" class="dropdown-menu">
-								<?php
-								foreach($perpage as $p){
-								echo '<li><a href="'.$urlperpage.$p.'">'.$p.'</a></li>';
-								}?>
-							  </ul>
+		
+			
+			<fieldset class="scheduler-border">
+			<legend class="scheduler-border"><a role="button" data-toggle="collapse" href="#collapseSetting" aria-expanded="false" aria-controls="collapseSetting">Setting Registration Phase</a></legend>
+			<div id="collapseSetting" class="collapse">
+			<form name="fsetperiod" class="form-inline" action="<?=$fsendper;?>" method="POST" >
+			<div class="form-group">
+				<label class="input-label" for="startTime">Registration Phase (Range Date) :</label>
+				<div class="input-group">
+				<span class="input-group-addon"><i class="fa fa-calendar"></i></span><?=$fregist;?>
 				</div>
 			</div>
-			<div class="pull-right">
-			<!-- Show pagination links -->
-			<ul class="pagination pagination-sm no-margin pull-right">
-			<?php foreach ($links as $link) {
-			echo "<li>". $link."</li>";
-			} ?>
-			</ul>
+			<?=$fbtnperiod;?>
+			</form>
 			</div>
-			<br/>
-			<br/>
-			
-			
+			</fieldset>
 			
 		</div>
 	</div>
+	
 	
 	<!-- Modal Details Data-->
 	<div class="modal fade" id="DetailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -167,22 +129,6 @@
 		$(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
 		});
 	
-	// populate checked data and show in modal
-	$('#SelectedModal').on('show.bs.modal', function(e) {
-		$(this).find('#selectedicon').attr('class',$(e.relatedTarget).data('icon'));
-		$(this).find('#selectedtitle').text($(e.relatedTarget).data('title'));
-		$(this).find('#selectedcontent').text($(e.relatedTarget).data('title'));
-		$(this).find('#selectedbutton').attr('class',$(e.relatedTarget).data('btn'));
-		$(this).find('#selectedtype').val($(e.relatedTarget).data('finput'));
-		var tables = new Array();
-		var values = new Array();
-		$.each($("input[name='check[]']:checked"), function() {
-		tables.push('- '+$(this).parent().parent().find('.idname').text()+'<br/>');
-		values.push($(this).val());
-		$('#selecteduser').html(tables);
-		$('#selectedid').val(values);
-		});
-		});
 	
 	//details data	
 		$('#DetailModal').on("hidden.bs.modal", function (e) {
@@ -190,7 +136,13 @@
 		});
 			
 		
-
+	//range date registration
+	$(function() {
+    $('#fregistphase,#fpaymentphase,#fschedulephase,#fcertiphase').daterangepicker({
+    	locale: {format: 'DD/MM/YYYY'}
+    });
+	});
+		
 	$(function() {
 		//Date range 
 		cb(moment().subtract(29, 'days'), moment());

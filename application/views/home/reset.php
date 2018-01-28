@@ -12,38 +12,27 @@
         <a href="<?php echo base_url(); ?>"><b>Membership</b> System</a>
       </div><!-- /.login-logo -->
       <div class="login-box-body">
-        <p class="login-box-msg">Please sign in</p>
+        <p class="login-box-msg">Please enter your email</p>
 	
-    <?php echo form_open('Login/auth',array('name'=>'login', 'method'=>'POST'));?>
+    <?php echo form_open('Login/reset',array('name'=>'reset', 'method'=>'POST'));?>
           <div class="form-group has-feedback">
-            <?php echo $inuser;?>
+            <?php echo $inemail;?>
             <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
           </div>
-          <div class="form-group has-feedback">
-            <?php echo $inpass;?>
-            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-          </div>
+         
 			<?php
-			if ((validation_errors()) or ($this->session->flashdata("error")!=null)){?>
+			if (($this->session->flashdata("x")!=null)){?>
 			<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			<?php echo "Login failed".validation_errors()."</div>";} ?>
-			
+			<?php echo $this->session->flashdata('x')."</div>";} ?>
           <div class="row">
-            <div class="col-xs-8">    
-             
-                  <input type="checkbox" name="remember" class="checkbox icheck">   Remember Me
-			
-            </div><!-- /.col -->
-            <div class="col-xs-4">
-              <?=$rdr;?>
-              <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
+            <div class="col-xs-4 col-xs-offset-8">
+
+              <button type="submit" class="btn btn-primary btn-block btn-flat">Reset</button>
             </div><!-- /.col -->
           </div>
         <?php form_close(); ?>
 
-      
-
-        <a href="<?=base_url('Login/reset');?>">Reset password</a><br>
+        
         
 
       </div><!-- /.login-box-body -->

@@ -182,7 +182,7 @@ class SmsBroadcast extends Org_Controller {
 		$temp = $this->Mbc->databcsms($column,$config['per_page'],$perpage,$filter);	
 				foreach($temp as $key=>$value){
 				//manipulation checkbox
-				(strpos($value['bcket'], 'Broadcast SMS') !== false) ? $lbl = '<i class="fa fa-circle-o text-primary"></i>' : $lbl ='<i class="fa fa-circle-o text-yellow"></i>';
+				(strpos($value['bcket'], 'Broadcast SMS') !== false) ? $lbl = '<i class="fa fa-users text-primary"></i>' : $lbl ='<i class="fa fa-user text-yellow"></i>';
 				$ctable = $lbl.'<br/>'.form_checkbox(array(
 							'name'=>'check[]',
 							'class'=>'checkbox',

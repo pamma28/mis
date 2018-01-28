@@ -131,11 +131,17 @@
 			</tr>
 			<tr>
 				<td><label class="input-label" for="FormatNumber">Certificate Format Number :</label></td>
-				<td><?=$fformat;?></td>
+				<td>
+				<div class="input-group">
+				<span class="input-group-addon"><i class="fa fa-text-width"></i></span>
+				<?=$fformat;?></div></td>
 			</tr>
 			<tr>
-				<td><label class="input-label" for="Page">Certificate Template:</label></td>
-				<td><?=$fpage;?></td>
+				<td><label class="input-label" for="Page">Certificate Distribution Phase:</label></td>
+				<td>					
+				<div class="input-group">
+				<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+				<?=$fphase;?></div></td>
 				
 			</tr>
 			<tr>
@@ -315,6 +321,14 @@
 	
 	
 	<script type="text/javascript">
+	//range date registration
+	$(function() {
+	    $('#certirange').daterangepicker({
+	    	locale: {format: 'DD/MM/YYYY'}
+	    });
+	});
+
+
 	//delete modal confirmation
 	$('#confirm-delete').on('show.bs.modal', function(e) {
 		$(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));

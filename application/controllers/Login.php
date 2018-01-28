@@ -20,7 +20,7 @@ class Login extends CI_Controller {
 	{
 		if(!$this->session->userdata('logged'))
 		{
-			$this->auth();
+			 $this->auth();
         }
 			else{
                 redirect('Accesscontrol/');
@@ -41,7 +41,7 @@ class Login extends CI_Controller {
 		
 		// Save set_value
 		$valuser = set_value("fuser");
-		$rdr = $this->input->post('rdr');
+		($this->input->post('rdr')!='') ? $rdr = urlencode($_SERVER['REQUEST_URI']): $rdr = $this->input->post('rdr');
 		($this->input->get('rdr')!='') ? $this->session->set_flashdata('rdr','Your login session has expired. Please login again.'):null;
 
 		// check cookies
@@ -144,11 +144,9 @@ class Login extends CI_Controller {
 				
 				($rdr!='') ? header("Location:".$rdr) : redirect("Accesscontrol/");
 			}
-			
-			else
-			
-			{
-			$this->session->set_flashdata("error","nasnda");
+			else{
+
+			$this->session->set_flashdata("x","error");
 			$data['topbar'] = $this->load->view('home/topbar', NULL, TRUE);
 			$data['sidebar'] = $this->load->view('home/sidebar', NULL, TRUE);
 			$data['content'] = $this->load->view('home/login', $data, TRUE);
@@ -193,4 +191,73 @@ class Login extends CI_Controller {
         redirect('Login');
     }
 	
+    public function reset(){
+    	// ============== Form login ============
+		$femail = array('name'=>'femail',
+						'id'=>'femail',
+						'required'=>'required',
+						'placeholder'=>"Your Email",
+						'value'=>set_value("femail"),
+						'class'=>'form-control',
+						'type'=>'email');
+		$data['inemail'] = form_input($femail);
+		
+
+    	// form validation
+        $this->form_validation->set_rules('femail', 'Email', 'required|valid_email|trim|xss_clean');
+        
+    	if($this->form_validation->run()== false){
+			
+			
+            $data['title'] ="Reset Account";	
+            $data['topbar'] = $this->load->view('home/topbar', NULL, TRUE);
+			$data['sidebar'] = $this->load->view('home/sidebar', NULL, TRUE);
+			$data['content'] = $this->load->view('home/reset', $data, TRUE);
+			$this->load->view ('template/main', $data);
+        }else{
+    		
+			$email = $this->input->post('femail');
+			$exist = $this->Mlogin->checkmail($email);
+			if($exist>0){
+				$randcode = md5($this->encryption->encrypt($email.date('Y-m-d H:i:s')));
+				$setreset = array(
+							'urstcode'=>$randcode,
+							'ursttime'=>date('Y-m-d H:i:s')
+							);
+				$this->Mlogin->updatereset($setreset,$email);
+				
+				redirect("Login/resetaccount?a=req");
+			}
+			else{
+				$this->session->set_flashdata("x","No such account related to the email");
+				redirect("Login/reset");
+            }
+    	
+		}
+
+    }
+
+
+    public function resetaccount(){
+    	if ($this->input->get('a')=='req'){
+    	 	$data['title'] ="Reset Success";
+    	 	$this->session->set_flashdata(array('info'=>'Please check your email, to reset your password with following link given.',
+    	 				'title'=>'Reset Password Requested'
+    	 				));
+            $data['topbar'] = $this->load->view('home/topbar', NULL, TRUE);
+			$data['sidebar'] = $this->load->view('home/sidebar', NULL, TRUE);
+			$data['content'] = $this->load->view('home/resetsuccess', $data, TRUE);
+			$this->load->view ('template/main', $data);
+		} else if ($this->input->get('a')=='com'){
+    	 	$data['title'] ="Reset Success";
+    	 	$this->session->set_flashdata(array('info'=>'Your password has been reset. Please login again with new password <a href="'.base_url('Login').'" class="bg-blue">here</a>',
+    	 				'title'=>'Reset Password Success'
+    	 				));
+            $data['topbar'] = $this->load->view('home/topbar', NULL, TRUE);
+			$data['sidebar'] = $this->load->view('home/sidebar', NULL, TRUE);
+			$data['content'] = $this->load->view('home/resetsuccess', $data, TRUE);
+			$this->load->view ('template/main', $data);
+		}
+    }
+
 }

@@ -286,11 +286,7 @@
 		});
 			
 		
-	//range date registration
-	$(function() {
-    $('#registrange').daterangepicker();
-	});
-		
+	
 	$(function() {
 		//Date range 
 		cb(moment().subtract(29, 'days'), moment());

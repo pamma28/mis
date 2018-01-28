@@ -1,7 +1,7 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
 	
-	<h1><i class="fa fa-envelope-o fa-lg"></i> Broadcast<small>Email</small></h1>
+	<h1><i class="fa fa-envelope-o fa-lg"></i> Email<small>Broadcast</small></h1>
 		<ol class="breadcrumb">
             <?=set_breadcrumb();?>
 		</ol>

@@ -98,7 +98,7 @@
 								           		$a=1;
 								           		$arrq = array_column($mytest,'idq');
 								               	foreach ($arrq as $k=>$v) {
-								               	$labelclass = ($mytest[$k]['pickedanswer']!='') ? 'success' : 'danger';
+								               	$labelclass = (!empty($mytest[$k]['pickedanswer'])) ? 'success' : 'danger';
 								               	print('<li style="width:'.$avgwidth.'%;" data-id="'.$a.'"><a style="width:100%;text-align:center;font-weight:bold;" href="#tab'.($a).'primary" data-toggle="tab" class="navigate"><span class="label label-'.$labelclass.' label'.$a.'">'.($a).'</span></a></li>');
 								               	$a++;
 											} ?>
@@ -301,9 +301,16 @@
    		$.post('<?=base_url('Member/Test/savemyanswer');?>',{
 				allqans : allqans}, 
 				function (data) {
-					if (data){   						
-   						$('.label'+dataid).removeClass('label-danger');
-   						$('.label'+dataid).addClass('label-success');
+					if (data){
+						if (($('textarea[name=ans'+dataid+']').val()!='') || ($('input[name=ans'+dataid+']').is(":checked")) )
+						{
+						$('.label'+dataid).removeClass('label-danger');
+   						$('.label'+dataid).addClass('label-success');      
+						} else {
+						$('.label'+dataid).removeClass('label-success');
+   						$('.label'+dataid).addClass('label-danger');
+						}
+ 						   						
    						$("#loading-content").text("Update Answer Success.");
    						$("#loading-report").addClass("alert-success");
                 		$("#loading-report").alert();

@@ -107,20 +107,6 @@
 			<br/>
 			<br/>
 			
-			<fieldset class="scheduler-border">
-			<legend class="scheduler-border"><a role="button" data-toggle="collapse" href="#collapseSetting" aria-expanded="false" aria-controls="collapseSetting">Setting Registration Phase</a></legend>
-			<div id="collapseSetting" class="collapse">
-			<form name="fsetperiod" class="form-inline" action="<?=$fsendper;?>" method="POST" >
-			<div class="form-group">
-				<label class="input-label" for="startTime">Registration Phase (Range Date) :</label>
-				<div class="input-group">
-				<span class="input-group-addon"><i class="fa fa-calendar"></i></span><?=$fregist;?>
-				</div>
-			</div>
-			<?=$fbtnperiod;?>
-			</form>
-			</div>
-			</fieldset>
 			
 		</div>
 	</div>

@@ -263,15 +263,14 @@ class Schedule extends Org_Controller {
 								'id'=>'subb'));
 			$data['factprint'] = site_url('Organizer/Schedule/printsche');
 		
-		//=============== setting registration phase ============
-			$start = $this->Msetting->getset('beginschedule');
-			$end = $this->Msetting->getset('endschedule');
+		//=============== setting schedule phase ============
+			$sche = $this->Msetting->getset('schedulephase');
 			$data['fregist']= form_input(array('id'=>'scherange',
 								'class'=>'form-control',							
 								'style'=>'width:200px',							
 								'name'=>'fschephase',							
 								'placeholder'=>'Schedule Confirmation',							
-								'value'=>$start.' - '.$end,							
+								'value'=>$sche,							
 								'required'=>'required'));
 			$data['fbtnperiod']= form_submit(array('value'=>'Update Setting',
 								'class'=>'btn btn-primary',							
@@ -462,7 +461,7 @@ class Schedule extends Org_Controller {
 				//manipulation menu
 				$enc = $value['idjdwl'];
 				//manipulation active data
-				(!$value['jactive']) ? $btnact='<a href="'.base_url('Organizer/Schedule/activate?id=').$enc.'" alt="Activate" class="btn-success btn-sm"><i class="fa fa-check"></i> Activate</a>':$btnact='<a href="'.base_url('Organizer/Schedule/deactivate?id=').$enc.'" alt="Deactivate" class="btn-warning btn-sm"><i class="fa fa-ban"></i> Deactivate</a>';
+				(!$value['jactive']) ? $btnact='<a href="#" data-href="'.base_url('Organizer/Schedule/activate?id=').$enc.'" alt="Activate" class="btn-success btn-sm" data-on="1" data-txt="Activate" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-check"></i> Activate</a>':$btnact='<a href="#" data-href="'.base_url('Organizer/Schedule/deactivate?id=').$enc.'" alt="Deactivate" class="btn-warning btn-sm" data-on="0" data-txt="Deactivate" data-toggle="modal" data-target="#confirm-delete" ><i class="fa fa-ban"></i> Deactivate</a>';
 				unset($temp[$key]['idjdwl']);
 				unset($temp[$key]['jactive']);
 				$temp[$key]['menu']='<small>'.$btnact.' | <a href="'.base_url('Organizer/Schedule/printpresencelist?id=').$enc.'" alt="Print Presence List" class="btn-info btn-sm"><i class="fa fa-print"></i> Print Presence List</a></small>';
@@ -524,20 +523,7 @@ class Schedule extends Org_Controller {
 								'id'=>'subb'));
 			$data['factprint'] = site_url('Organizer/Schedule/printsche');
 		
-		//=============== setting registration phase ============
-			$start = $this->Msetting->getset('beginschedule');
-			$end = $this->Msetting->getset('endschedule');
-			$data['fregist']= form_input(array('id'=>'scherange',
-								'class'=>'form-control',							
-								'style'=>'width:200px',							
-								'name'=>'fschephase',							
-								'placeholder'=>'Schedule Confirmation',							
-								'value'=>$start.' - '.$end,							
-								'required'=>'required'));
-			$data['fbtnperiod']= form_submit(array('value'=>'Update Setting',
-								'class'=>'btn btn-primary',							
-								'id'=>'btnupdateset'));
-			$data['fsendper'] = site_url('Organizer/Schedule/savesetting');
+		
 				
 		//=============== Template ============
 		$data['jsFiles'] = array(
@@ -1053,11 +1039,8 @@ class Schedule extends Org_Controller {
 	public function savesetting(){
 		if(null!= $this->input->post('fschephase')){
 			$dtrange = $this->input->post('fschephase');
-			$dtstart = mb_substr($dtrange,0,10,'utf-8');
-			$dtend = substr($dtrange,13);
 		$dtset=array(
-				'beginschedule'=>$dtstart,
-				'endschedule'=>$dtend
+				'schedulephase'=>$dtrange
 				);
 		$this->Msetting->savesetting($dtset);
 		$this->session->set_flashdata('v',"Update Setting Range Date Schedule Confirmation Phase Success.");

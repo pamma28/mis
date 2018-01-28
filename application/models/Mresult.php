@@ -156,5 +156,23 @@ class Mresult extends CI_Model{
 		 
 	}
 	
+	public function getScoreMember($id,$user){
+		$this->db->where('idresult',$id);
+		$this->db->update('resulttest',array('use_uuser'=>$user));
+		$this->db->select(array('q_score','uuser'));
+		$this->db->where('idresult',$id);
+		return $this->db->get('resulttest')->row();
+	}
+
+	public function getLevel(){
+		$this->db->select(array('idlevel','lvllow','lvlup'));
+		$this->db->order_by('lvlup','desc');
+		return $this->db->get('level')->result_array();
+	}
+	
+	public function updateLevelMember($data,$id){
+		$this->db->where('uuser',$id);
+		return $this->db->update('user',$data);
+	}
 	
 }
