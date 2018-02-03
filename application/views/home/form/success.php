@@ -13,11 +13,11 @@
 		<div class="row">
 			<div class="col-md-4 pull-right">
 				<div class="well text-center">
-					Registration Code:<br/><b><?=$pds['Code_pay']; ?></b>
+					Registration Code:<br/><b><?=$pds['upaycode']; ?></b>
 				</div>
 			</div>
 			<div class="col-md-8">
-				<p class="text">Thank you <?=$pds['FULL_NAME']; ?> for your registration, here we attached your code of registration. Please, remember this code.</p>
+				<p class="text">Thank you <?=$pds['uname']; ?> for your registration, here we attached your code of registration. Please, check your email for the next following instructions.</p>
 				<p class="text"><span class="text-warning"><mark>Important:</mark></span> The code will be used for your <strong>Payment</strong></p>
 			
 			</div>

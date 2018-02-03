@@ -216,4 +216,26 @@ class Mpds extends CI_Model{
 		return $this->db->get('user')->row();
 	}
 	
+	public function getcode(){
+		do {
+			$code = random_string('alpha',3).random_string('nozero',3);
+			}
+		while ($this->checkcode($code)== false);
+		
+		return $code;
+	}
+	
+	private function checkcode($code){
+		$this->db->select('upaycode');
+        $this->db->from('user');
+        $this->db->where("upaycode='$code'");
+        $q = $this->db->get();
+		$hasil = $q->num_rows();
+		if ($hasil > 0) {
+			return false;
+		} else {
+			return true;
+		}
+	
+	}
 }

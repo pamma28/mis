@@ -104,9 +104,10 @@ class Mtmp extends CI_Model{
 		$return[''] = 'Choose to use template';
 		if($q->num_rows() > 0){
         foreach($q->result_array() as $row){
-			(strlen($row['tmpcontent'])>50) ? $tmpcontent = mb_substr($row['tmpcontent'],0,50).'...': $tmpcontent = $row['tmpcontent'];
+        	$tmpcontent = strip_tags(htmlspecialchars_decode($row['tmpcontent']));
+			(strlen($tmpcontent)>50) ? $content = mb_substr($tmpcontent,0,50).'...': $content = $tmpcontent;
 			
-            $return[$row['idtmplte']] = '('.$row['tmpname'].') '.$tmpcontent;
+            $return[$row['idtmplte']] = '('.$row['tmpname'].') '.$content;
 			}
 		}
     return $return;

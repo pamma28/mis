@@ -7,7 +7,8 @@
 				<h4><strong><?=$title;?></strong></h4>
 			</div>
 			<div class="panel-body">
-				<?=$listlogin;?>
+				Detail Registration Data:
+				
 			</div>
         <div class="pull-right hidden-xs">
 		<small><i>Generated on <strong><?=Date("d-m-Y H:i:s");?></strong>.</i></small>

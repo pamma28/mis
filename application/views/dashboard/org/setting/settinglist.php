@@ -22,55 +22,133 @@
 				<?=$this->session->flashdata('x');?>
 			</div>		
 			<?php } ?>
-		<div class="row">
-			<div class="col-md-6"> 
-				<a href="<?=base_url('Organizer/PDS/addpds');?>" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add Setting</a> 
-			</div>
-		</div>
+		
 				
 	</div>
 	<div class="box-body">
-		<div class="row">
-			
-			<?php foreach ($settinglist as $k => $v) { ?>
-			
-			<div class="col-md-6">
-				<div class="panel panel-primary">
-					<div class="panel-heading panel-heading-sm">
-						<h3 class="panel-title text-center"><span class="fa fa-gear"></span> <b><?=$v['title'];?></b></h3>
-					</div>
-					<div class="panel-body">
-					 	<?=$v['table'];?>
-					</div>
-					<div class="panel-footer text-right">
-						<?=$v['fbtn'];?>
-					</div>
-				</div>
-			</div>
+		<div class="nav-tabs-custom">
+		  	<!-- Tabs within a box -->
+            <ul class="nav nav-tabs nav-primary">
+                <li class="active"><a data-toggle="tab" href="#generallist"><span class="fa fa-wrench"></span> System Parameter</a></li>
+                <li><a data-toggle="tab" href="#registform"><span class="fa fa-file-text"></span>  Registration Form</a></li>
+                <li><a data-toggle="tab" href="#notiflist"><span class="fa fa-bell"></span>  Notification Setting</a></li>
+                <li><a data-toggle="tab" href="#pagelsit"><span class="fa fa-pencil-square"></span>  Page Setting</a></li>
+                <li><a data-toggle="tab" href="#emaillist"><span class="fa fa-envelope"></span>  Email Setting</a></li>
+                <li><a data-toggle="tab" href="#dashlist"><span class="fa fa-home"></span>  Dashboard Setting</a></li>
+                <li><a data-toggle="tab" href="#registform"><span class="fa fa-certificate"></span>  Certificate Setting</a></li>
+                <li><a data-toggle="tab" href="#registform"><span class="fa fa-file-text"></span>  Registration Form</a></li>
+            </ul>
+            <div class="tab-content">
+            	<div class="tab-pane table-responsive active" id="generallist">
+                    
+						<?php foreach ($settinglist as $k => $v) { ?>
+						<?php echo form_open(base_url('Organizer/setting/saveparameter/'.$k),array('name'=>'fsetting'.$k,'class'=>'form-horizontal','method'=>'POST'));?>
+						<div class="col-md-6">
+							<div class="panel panel-primary">
+								<div class="panel-heading panel-heading-sm">
+									<h3 class="panel-title text-center"><span class="fa fa-wrench"></span> <b><?=$v['title'];?></b></h3>
+								</div>
+								<div class="panel-body">
+									<?php if ($this->session->flashdata('vsystem'.$k)!=null){ ?>
+									<div class="alert alert-success alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('vsystem'.$k);?>
+									</div>
+									<?php } else if ($this->session->flashdata('xsystem'.$k)!=null){ ?>
+									<div class="alert alert-danger alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('xsystem'.$k);?>
+									</div>		
+									<?php } ?>
+								 	<?=$v['table'];?>
+								</div>
+								<div class="panel-footer text-right">
+									<?=$v['fbtn'];?>
+								</div>
+							</div>
+						</div>
 
-			<?php } ?>
-		</div>
+						<?php  
+						echo form_close();
+						}
+						?>
+					
+				</div>
+				  
+				<div class="tab-pane table-responsive" id="registform">
+                  
+						<div class="col-md-6">
+							
+							<?php echo form_open(base_url('Organizer/setting/saveformregist/'),array('name'=>'fregistform','class'=>'form-horizontal','method'=>'POST'));?>
+							<div class="panel panel-primary">
+								<div class="panel-heading panel-heading-sm">
+									<h3 class="panel-title text-center"><span class="fa fa-file-text"></span> <b><?=$registform['title'];?></b></h3>
+								</div>
+								<div class="panel-body">
+									<?php if ($this->session->flashdata('vregist')!=null){ ?>
+									<div class="alert alert-success alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('vregist');?>
+									</div>
+									<?php } else if ($this->session->flashdata('xregist')!=null){ ?>
+									<div class="alert alert-danger alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('xregist');?>
+									</div>		
+									<?php } ?>
+								 	<?=$registform['table'];?>
+								</div>
+								<div class="panel-footer text-right">
+									<?=$registform['fbtn'];?>
+								</div>
+							</div>
+
+						<?php  
+						echo form_close();
+						?> 
+						</div>
+						<div class="col-md-6">
+							<div class="box box-primary">
+							 	<div class="box-body" id="prevsettingregistform"> <p class="text-center"><i>Preview Template</i></p>
+							 	</div>
+							</div>
+						</div>
+				</div>
+				<div class="tab-pane table-responsive" id="notiflist">
+                    
+						<div class="col-md-6"> 
+							<a href="<?=base_url('Organizer/PDS/addpds');?>" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add Setting</a> 
+						</div>
+					
+				</div>
+				<div class="tab-pane table-responsive" id="pagelsit">
+                    
+						<div class="col-md-6"> 
+							<a href="<?=base_url('Organizer/PDS/addpds');?>" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add Setting</a> 
+						</div>
+					
+				</div>
+				<div class="tab-pane table-responsive" id="emaillist">
+                    
+						<div class="col-md-6"> 
+							<a href="<?=base_url('Organizer/PDS/addpds');?>" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add Setting</a> 
+						</div>
+					
+				</div>
+				<div class="tab-pane table-responsive" id="dashlist">
+                   
+						<div class="col-md-6"> 
+							<a href="<?=base_url('Organizer/PDS/addpds');?>" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add Setting</a> 
+						</div>
+					
+				</div>
+					
+			</div>
+        </div><!-- /.nav-tabs-custom -->
+		
 	</div>
 		
-		<div class="box-footer clearfix">
 		
-			
-			<fieldset class="scheduler-border">
-			<legend class="scheduler-border"><a role="button" data-toggle="collapse" href="#collapseSetting" aria-expanded="false" aria-controls="collapseSetting">Setting Registration Phase</a></legend>
-			<div id="collapseSetting" class="collapse">
-			<form name="fsetperiod" class="form-inline" action="<?=$fsendper;?>" method="POST" >
-			<div class="form-group">
-				<label class="input-label" for="startTime">Registration Phase (Range Date) :</label>
-				<div class="input-group">
-				<span class="input-group-addon"><i class="fa fa-calendar"></i></span><?=$fregist;?>
-				</div>
-			</div>
-			<?=$fbtnperiod;?>
-			</form>
-			</div>
-			</fieldset>
-			
-		</div>
 	</div>
 	
 	
@@ -166,33 +244,13 @@
 		}
 	});
 	
-	$('.selectall').click(function() {
-        $('.selectcol option').prop('selected', true);
-    });
-	$('.unselectall').click(function() {
-        $('.selectcol option').prop('selected', false);
-    });
-	$('.close').click(function() {
-        $('.selectcol option').prop('selected', false);
-    });
-	
-	// function check/uncheck all at once
-	$(function () {
-    $("#c_all").click(function () {
-        if ($("#c_all").is(':checked')) {
-            $("input[name='check[]']").each(function () {
-                $(this).prop("checked", true);
-            });
-
-        } else {
-            $("input[name='check[]']").each(function () {
-                $(this).prop("checked", false);
-            });
-        }
-    });
+	$(document).ready(function(){
+	$('#registsuccess, #mailregistsuccess').on('changed.bs.select',function(e){
+		$.post('<?php echo base_url('Organizer/Setting/previewTemplate'); ?>', {idtmp: $(this).selectpicker('val')}, function(d) {
+			$('#prevsettingregistform').empty().html(d);
+		});
 	});
-	
-	
-	
+
+	});
 	</script>
 </section>

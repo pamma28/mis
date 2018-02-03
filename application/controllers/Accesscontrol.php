@@ -12,9 +12,11 @@ class Accesscontrol extends Logged_Controller {
 		$this->load->library(array('session'));
 		
 		$this->load->model('');
+		
     }
 
 	public function index(){
+
 		switch($this->role)
 			{
 				case 1: redirect ("Admin/Dashboard"); break;

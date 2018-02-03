@@ -82,7 +82,7 @@ class Dashboard extends Org_Controller {
 		
 		
 		$data['title']="Dashboard";
-		$data['topbar'] = $this->load->view('dashboard/topbar', NULL, TRUE);
+		$data['topbar'] = $this->load->view('dashboard/topbar', $data, TRUE);
 		$data['sidebar'] = $this->load->view('dashboard/org/sidebar', NULL, TRUE);
 		$data['content'] = $this->load->view('dashboard/org/dashboard', $data, TRUE);
 		$this->load->view ('template/main', $data);

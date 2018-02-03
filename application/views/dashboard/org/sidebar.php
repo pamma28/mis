@@ -132,7 +132,7 @@
                   </ul>
 				</li>
                 <li><a href="<?=base_url("Organizer/Agenda");?>"><i class="fa fa-calendar-check-o fa-fw"></i> Agenda</a></li>
-                <li><a href="<?=base_url("Organizer/Notification");?>"><i class="fa fa-flag fa-fw"></i> Notifications</a></li>
+                <li><a href="<?=base_url("Organizer/Notification");?>"><i class="fa fa-bell fa-fw"></i> Notifications</a></li>
                </ul>
             </li>
 			<li class="treeview">

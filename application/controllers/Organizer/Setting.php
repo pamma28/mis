@@ -12,7 +12,7 @@ class Setting extends Org_Controller {
 		$this->load->library(array('table','pagination','form_validation','Converttime'));
 		$this->load->helper(array('form','url'));
 		
-		$this->load->model(array('Mpds','Msetting'));
+		$this->load->model(array('Mpds','Msetting','Mtmp'));
     }
 
 	public function index(){
@@ -26,7 +26,7 @@ class Setting extends Org_Controller {
 	
 		//========== data manipulation setting system =========
 		$column=['period','price','quota','cp','email','bbm'];
-		$label = $this->returncolomn($column);
+		$label = ['Period','Price','Quota','Contact Person','Email','Social Media'];
 		$arrinput = ['text','number','number','text','email','text'];
 		foreach ($column as $k => $v) {		
 		$temp[$k] =array($label[$k], 
@@ -52,7 +52,7 @@ class Setting extends Org_Controller {
 		$this->table->set_template($tmpl);
 		$this->table->set_heading($header);
 		$columnphase=['registphase','paymentphase','schedulephase','certiphase'];
-		$label = $this->returncolomn($columnphase);
+		$label = ['Registration<br/>Phase','Payment<br/>Phase','Schedule Confirmatin<br/>Phase','Certificate<br/>Phase'];
 		foreach ($columnphase as $k => $v) {		
 		$temp2[$k] =array($label[$k], 
 					form_input(array(
@@ -73,13 +73,10 @@ class Setting extends Org_Controller {
 											'id'=>'btnupdateset'))
 									); 
 		
-		
-
-
-
 		//=============== setting registration phase ============
 			$registphase = $this->Msetting->getset('registphase');
 			$arrregist = explode(' ', $registphase);
+
 			$data['fregist']= form_input(array('id'=>'registrange',
 								'class'=>'form-control',							
 								'style'=>'width:200px',							
@@ -91,12 +88,52 @@ class Setting extends Org_Controller {
 								'class'=>'btn btn-primary',							
 								'id'=>'btnupdateset'));
 			$data['fsendper'] = site_url('Organizer/Setting/savesetting');
+
+
+
+		//========== data manipulation registration form =========
+		$this->table->set_template($tmpl);
+		$this->table->set_heading($header);
+
+		$columnregist=['formregistterm','formregistsuccess','mailregistsuccess'];
+		$label = ['Term & Condition (No Special Code)','Template Success Registration (Use Special code)','Email Content (Use Special Code)'];
+		$opttmp = $this->Mtmp->getopttmp();
+		$temp3 =array(
+					array($label[0],
+					form_input(array('name'=>'f'.$columnregist[0],
+						'id'=>$columnregist[0],
+						'required'=>'required',
+						'value'=>$this->Msetting->getset('formregistterm'),
+						'class'=>'form-control'))),
+
+					array($label[1],
+					form_dropdown(array('name'=>'fregistsuccess',
+						'id'=>'registsuccess',
+						'required'=>'required',
+						'data-live-search'=>'true',
+						'class'=>'form-control selectpicker'),$opttmp,$this->Msetting->getset('formregistsuccess'))),
+
+					array($label[2],
+					form_dropdown(array('name'=>'fmailregistsuccess',
+						'id'=>'mailregistsuccess',
+						'required'=>'required',
+						'data-live-search'=>'true',
+						'class'=>'form-control selectpicker'),$opttmp,$this->Msetting->getset('mailregistsuccess'))),
+				);
+		
+		$data['registform']=array('table' => $this->table->generate($temp3),
+									'title' => 'Registration Form',
+									'fbtn' => form_submit(array('value'=>'Update Setting',
+											'class'=>'btn btn-primary',
+											'id'=>'btnupdateset'))
+									); 
+		
 				
 		//=============== Template ============
 		$data['jsFiles'] = array(
-							'selectpicker/select.min','moment/moment.min','daterange/daterangepicker','print/printThis','inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions');
+							'selectpicker/select.min','moment/moment.min','daterange/daterangepicker','print/printThis','inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions','summernote/summernote');
 		$data['cssFiles'] = array(
-							'selectpicker/select.min','daterange/daterangepicker');  
+							'selectpicker/select.min','daterange/daterangepicker','summernote/summernote');  
 		// =============== view handler ============
 		$data['title']="Setting System";
 		$data['topbar'] = $this->load->view('dashboard/topbar', NULL, TRUE);
@@ -106,7 +143,16 @@ class Setting extends Org_Controller {
 	}
 	
 	 
-	
+	public function previewTemplate()
+	{
+		if ($this->input->post('idtmp')!=''){
+			$idtmp = $this->input->post('idtmp');
+			$content = $this->Mtmp->detailtmp(array('tmpcontent'),$idtmp)[0];
+			echo htmlspecialchars_decode($content['tmpcontent']);
+		} else{
+			echo 'error';
+		}
+	}
 	
 	public function detailpds(){
 		//fecth data from db

@@ -41,36 +41,39 @@ class Login extends CI_Controller {
 		
 		// Save set_value
 		$valuser = set_value("fuser");
-		($this->input->post('rdr')!='') ? $rdr = urlencode($_SERVER['REQUEST_URI']): $rdr = $this->input->post('rdr');
+		($this->input->post('rdr')!='') ? $rdr = $this->input->post('rdr'):null;
 		($this->input->get('rdr')!='') ? $this->session->set_flashdata('rdr','Your login session has expired. Please login again.'):null;
 
 		// check cookies
 		$getcoo = get_cookie("rememberme");
+		
 		if ((isset($getcoo))){
 		$tempcoo = $this->encryption->decrypt($getcoo);
 		$tempcoo = stripslashes($tempcoo);
 		$tempcoo = json_decode($tempcoo,true);
 		
 		
-			if ($tempcoo["logged"]){
-			$valuser = $tempcoo["user"];
-			$valpass = $this->encryption->decrypt($tempcoo["pass"]);
-			$auth = $this->Mlogin->auth($valuser, $valpass);
-				if($auth){
-				$sess = $this->Mlogin->fetchuserdata($valuser,$valpass);
-				$this->session->set_userdata($sess);
-				
-				// add log login
-				$logstat = array (
-							"uuser" =>$sess['user'],
-							"logdate" =>date("Y-m-d H:i:s"),
-							"logip" =>$_SERVER['REMOTE_ADDR'],
-							"logdevice" =>$this->getinfophp->getOS(),
-							"logbrowser" =>$this->getinfophp->getBrowser()
-							);
-				$this->Mlogin->addlogstat($logstat);
-				($rdr!='') ? header("Location:".$rdr) : redirect("Accesscontrol/");
-				}
+			if ($tempcoo["logged"])
+			{
+				$rdr = $_SERVER['REQUEST_URI'];
+				$valuser = $tempcoo["user"];
+				$valpass = $this->encryption->decrypt($tempcoo["pass"]);
+				$auth = $this->Mlogin->auth($valuser, $valpass);
+					if($auth){
+					$sess = $this->Mlogin->fetchuserdata($valuser,$valpass);
+					$this->session->set_userdata($sess);
+					
+					// add log login
+					$logstat = array (
+								"uuser" =>$sess['user'],
+								"logdate" =>date("Y-m-d H:i:s"),
+								"logip" =>$_SERVER['REMOTE_ADDR'],
+								"logdevice" =>$this->getinfophp->getOS(),
+								"logbrowser" =>$this->getinfophp->getBrowser()
+								);
+					$this->Mlogin->addlogstat($logstat);
+					($rdr!='') ? header("Location:".$rdr) : redirect("Accesscontrol/");
+					}
 			}
 		
 		}
@@ -146,7 +149,7 @@ class Login extends CI_Controller {
 			}
 			else{
 
-			$this->session->set_flashdata("x","error");
+			$this->session->set_flashdata("x","Username or Password is incorrect");
 			$data['topbar'] = $this->load->view('home/topbar', NULL, TRUE);
 			$data['sidebar'] = $this->load->view('home/sidebar', NULL, TRUE);
 			$data['content'] = $this->load->view('home/login', $data, TRUE);
@@ -258,6 +261,12 @@ class Login extends CI_Controller {
 			$data['content'] = $this->load->view('home/resetsuccess', $data, TRUE);
 			$this->load->view ('template/main', $data);
 		}
+    }
+
+    public function startscheduler(){
+    	$this->load->library(array('Cronjob','Gmail'));
+    	$this->cronjob->startcron();
+
     }
 
 }

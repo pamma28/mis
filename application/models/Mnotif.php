@@ -67,6 +67,11 @@ class Mnotif extends CI_Model{
 		return $this->db->update('notif',$fdata);
 	}
 	
-	
+	public function gettotalunread($user)
+	{
+		$this->db->where('use_uuser',$user);
+		$this->db->where('nread','0');
+		return $this->db->count_all_results("nread");
+	}
 	
 }

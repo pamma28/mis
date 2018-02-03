@@ -13,25 +13,27 @@ class Register extends CI_Controller {
 		
 		$this->load->helper(array('string','form','dpdf','file'));
 		
-		$this->load->model(array('Mregister','Msetting'));
+		$this->load->model(array('Mpds','Msetting','Mlogin'));
 		
 		
     }
 	
 	
 	public function index(){
-		$this->save();
-		
-	}
-	
-	
-	public function save(){
-	
-							
-			$kode = $this->Mregister->getcode();
+		$kode = $this->Mpds->getcode();
 		$data['kode'] = $kode;
-		// ============== Form pds ============
 		
+		// ============== Form pds ============
+		$fuser = array('name'=>'fuser',
+						'id'=>'user',
+						'title'=>'Your NIM',
+						'placeholder'=>'NIM',
+						'required'=>'required',
+						'value'=>set_value('fuser'),
+						'class'=>'form-control input-lg',
+						'maxlength'=>'12');
+		$data['inuser'] = form_input($fuser);
+
 		$fname = array('name'=>'fname',
 						'id'=>'nama',
 						'title'=>'Your Full Name',
@@ -39,44 +41,33 @@ class Register extends CI_Controller {
 						'required'=>'required',
 						'value'=>set_value('fname'),
 						'class'=>'form-control',
-						'size'=>'100');
+						'maxlength'=>'100');
 		$data['innama'] = form_input($fname);
 		
-		$fnim = array('name'=>'fnim',
-						'id'=>'nim',
-						'title'=>'Your NIM',
-						'placeholder'=>'NIM',
-						'required'=>'required',
-						'value'=>set_value('fnim'),
-						'class'=>'form-control',
-						'size'=>'12');
-		$data['innim'] = form_input($fnim);
+		
 		
 		$fsoc = array('name'=>'fsocmed',
 						'id'=>'ktp',
 						'placeholder'=>'Facebook/twitter or both link',
 						'value'=>set_value('fsocmed'),
 						'class'=>'form-control',
-						'size'=>'25');
+						'maxlength'=>'50');
 		$data['insoc'] = form_input($fsoc);
 		
-			$optktp = array (
-						''=>'Please Select',
-						'L'=>'Male',
-						'P'=>'Female',
-						'O'=>'Other',
-						);
+			$optjk = $this->Mpds->optjk();
 		$fgender = array('name'=>'fjk',
 						'id'=>'gender',
 						'title'=>'Your Gender',
+						'required'=>'required',
 						'placeholder'=>'Gender',
 						'class'=>'form-control');
-		$data['ingen'] = form_dropdown($fgender,$optktp,set_value('fjk'));
+		$data['ingen'] = form_dropdown($fgender,$optjk,set_value('fjk'));
 		
-			$optfac= $this->Mregister->optfac();
+			$optfac= $this->Mpds->optfac();
 		$ffac = array('name'=>'ffac',
 						'id'=>'faculty',
 						'title'=>'Your Faculty',
+						'required'=>'required',
 						'placeholder'=>'Faculty',
 						'class'=>'form-control');
 		$data['infac'] = form_dropdown($ffac,$optfac,set_value('ffac'));
@@ -87,19 +78,18 @@ class Register extends CI_Controller {
 						'placeholder'=>'Birthplace',
 						'value'=>set_value('fbplc'),
 						'class'=>'form-control',
-						'size'=>'50');
+						'maxlength'=>'50');
 		$data['inbplc'] = form_input($fbirthplace);
 		
 		$fbirthdate = array('name'=>'fbd',
 						'id'=>'birthdate',
-						'title'=>'Your Birthdate eg. 1997/01/29',
-						'placeholder'=>'Birthdate format (yyyy/mm/dd), eg: 1996/09/16',
+						'title'=>'Your Birthdate eg. 22/02/1998',
+						'placeholder'=>'Birthdate format (dd/mm/yyyy), eg: 22/02/1998',
 						'value'=>set_value('fbd'),
-						'required'=>'required',
 						'class'=>'form-control',
 						'type'=>'text',
 						'size'=>'10',
-						'data-inputmask' => "'alias': 'yyyy/mm/dd'",
+						'data-inputmask' => "'alias': 'dd/mm/yyyy'",
 						'datamask' => ''
 						);
 		$data['inbdt'] = form_input($fbirthdate);
@@ -111,7 +101,7 @@ class Register extends CI_Controller {
 						'required'=>'required',
 						'value'=>set_value('fnohp'),
 						'class'=>'form-control',
-						'size'=>'12');
+						'maxlength'=>'13');
 		$data['inhp'] = form_input($fnohp);
 		
 		$femail = array('name'=>'femail',
@@ -121,18 +111,10 @@ class Register extends CI_Controller {
 						'value'=>set_value('femail'),
 						'required'=>'required',
 						'class'=>'form-control',
-						'size'=>'50',
+						'maxlength'=>'50',
 						'type'=>'email');
 		$data['inemail'] = form_input($femail);
 		
-		$fbbm = array('name'=>'fbbm',
-						'id'=>'bbm',
-						'title'=>'Your LINE or BBM',
-						'placeholder'=>'BBM ID',
-						'value'=>set_value('fbbm'),
-						'class'=>'form-control',
-						'size'=>'7');
-		$data['inbbm'] = form_input($fbbm);
 		
 		$faddrnow = array('name'=>'faddrnow',
 						'id'=>'addresnow',
@@ -150,6 +132,7 @@ class Register extends CI_Controller {
 						'class'=>'form-control');
 		$data['inaddh'] = form_textarea($faddrhome,set_value('faddrhome'));
 		
+		$textterm = $this->Msetting->getset('formregistterm');
 		$data['interm'] = form_textarea(array(
 						'name'=>'fterm',
 						'id'=>'term',
@@ -157,16 +140,29 @@ class Register extends CI_Controller {
 						'placeholder'=>'Term and Condition',
 						'rows'=>'5',
 						'readonly'=>'readonly',
-						'class'=>'form-control'),'blablabla');
+						'class'=>'form-control'),$textterm);
 		
-		$data['inaggree'] = form_checkbox(array(
+		$data['inagree'] = form_checkbox(array(
 							'name'=>'faggree',
 							'id'=>'agree',
 							'title'=>'Term & Condition',
-							'value'=>set_value('faggree'),
+							'checked'=>set_value('faggree'),
 							'required'=>'required',
+							'class'=>'checkbox icheck',
 							'value'=>'1')
 							);
+
+		$fcaptcha = array('name'=>'fcaptcha',
+						'id'=>'captcha',
+						'placeholder'=>'Your Captcha',
+						'title'=>'Insert Your Captcha',
+						'value'=>null,
+						'required'=>'required',
+						'class'=>'form-control',
+						'maxlength'=>'5',
+						'type'=>'text');
+
+		$data['incaptcha'] = form_input($fcaptcha);
 		
 		$data['inkode'] = form_hidden('fkode',$kode);
 		
@@ -184,54 +180,32 @@ class Register extends CI_Controller {
 		
 		$data['period'] = $this->Msetting->getset('period');
 		
-		$this->form_validation->set_rules('fname', 'name', 'required|trim|xss_clean');
-		$this->form_validation->set_rules('fnim', 'NIM', 'required|trim|xss_clean');
-		$this->form_validation->set_rules('fsocmed', 'Social Media', 'required|trim|xss_clean');
+		$this->form_validation->set_rules('fuser', 'NIM', 'required|trim|xss_clean');
+		$this->form_validation->set_rules('fname', 'Fulll Name', 'required|trim|xss_clean');
+		$this->form_validation->set_rules('fsocmed', 'Social Media', 'trim|xss_clean');
 		$this->form_validation->set_rules('fjk', 'Gender', 'required|trim|xss_clean');
 		$this->form_validation->set_rules('ffac', 'Faculty', 'required|trim|xss_clean');
-		$this->form_validation->set_rules('fbplc', 'Birth Place', 'required|trim|xss_clean');
-		$this->form_validation->set_rules('fbd', 'Birth Date', 'required|trim|xss_clean');
+		$this->form_validation->set_rules('fbplc', 'Birth Place', 'trim|xss_clean');
+		$this->form_validation->set_rules('fbd', 'Birth Date', 'trim|xss_clean');
 		$this->form_validation->set_rules('femail', 'Email', 'required|trim|xss_clean');
-		$this->form_validation->set_rules('fbbm', 'BBM Pin', 'trim|xss_clean');
 		$this->form_validation->set_rules('fnohp', 'Phone Number', 'required|trim|xss_clean');
-		$this->form_validation->set_rules('faddrnow', 'Current Address', 'required|trim|xss_clean');
-		$this->form_validation->set_rules('faddrhome', 'Home Address', 'required|trim|xss_clean');
+		$this->form_validation->set_rules('faddrnow', 'Current Address', 'trim|xss_clean');
+		$this->form_validation->set_rules('faddrhome', 'Home Address', 'trim|xss_clean');
 		
-		//================= save pds ================
-		date_default_timezone_set('Asia/Jakarta');
-		$tgl = date('m/d/Y h:i:s a', time());
-		if($this->form_validation->run()== true)
-		{
-			$qpds = array (
-				'id_fakultas' => $this->input->post('ffac'),
-				'Date_pds' => date('Y-m-d h:i:s'),
-				'FULL_NAME' => $this->input->post('fname'),
-				'NIM' => $this->input->post('fnim'),
-				'socmed' => $this->input->post('fktp'),
-				'TEMPAT_LAHIR' => $this->input->post('fbplc'),
-				'TGL_LAHIR' => $this->input->post('fbd'),
-				'NO_HP' => $this->input->post('fnohp'),
-				'MAIL' => $this->input->post('femail'),
-				'BBM' => $this->input->post('fbbm'),
-				'ALAMAT_NOW' => $this->input->post('faddrnow'),
-				'ALAMAT_HOME' => $this->input->post('faddrhome'),
-				'JK' => $this->input->post('fjk'),
-				'Code_pay' => $this->input->post('fkode')
-				);
-		
-			$sukses = $this->Mregister->savepds($qpds);
-			
-			if ($sukses){
-				$this->session->set_flashdata('pds',$qpds);
-				redirect('Register/registration_success');
-			}
-		} 
-		
+
+		//=============== captcha ==============
+		if ($this->form_validation->run()==false) {
+		$this->load->library('captcha');
+		$captcha = $this->captcha->createcaptcha();
+		$this->session->set_userdata('imgcaptcha',$captcha->inline());
+		$this->session->set_userdata('captcha',$captcha->getPhrase());
+		}
+
 		//=============== Template ============
 		$data['jsFiles'] = array(
-							'inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions','validate/jquery.validate.min');
+							'inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions','inputmask/inputmask.numeric .extensions','validate/jquery.validate.min','icheck.min');
 		$data['cssFiles'] = array(
-							'form-wizard'
+							'form-wizard','icheck/blue'
 							);
 							
 		//============== view handler ================
@@ -240,31 +214,76 @@ class Register extends CI_Controller {
 		$data['sidebar'] = $this->load->view('home/sidebar', NULL, TRUE);
 		$data['content'] = $this->load->view('home/form/registration', $data, TRUE);
 		$this->load->view ('template/main', $data);
-	
-	
-
 	}
 	
-	public function registration_success(){
-		// ============= email handler ===============
+	
+	public function save(){
+	
+							
+		//================= save pds ================
 		
-		$this->load->config('email');
-		$conf = $this->config->item('conf','email');
-		$this->load->library('email',$conf);
-		$this->email->set_newline("\r\n");
+		if(($this->session->userdata('captcha')==$this->input->post('fcaptcha'))) 
+		{
+			($this->input->post('fbd')!=null) ? $bdate = $this->input->post('fbd') : $bdate = date('Y-m-d H:i:s');
+
+			$qpds = array (
+				'uuser' => $this->input->post('fuser'),
+				'upass' => md5($kode),
+				'idfac' => $this->input->post('ffac'),
+				'ucreated' => date('Y-m-d h:i:s'),
+				'uname' => $this->input->post('fname'),
+				'unim' => $this->input->post('fuser'),
+				'ubbm' => $this->input->post('fktp'),
+				'ubplace' => $this->input->post('fbplc'),
+				'ubdate' => $bdate,
+				'uhp' => $this->input->post('fnohp'),
+				'uemail' => $this->input->post('femail'),
+				'uaddrnow' => $this->input->post('faddrnow'),
+				'uaddhome' => $this->input->post('faddrhome'),
+				'idjk' => $this->input->post('fjk'),
+				'upaycode' => $kode
+				);
 		
-		$data['pds'] = $this->session->userdata('pds');
-		$data['content'] = $this->load->view('home/form/printsuccess', $data, TRUE);
-		$msg = $this->load->view ('template/print', $data,true);
-		$this->email->from("education@sefunsoed.org", "SEF Membership");
-		$this->email->to($data['pds']['MAIL']);
-		$this->email->subject("Registration SEF Membership Code (".$data['pds']['Code_pay'].")");
-		$this->email->message($msg);
-		
-		if (!$this->email->send()){
-			show_error($this->email->print_debugger());
+			$sukses = $this->Mpds->addpds($qpds);
+			
+			if ($sukses){
+				$this->session->sess_destroy();
+				$this->session->set_flashdata('successregist',$qpds);
+				redirect('Register/registrationsuccess');
+			}
+		} else{
+			$this->session->set_flashdata('failedregist','Your captcha is incorrect');
+			$this->index();
 		}
 		
+	}
+	
+	public function registrationsuccess(){
+		$this->load->library(array('MY_Input','Convertcode','Gmail'));
+		$formdata = $this->session->userdata('successregist');
+		$period = $this->Msetting->getset('period');
+		$textmail = $this->Msetting->getset('formregistsuccess');		
+
+		// ============= email handler ===============
+		$to = 'pamma.cyber@gmail.com';//$formdata['uemail'];
+		$ccmail=null;
+		$bcfrom = "SEF Membership";
+		$sub = 'Regular Class '.$period.' - Registration Success CODEPAY';//('.$formdata['upaycode'].')';
+		$content = $textmail;
+		$attfile = null;
+		
+		if ((null!=$to) and (null!=$sub)){
+			
+			//====== decode message ============
+			$decode = $this->convertcode->decodemailmsg($content,$to);	
+			
+			//================= gmail send ===========
+			$ret = $this->gmail->sendmail($to,$ccmail,$sub,$bcfrom,$decode,$attfile);
+		}		
+
+		// ============= data for view ===============
+		//$data['pds']= $formdata;
+
 		//============= view handler ==================
 		$data['title'] = 'Registration Success';
 		$data['topbar'] = $this->load->view('home/topbar', NULL, TRUE);
@@ -275,7 +294,25 @@ class Register extends CI_Controller {
 	
 	}
 	
+	public function recaptcha(){
+		$this->load->library('captcha');
+		$newcaptcha = $this->captcha->createcaptcha();
+		$this->session->set_userdata('imgcaptcha',$newcaptcha->inline());
+		$this->session->set_userdata('captcha',$newcaptcha->getPhrase());
+		echo $newcaptcha->inline();
+		return $newcaptcha->inline();
+	}
+
+	public function checkemail(){
+		$em = $this->input->post('email');
+		echo $this->Mlogin->checkmail($em);
+	}
 	
+	public function checkuser(){
+		$us = $this->input->post('user');
+		echo $this->Mlogin->checkuser($us);
+	}
+
 	
 	public function printmail(){
 		$data['dt'] = $this->Msetting->getset('period');
