@@ -1,7 +1,7 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
 	
-	<h1><i class="fa fa-flag fa-lg"></i> Notification <small>list</small></h1>
+	<h1><i class="fa fa-bell fa-lg"></i> Notification <small>list</small></h1>
 		<ol class="breadcrumb">
             <?=set_breadcrumb();?>
 		</ol>
@@ -24,7 +24,7 @@
 			<?php } ?>
 		<div class="row">
 			<div class="col-md-6"> 
-				<a href="<?=base_url('Organizer/Notification/addnotif');?>" data-target="#DetailModal" data-toggle="modal" role="button" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add </a> 
+				<a href="<?=base_url('Organizer/Notification/addnotif');?>" data-target="#DetailModal" data-toggle="modal" role="button" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add Notification</a> 
 			</div>
 			<div class="col-md-6 text-right">
 					<?php 

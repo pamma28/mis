@@ -20,8 +20,6 @@ class Register extends CI_Controller {
 	
 	
 	public function index(){
-		$kode = $this->Mpds->getcode();
-		$data['kode'] = $kode;
 		
 		// ============== Form pds ============
 		$fuser = array('name'=>'fuser',
@@ -164,7 +162,6 @@ class Register extends CI_Controller {
 
 		$data['incaptcha'] = form_input($fcaptcha);
 		
-		$data['inkode'] = form_hidden('fkode',$kode);
 		
 		$freset = array('id'=>'reset',
 						'class'=>'btn btn-default',
@@ -218,21 +215,20 @@ class Register extends CI_Controller {
 	
 	
 	public function save(){
-	
-							
+		$upaycode = $this->Mpds->getcode();			
 		//================= save pds ================
 		
 		if(($this->session->userdata('captcha')==$this->input->post('fcaptcha'))) 
 		{
 			($this->input->post('fbd')!=null) ? $bdate = $this->input->post('fbd') : $bdate = date('Y-m-d H:i:s');
-
+			$fuser = $this->input->post('fuser');
 			$qpds = array (
-				'uuser' => $this->input->post('fuser'),
-				'upass' => md5($kode),
+				'uuser' => $fuser,
+				'upass' => md5($upaycode),
 				'idfac' => $this->input->post('ffac'),
 				'ucreated' => date('Y-m-d h:i:s'),
 				'uname' => $this->input->post('fname'),
-				'unim' => $this->input->post('fuser'),
+				'unim' => $fuser,
 				'ubbm' => $this->input->post('fktp'),
 				'ubplace' => $this->input->post('fbplc'),
 				'ubdate' => $bdate,
@@ -241,7 +237,9 @@ class Register extends CI_Controller {
 				'uaddrnow' => $this->input->post('faddrnow'),
 				'uaddhome' => $this->input->post('faddrhome'),
 				'idjk' => $this->input->post('fjk'),
-				'upaycode' => $kode
+				//====== creating hash code email confirmation =========
+				'uvalidcode'=>md5($fuser.$bdate.$this->input->post('fname')),
+				'upaycode' => $upaycode
 				);
 		
 			$sukses = $this->Mpds->addpds($qpds);
@@ -249,6 +247,23 @@ class Register extends CI_Controller {
 			if ($sukses){
 				$this->session->sess_destroy();
 				$this->session->set_flashdata('successregist',$qpds);
+				
+				//============ push notif =========
+
+				$this->notification->pushmynotif(
+					array(
+						'idnotif'=>$this->Msetting->getset('notifregistsuccess'),
+						'uuser' => $fuser
+						)
+				);
+
+				$this->notification->pushNotifToOrg(
+					array(
+						'idnotif'=>$this->Msetting->getset('notifnewsignup'),
+						'uuser' => $fuser
+						)
+				);
+
 				redirect('Register/registrationsuccess');
 			}
 		} else{
@@ -260,22 +275,23 @@ class Register extends CI_Controller {
 	
 	public function registrationsuccess(){
 		$this->load->library(array('MY_Input','Convertcode','Gmail'));
+		$this->load->model('Mtmp');
 		$formdata = $this->session->userdata('successregist');
 		$period = $this->Msetting->getset('period');
-		$textmail = $this->Msetting->getset('formregistsuccess');		
+		$idtmp = $this->Msetting->getset('mailregistsuccess');
+		$rawtext = htmlspecialchars_decode($this->Mtmp->gettmpdata($idtmp)->tmpcontent); 
 
 		// ============= email handler ===============
 		$to = 'pamma.cyber@gmail.com';//$formdata['uemail'];
 		$ccmail=null;
 		$bcfrom = "SEF Membership";
-		$sub = 'Regular Class '.$period.' - Registration Success CODEPAY';//('.$formdata['upaycode'].')';
-		$content = $textmail;
+		$sub = 'Regular Class '.$period.' - Registration Success';
 		$attfile = null;
 		
 		if ((null!=$to) and (null!=$sub)){
 			
 			//====== decode message ============
-			$decode = $this->convertcode->decodemailmsg($content,$to);	
+			$decode = $this->convertcode->decodemailmsg($rawtext,$to);	
 			
 			//================= gmail send ===========
 			$ret = $this->gmail->sendmail($to,$ccmail,$sub,$bcfrom,$decode,$attfile);

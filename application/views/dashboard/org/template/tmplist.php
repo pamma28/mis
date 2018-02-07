@@ -24,7 +24,7 @@
 			<?php } ?>
 		<div class="row">
 			<div class="col-md-6"> 
-				<a class="btn btn-sm btn-primary" role="button" data-toggle="modal" data-target="#DetailModal" href="<?=base_url('Organizer/Template/addtemplate');?>" ><i class="fa fa-plus"></i> Add </a> 
+				<a class="btn btn-sm btn-primary" href="<?=base_url('Organizer/Template/addtemplate');?>" ><i class="fa fa-plus"></i> Add Template</a> 
 				<a href="#" class="btn btn-sm btn-primary" data-toggle="modal" data-target=".bs-import-data"><i class="fa fa-cloud-upload"></i> Import </a>
 				<a href="#" class="btn btn-sm btn-primary" data-toggle="modal" data-target=".bs-export-data"><i class="fa fa-cloud-download"></i> Export </a>
 				<a href="#" class="btn btn-sm btn-primary" data-toggle="modal" data-target=".bs-print-data"><i class="fa fa-print"></i> Print </a>

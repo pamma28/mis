@@ -19,7 +19,7 @@ class Notification extends Org_Controller {
 	public function index(){
 		//===================== table handler =============
 		$data['thisperiod']=$this->Msetting->getset('period');
-		$column=['idnotif','npublish','ncontent','uname'];
+		$column=['idnotif','npublish','nicon','ncontent','uname'];
 		$header = $this->returncolomn($column);
 		unset($header[0]);
 		// checkbox checkalldata
@@ -128,6 +128,7 @@ class Notification extends Org_Controller {
 							));
 				array_unshift($temp[$key],$ctable);
 				(strlen($temp[$key]['ncontent'])>30) ? $temp[$key]['ncontent'] = mb_substr($temp[$key]['ncontent'],0,30).'.....' : null;
+				$temp[$key]['nicon'] = '<span class="fa '.$temp[$key]['nicon'].'"></span>';
 				$temp[$key]['ncontent'] .= '<span class="idname hidden">'.mb_substr($value['ncontent'],0,10).'</span>'; 
 				$temp[$key]['npublish']=date('d-M-Y', strtotime($value['npublish'])).'<br/>'.date('H:i:s', strtotime($value['npublish']));
 					
@@ -154,9 +155,9 @@ class Notification extends Org_Controller {
 			$data['factselected'] = site_url('Organizer/Notification/updateselected');
 			
 		//=============== Template ============
-		$data['jsFiles'] = array(
+		$data['jsFiles'] = array('selectpicker/select.min'
 							);
-		$data['cssFiles'] = array(
+		$data['cssFiles'] = array('selectpicker/select.min'
 							);  
 		// =============== view handler ============
 		$data['title']="Notification";
@@ -168,8 +169,34 @@ class Notification extends Org_Controller {
 	
 	public function addnotif(){
 	$id=$this->input->get('id');
-	$colq=['ncontent'];
-	//============ form edit quest ===========
+	$colq=['nicon','ncontent'];
+	//============ form edit notif ===========
+		$opticon = array(
+				"fa-home",
+				"fa-key",
+				"fa-legal",
+				"fa-pencil",
+				"fa-money",
+				"fa-book",
+				"fa-bullhorn",
+				"fa-file-text",
+				"fa-envelope-square",
+				"fa-envelope",
+				"fa-certificate",
+				"fa-check-square-o",
+				"fa-calendar",
+				"fa-clock-o",
+				"fa-edit",
+				"fa-check"
+				);
+		$selecticon = '<select name="fnicon" id="fnicon" class="form-control selectpicker" required="required">';
+
+		foreach ($opticon as $k => $v) {
+			$selecticon .= '<option value="'.$v.'" data-icon="'.$v.'"></option>';
+		}
+		$selecticon .= "</select>";
+
+		$r[] = $selecticon;
 		$fncontent =  array('name'=>'fncontent',
 						'id'=>'fncont',
 						'required'=>'required',
@@ -263,11 +290,39 @@ class Notification extends Org_Controller {
 	
 	public function editnotif(){
 	//fecth data from db
-		$col=['ncontent'];
+		$col=['nicon','ncontent'];
 		$id = $this->input->get('id');
 		$dbres = $this->Mnotif->detailnotif($col,$id);
 		$colq = $this->returncolomn($col);
 	//============ form edit quest ===========
+
+		$opticon = array(
+				"fa-home",
+				"fa-key",
+				"fa-legal",
+				"fa-pencil",
+				"fa-money",
+				"fa-book",
+				"fa-bullhorn",
+				"fa-file-text",
+				"fa-envelope-square",
+				"fa-envelope",
+				"fa-certificate",
+				"fa-check-square-o",
+				"fa-calendar",
+				"fa-clock-o",
+				"fa-edit",
+				"fa-check"
+				);
+		$selecticon = '<select name="fnicon" id="fnicon" class="form-control selectpicker" required="required">';
+
+		foreach ($opticon as $k => $v) {
+			($dbres[0]['nicon']==$v) ? $select = 'selected' : $select='';
+			$selecticon .= '<option value="'.$v.'" data-icon="'.$v.'" '.$select.'></option>';
+		}
+		$selecticon .= "</select>";
+		$r[] = $selecticon;
+
 		$fcont =  array('name'=>'fncontent',
 						'id'=>'fncont',
 						'required'=>'required',
@@ -321,6 +376,7 @@ class Notification extends Org_Controller {
 			// set new data variable
 				$fdata = array(
 					'npublish'=>date('Y-m-d H:i:s'),
+					'nicon'=>$this->input->post('fnicon'),
 					'ncontent'=>$this->input->post('fncontent'),
 					'uuser'=>$this->session->userdata('user')
 					);
@@ -347,6 +403,7 @@ class Notification extends Org_Controller {
 	$id = $this->input->post('fid');
 	// set new data variable
 				$fdata = array(
+					'nicon'=>$this->input->post('fnicon'),
 					'ncontent'=>$this->input->post('fncontent'),
 					'uuser'=>$this->session->userdata('user')
 					);
@@ -394,8 +451,8 @@ class Notification extends Org_Controller {
 	}
 	
 	public function returncolomn($header) {
-	$find=['npublish','ncontent','uname'];
-	$replace = ['Notification Created', 'Notification Content','PIC'];
+	$find=['npublish','nicon','ncontent','uname'];
+	$replace = ['Notification Created','Icon', 'Notification Content','PIC'];
 		foreach ($header as $key => $value){
 		$header[$key]  = str_replace($find, $replace, $value);
 		}

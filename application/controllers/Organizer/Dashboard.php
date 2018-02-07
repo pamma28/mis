@@ -9,7 +9,7 @@ class Dashboard extends Org_Controller {
  
         $this->load->database();
  
-		$this->load->library(array('table','pagination','form_validation','Convertmoney','Converttime','Gmail'));
+		$this->load->library(array('table','pagination','form_validation','Convertmoney','Converttime','Gmail','Notification'));
 		$this->load->helper(array('form','breadcrumb'));
 		
 		$this->load->model(array('Mlogin','Mchart','Mpds','Mpay','Msetting'));
@@ -86,6 +86,11 @@ class Dashboard extends Org_Controller {
 		$data['sidebar'] = $this->load->view('dashboard/org/sidebar', NULL, TRUE);
 		$data['content'] = $this->load->view('dashboard/org/dashboard', $data, TRUE);
 		$this->load->view ('template/main', $data);
+	}
+
+
+	public function getmynotif(){
+		echo $this->notification->getmynotif();
 	}
 
 	 

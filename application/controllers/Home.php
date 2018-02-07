@@ -45,6 +45,10 @@ class Home extends CI_Controller {
 	echo $this->input->post('fcode',false);
 	}
 	
+	public function email(){
+		$data['title']= 'try email';
+		$this->load->view('home/emailsuccess',$data);
+	}
 	
 	
 }

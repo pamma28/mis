@@ -76,9 +76,7 @@
 				</div>
 				  
 				<div class="tab-pane table-responsive" id="registform">
-                  
 						<div class="col-md-6">
-							
 							<?php echo form_open(base_url('Organizer/setting/saveformregist/'),array('name'=>'fregistform','class'=>'form-horizontal','method'=>'POST'));?>
 							<div class="panel panel-primary">
 								<div class="panel-heading panel-heading-sm">
@@ -115,11 +113,104 @@
 						</div>
 				</div>
 				<div class="tab-pane table-responsive" id="notiflist">
-                    
-						<div class="col-md-6"> 
-							<a href="<?=base_url('Organizer/PDS/addpds');?>" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add Setting</a> 
+						<div class="col-md-12">
+							<div class="box box-primary">
+								<div class="box-header text-center">
+									<h5 class="box-title">Notification Preview</h5>
+								</div>
+								<div class="box-body">
+									<div id="notiftextpreview">
+									</div>
+								</div>
+							</div>
 						</div>
-					
+						<div class="col-md-4">
+							<?php echo form_open(base_url('Organizer/setting/saveformregist/4'),array('name'=>'fregistform','class'=>'form-horizontal','method'=>'POST'));?>
+							<div class="panel panel-primary">
+								<div class="panel-heading panel-heading-sm">
+									<h3 class="panel-title text-center"><span class="fa fa-file-text"></span> <b><?=$notifmemform['title'];?></b></h3>
+								</div>
+								<div class="panel-body">
+									<?php if ($this->session->flashdata('vregist')!=null){ ?>
+									<div class="alert alert-success alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('vregist');?>
+									</div>
+									<?php } else if ($this->session->flashdata('xregist')!=null){ ?>
+									<div class="alert alert-danger alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('xregist');?>
+									</div>		
+									<?php } ?>
+								 	<?=$notifmemform['table'];?>
+								</div>
+								<div class="panel-footer text-right">
+									<?=$notifmemform['fbtn'];?>
+								</div>
+							</div>
+
+							<?php  
+							echo form_close();
+							?> 
+						</div>
+						<div class="col-md-4"> 
+							<?php echo form_open(base_url('Organizer/setting/saveformregist/5'),array('name'=>'fregistform','class'=>'form-horizontal','method'=>'POST'));?>
+							<div class="panel panel-primary">
+								<div class="panel-heading panel-heading-sm">
+									<h3 class="panel-title text-center"><span class="fa fa-file-text"></span> <b><?=$notiforgform['title'];?></b></h3>
+								</div>
+								<div class="panel-body">
+									<?php if ($this->session->flashdata('vregist')!=null){ ?>
+									<div class="alert alert-success alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('vregist');?>
+									</div>
+									<?php } else if ($this->session->flashdata('xregist')!=null){ ?>
+									<div class="alert alert-danger alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('xregist');?>
+									</div>		
+									<?php } ?>
+								 	<?=$notiforgform['table'];?>
+								</div>
+								<div class="panel-footer text-right">
+									<?=$notiforgform['fbtn'];?>
+								</div>
+							</div>
+
+							<?php  
+							echo form_close();
+							?> 
+						</div>
+						<div class="col-md-4"> 
+							<?php echo form_open(base_url('Organizer/setting/saveformregist/6'),array('name'=>'fregistform','class'=>'form-horizontal','method'=>'POST'));?>
+							<div class="panel panel-primary">
+								<div class="panel-heading panel-heading-sm">
+									<h3 class="panel-title text-center"><span class="fa fa-file-text"></span> <b><?=$notifadmform['title'];?></b></h3>
+								</div>
+								<div class="panel-body">
+									<?php if ($this->session->flashdata('vregist')!=null){ ?>
+									<div class="alert alert-success alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('vregist');?>
+									</div>
+									<?php } else if ($this->session->flashdata('xregist')!=null){ ?>
+									<div class="alert alert-danger alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('xregist');?>
+									</div>		
+									<?php } ?>
+								 	<?=$notifadmform['table'];?>
+								</div>
+								<div class="panel-footer text-right">
+									<?=$notifadmform['fbtn'];?>
+								</div>
+							</div>
+
+							<?php  
+							echo form_close();
+							?> 
+						</div>
 				</div>
 				<div class="tab-pane table-responsive" id="pagelsit">
                     
@@ -244,13 +335,18 @@
 		}
 	});
 	
-	$(document).ready(function(){
+$(document).ready(function(){
 	$('#registsuccess, #mailregistsuccess').on('changed.bs.select',function(e){
 		$.post('<?php echo base_url('Organizer/Setting/previewTemplate'); ?>', {idtmp: $(this).selectpicker('val')}, function(d) {
 			$('#prevsettingregistform').empty().html(d);
 		});
 	});
 
+	$('.changenotifclass').on('changed.bs.select',function(e){
+		$.post('<?php echo base_url('Organizer/Setting/previewNotification'); ?>', {idnotif: $(this).selectpicker('val')}, function(d) {
+			$('#notiftextpreview').empty().html(d);
+		});
 	});
+});
 	</script>
 </section>

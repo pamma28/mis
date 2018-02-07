@@ -168,7 +168,7 @@ class Template extends Org_Controller {
 							));
 				array_unshift($temp[$key],$ctable);
 					//read and modify content text 
-					$txt = strip_tags(htmlspecialchars_decode($value['tmpcontent']));
+					$txt = strip_tags(html_entity_decode($value['tmpcontent']));
 					(strlen($txt)>30) ? $tmptext = mb_substr($txt,0,30).'...':$tmptext=$txt;
 				
 				$temp[$key]['tmpcontent']='<span class="idname hidden">'.$value['tmpname'].'</span>'.$tmptext;
@@ -179,7 +179,7 @@ class Template extends Org_Controller {
 				unset($temp[$key]['idtmplte']);
 				$temp[$key]['tmpname']='<a href="'.base_url('Organizer/Template/readtmp?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Read Template Content"><b>'.$value['tmpname'].'</b></a>';
 				$temp[$key]['menu']='<div class="btn-group" aria-label="Template Menu" role="group"><a href="'.base_url('Organizer/Template/readtmp?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Full Data" class="btn btn-primary btn-sm" title="Read"><i class="fa fa-list-alt"></i></a>'.
-				'<a href="'.base_url('Organizer/Template/edittemplate?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Edit Data" class="btn btn-info btn-sm" title="Edit"><i class="fa fa-edit"></i></a>'.
+				'<a href="'.base_url('Organizer/Template/edittemplate?id=').$enc.'" alt="Edit Data" class="btn btn-info btn-sm" title="Edit"><i class="fa fa-edit"></i></a>'.
 				'<a href="#" data-href="'.base_url('Organizer/Template/deletetmp?id=').$enc.'" alt="Delete Data" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirm-delete" title="Delete"><i class="fa fa-trash"></i></a></div>';
 				
 				}
@@ -343,8 +343,18 @@ class Template extends Org_Controller {
 			$a++;
 		}
 		$data['rdata']=$this->table->generate($dtable);
-		
-		$this->load->view('dashboard/org/template/addtmp', $data);
+
+		//=============== Template ============
+		$data['jsFiles'] = array(
+							'summernote/summernote');
+		$data['cssFiles'] = array(
+							'summernote/summernote');  
+		// =============== view handler ============
+		$data['title']="Add Template";
+		$data['topbar'] = $this->load->view('dashboard/topbar', NULL, TRUE);
+		$data['sidebar'] = $this->load->view('dashboard/org/sidebar', NULL, TRUE);
+		$data['content'] = $this->load->view('dashboard/org/template/addtmp', $data, TRUE);
+		$this->load->view ('template/main', $data);
 	}
 	
 	public function edittemplate(){
@@ -368,7 +378,7 @@ class Template extends Org_Controller {
 						'id'=>'feditcont',
 						'required'=>'required',
 						'placeholder'=>'Template Content',
-						'value'=>htmlspecialchars_decode($dbres[0]['tmpcontent']),
+						'value'=>html_entity_decode($dbres[0]['tmpcontent']),
 						'rows'=>3,
 						'cols'=>6,
 						'class'=>'form-control');
@@ -409,8 +419,17 @@ class Template extends Org_Controller {
 			$a++;
 		}
 		$data['rdata']=$this->table->generate($dtable);
-		
-		$this->load->view('dashboard/org/template/edittmp', $data);
+		//=============== Template ============
+		$data['jsFiles'] = array(
+							'summernote/summernote');
+		$data['cssFiles'] = array(
+							'summernote/summernote');
+		// =============== view handler ============  
+		$data['title']="Edit Template";
+		$data['topbar'] = $this->load->view('dashboard/topbar', NULL, TRUE);
+		$data['sidebar'] = $this->load->view('dashboard/org/sidebar', NULL, TRUE);
+		$data['content'] = $this->load->view('dashboard/org/template/edittmp', $data, TRUE);
+		$this->load->view ('template/main', $data);
 	}
 	
 	public function readtmp(){
@@ -440,7 +459,7 @@ class Template extends Org_Controller {
 		//set table data
 		$a = 0;
 		$dbres[0]['tmpdate'] = date('d-M-Y H:i:s', strtotime($dbres[0]['tmpdate']));
-		$dbres[0]['tmpcontent'] = htmlspecialchars_decode($dbres[0]['tmpcontent']);
+		$dbres[0]['tmpcontent'] = html_entity_decode($dbres[0]['tmpcontent']);
 		foreach($row as $key)
 		{
 			$dtable[$a] = array(
@@ -481,7 +500,7 @@ class Template extends Org_Controller {
 				$fdata = array(
 					'tmpdate'=>date('Y-m-d H:i:s'),
 					'tmpname'=>$this->input->post('ftmpnamecon'),
-					'tmpcontent'=>htmlspecialchars($this->input->post('fcont',false)),
+					'tmpcontent'=>htmlentities($this->input->post('fcont',false)),
 					'uuser'=>$this->session->userdata('user'),
 					'tmptype'=>'CONTENT'
 					);
@@ -499,7 +518,7 @@ class Template extends Org_Controller {
 	// set new data variable
 				$fdata = array(
 					'tmpname'=>$this->input->post('ftmpname'),
-					'tmpcontent'=>htmlspecialchars($this->input->post('fcont',false)),
+					'tmpcontent'=>htmlentities($this->input->post('fcont',false)),
 					'uuser'=>$this->session->userdata('user')
 					);
 			//update to database
@@ -546,7 +565,7 @@ class Template extends Org_Controller {
 				 
 				   $dtxl[$i-1]['tmpdate'] = date("Y-m-d H:i:s");
                    $dtxl[$i-1]['tmpname'] = $objWorksheet->getCell('A'.($i+1))->getValue();
-                   $dtxl[$i-1]['tmpcontent'] = htmlspecialchars($objWorksheet->getCell('B'.($i+1))->getValue());
+                   $dtxl[$i-1]['tmpcontent'] = htmlentities($objWorksheet->getCell('B'.($i+1))->getValue());
                    $dtxl[$i-1]['tmptype'] = "CONTENT";
                    $dtxl[$i-1]['uuser'] = $this->session->userdata('user');
 				 
@@ -622,7 +641,7 @@ class Template extends Org_Controller {
 				//manipulate data
 					foreach ($key as $k=>$v){
 						$objPHPExcel->getActiveSheet()->setCellValue($Dcol.$Drow,$v);
-						($k == 'tmpcontent') ?	$objPHPExcel->getActiveSheet()->setCellValue($Dcol.$Drow,strip_tags(htmlspecialchars_decode($v))) : null;
+						($k == 'tmpcontent') ?	$objPHPExcel->getActiveSheet()->setCellValue($Dcol.$Drow,strip_tags(html_entity_decode($v))) : null;
 						
 						$Dcol++;
 					}
@@ -758,7 +777,7 @@ class Template extends Org_Controller {
 				foreach($dexp as $key=>$val){
 					//manipulation allow data
 					(array_key_exists('tmpdate',$val)) ? $dexp[$key]['tmpdate']=date('d-M-Y',strtotime($val['tmpdate'])).'<br/>'.date('H:i:s',strtotime($val['tmpdate'])): null;
-					(array_key_exists('tmpcontent',$val)) ? $dexp[$key]['tmpcontent']=strip_tags(htmlspecialchars_decode($val['tmpcontent'])) : null;
+					(array_key_exists('tmpcontent',$val)) ? $dexp[$key]['tmpcontent']=strip_tags(html_entity_decode($val['tmpcontent'])) : null;
 					
 				}
 		$data['printlistlogin'] = $this->table->generate($dexp);

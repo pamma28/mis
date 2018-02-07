@@ -46,6 +46,13 @@
 		}
 	} 
 	?>
+
+  <script type="text/javascript">
+    $(document).ready(function(){
+        (window.matchMedia('(min-width: 767px)').matches) ? $("#buttonshowsidebar").removeClass('fa-cogs').addClass('fa-times'):null;
+        
+    });
+  </script>
   </head>
   <body class="skin-blue wysihtml5-supported pace-done fixed">
 	
@@ -61,12 +68,13 @@
       
       <header class="main-header">
         <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-		<span class="sr-only">Toggle navigation</span>
+          <span class="fa fa-cogs fa-lg" id="buttonshowsidebar"></span>
+    <span class="sr-only">Toggle navigation</span>
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
 		</a>
-		<a href="<?php echo base_url(); ?>" class="logo"><span class="fa fa-home"></span> <b>SEF</b> Membership</a>
+		<a href="<?php echo base_url(); ?>" class="logo"> <b>SEF</b> Membership</a>
         <!-- Header Navbar: style can be found in header.less -->
         <nav class="navbar navbar-static-top" role="navigation">
           <!-- Sidebar toggle button-->
@@ -103,7 +111,7 @@
         <div class="pull-right hidden-xs">
           Page rendered in <strong>{elapsed_time}</strong> seconds. | <b>Version</b> 1.0 Alpha
         </div>
-        <strong>Copyright &copy; 2015 <a href="http://sefunsoed.org">SEF Unsoed</a>.</strong> All rights reserved.
+        <strong>Copyright &copy; 2018 <a href="http://sefunsoed.org">SEF Unsoed</a>.</strong> All rights reserved.
       </footer>
     </div><!-- ./wrapper -->
 

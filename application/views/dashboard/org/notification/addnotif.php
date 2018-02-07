@@ -5,6 +5,7 @@
    <h4><i class="fa fa-plus"></i> Add Notification</h4>
 </div>
 <div class="modal-body">
+
 	<?=$rdata;?>
 </div>
 <div class="modal-footer">
@@ -14,3 +15,13 @@
 </div>
 <?php echo form_close();?>
 </div>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('.selectpicker').selectpicker({
+			iconBase:'fa',
+			tickIcon:'fa-check'
+		});
+	});
+</script>
+

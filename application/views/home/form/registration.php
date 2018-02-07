@@ -156,17 +156,16 @@
 											<?=$interm;?>
 										</div>
 											<div class="row">
-												<div class="col-md-2 col-md-offset-5 col-xs-4 col-xs-offset-4">
+												<div class="col-md-12 col-sm-12 text-center">
 												<div class="form-group">
-													<h5 class="text-center"><b>Insert captcha code:</b></h5>
-													<h5 class="text-center"><span id="imgcaptcha"><img src="<?=$this->session->userdata('imgcaptcha');?>" class="img img-thumbnail" alt="Captcha Code"></span><button class="btn btn-default" alt="refresh captcha" id="refreshcaptcha" type="button"><span class="fa fa-refresh"></span></button></h5>
-													<?=$incaptcha;?>
+													<h5 ><b>Insert captcha code:</b></h5>
+													<h5 ><span id="imgcaptcha"><img src="<?=$this->session->userdata('imgcaptcha');?>" class="img img-thumbnail" alt="Captcha Code" width="200"></span><button class="btn btn-default" alt="refresh captcha" id="refreshcaptcha" type="button"><span class="fa fa-refresh"></span></button></h5>
+													<h5 class="col-md-2 col-md-offset-5"><?=$incaptcha;?></h5>
 												</div>
 												</div>
 											</div>
 									</div>
 								<div class="panel-footer text-right">
-									<?=$inkode;?>
 									<button type="button" class="btn btn-default prev-step">Previous</button>
 									<?=$insend;?>
 								</div>
@@ -245,7 +244,7 @@
 			e.preventDefault();
 			$.post('<?=base_url('Register/recaptcha');?>', {user: null}, function(d) {
 				$('#imgcaptcha').empty();
-				$('#imgcaptcha').html('<img src="'+d+'" class="img-thumbnail"/>');
+				$('#imgcaptcha').html('<img src="'+d+'" class="img-thumbnail" alt="Captcha Code" width="200"/>');
 			});
 			});
 
