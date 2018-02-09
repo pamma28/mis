@@ -56,6 +56,15 @@
           increaseArea: '0%' // optional
         });
       });
+
+      $(document).ready(function(){
+      $("#DetailModal").on('show.bs.modal',function(){
+      //redirect after 5seconds
+        setInterval(function(){
+         window.location = "<?=base_url('Login');?>";
+         },500)
+        });
+    });
     </script>
 
 </section>

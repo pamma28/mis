@@ -170,7 +170,7 @@ class Notification extends Org_Controller {
 	public function addnotif(){
 	$id=$this->input->get('id');
 	$colq=['nicon','ncontent'];
-	//============ form edit notif ===========
+	//============ form add notif ===========
 		$opticon = array(
 				"fa-home",
 				"fa-key",
@@ -294,7 +294,7 @@ class Notification extends Org_Controller {
 		$id = $this->input->get('id');
 		$dbres = $this->Mnotif->detailnotif($col,$id);
 		$colq = $this->returncolomn($col);
-	//============ form edit quest ===========
+	//============ form edit notif ===========
 
 		$opticon = array(
 				"fa-home",

@@ -898,7 +898,7 @@ class Article extends Org_Controller {
 	public function categorylist(){
 		//===================== table handler =============
 		$data['thisperiod']=$this->Msetting->getset('period');
-		$column=['idcat','category'];
+		$column=['idcat','cat_icon','category'];
 		$header = $this->returncolomn($column);
 		unset($header[0]);
 		// checkbox checkalldata
@@ -1004,6 +1004,7 @@ class Article extends Org_Controller {
 							'value'=>$temp[$key]['idcat']
 							));
 				array_unshift($temp[$key],$ctable);
+				$temp[$key]['cat_icon'] = '<span class="fa '.$temp[$key]['cat_icon'].'"></span>';
 				$temp[$key]['category']='<span class="idname">'.$temp[$key]['category'].'</span>';
 				//manipulation menu
 				$enc = $value['idcat'];
@@ -1027,9 +1028,9 @@ class Article extends Org_Controller {
 			$data['factselected'] = site_url('Organizer/Article/updateselected');
 			
 		//=============== Template ============
-		$data['jsFiles'] = array(
+		$data['jsFiles'] = array('selectpicker/select.min'
 							);
-		$data['cssFiles'] = array(
+		$data['cssFiles'] = array('selectpicker/select.min'
 							);  
 		// =============== view handler ============
 		$data['title']="Article Category";
@@ -1041,8 +1042,36 @@ class Article extends Org_Controller {
 	
 	public function addcat(){
 	$id=$this->input->get('id');
-	$colq=['category'];
-	//============ form edit quest ===========
+	$colq=['cat_icon','category'];
+	//============ form add category ===========
+		$opticon = array(
+				"fa-newspaper-o",
+				"fa-bullhorn",
+				"fa-home",
+				"fa-key",
+				"fa-legal",
+				"fa-pencil",
+				"fa-money",
+				"fa-book",
+				"fa-bullhorn",
+				"fa-file-text",
+				"fa-envelope-square",
+				"fa-envelope",
+				"fa-certificate",
+				"fa-check-square-o",
+				"fa-calendar",
+				"fa-clock-o",
+				"fa-edit",
+				"fa-check"
+				);
+		$selecticon = '<select name="fcaticon" id="fcaticon" class="form-control selectpicker" required="required">';
+
+		foreach ($opticon as $k => $v) {
+			$selecticon .= '<option value="'.$v.'" data-icon="'.$v.'"></option>';
+		}
+		$selecticon .= "</select>";
+		$r[] = $selecticon;
+
 		$fatcltitle =  array('name'=>'fcat',
 						'id'=>'fcat',
 						'required'=>'required',
@@ -1092,11 +1121,41 @@ class Article extends Org_Controller {
 	
 	public function editcat(){
 	//fecth data from db
-		$col=['category'];
+		$col=['cat_icon','category'];
 		$id = $this->input->get('id');
 		$dbres = $this->Matcl->detailcat($col,$id);
 		$colq = $this->returncolomn($col);
 	//============ form edit quest ===========
+		$opticon = array(
+				"fa-newspaper-o",
+				"fa-bullhorn",
+				"fa-home",
+				"fa-key",
+				"fa-legal",
+				"fa-pencil",
+				"fa-money",
+				"fa-book",
+				"fa-bullhorn",
+				"fa-file-text",
+				"fa-envelope-square",
+				"fa-envelope",
+				"fa-certificate",
+				"fa-check-square-o",
+				"fa-calendar",
+				"fa-clock-o",
+				"fa-edit",
+				"fa-check"
+				);
+		$selecticon = '<select name="fcaticon" id="fcaticon" class="form-control selectpicker" required="required">';
+
+		foreach ($opticon as $k => $v) {
+			($dbres[0]['cat_icon']==$v) ? $select = 'selected' : $select='';
+			$selecticon .= '<option value="'.$v.'" data-icon="'.$v.'" '.$select.'></option>';
+		}
+		$selecticon .= "</select>";
+		$r[] = $selecticon;
+
+
 		$fatcltitle =  array('name'=>'fcat',
 						'id'=>'fcat',
 						'required'=>'required',
@@ -1148,6 +1207,7 @@ class Article extends Org_Controller {
 	public function savecat(){
 			// set new data variable
 				$fdata = array(
+					'cat_icon'=> $this->input->post('fcaticon'),
 					'category'=>$this->input->post('fcat')
 					);
 			//update to database
@@ -1172,6 +1232,7 @@ class Article extends Org_Controller {
 	public function addcategory(){
 		if ($this->input->post('category')!=''){
 			$fdata = array(
+					'cat_icon'=>'fa-newspaper-o',
 					'category'=>$this->input->post('category')
 					);
 			//update to database
@@ -1186,6 +1247,7 @@ class Article extends Org_Controller {
 	$id = $this->input->post('fid');
 	// set new data variable
 				$fdata = array(
+					'cat_icon'=> $this->input->post('fcaticon'),
 					'category'=>$this->input->post('fcat')
 					);
 			//update to database
@@ -1232,8 +1294,8 @@ class Article extends Org_Controller {
 	}
 	
 	public function returncolomn($header) {
-	$find=['a_date','a_title','a_isi','category','article.idcat','a_aktf','a_view','uname'];
-	$replace = ['Article Created', 'Article Title','Article Content','Category','Category','Active','Total View','PIC'];
+	$find=['a_date','a_title','a_isi','category','article.idcat','cat_icon','a_aktf','a_view','uname'];
+	$replace = ['Article Created', 'Article Title','Article Content','Category','Category','Icon','Active','Total View','PIC'];
 		foreach ($header as $key => $value){
 		$header[$key]  = str_replace($find, $replace, $value);
 		}

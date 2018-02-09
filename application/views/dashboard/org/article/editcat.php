@@ -14,10 +14,12 @@
 	<?=$inbtn;?>
 </div>
 <?php echo form_close();?>
-<script>
-$(document).ready(function() {
-$("#fatclcont").summernote({
-			 minHeight: 275
-		});	
-});
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('.selectpicker').selectpicker({
+			iconBase:'fa',
+			tickIcon:'fa-check'
+		});
+	});
 </script>

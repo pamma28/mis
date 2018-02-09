@@ -29,4 +29,9 @@ class Msetting extends CI_Model{
 			$this->db->update('setting',array('setval' =>$value,'uuser'=>$this->session->userdata('user')),"setname = '$key'");
 		}
 	}
+
+	public function updatesetting($name,$value){
+		$this->db->where('setname',$name);
+		return $this->db->update('setting',array('setval' =>$value,'uuser'=>$this->session->userdata('user')));
+	}
 }

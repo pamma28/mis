@@ -14,3 +14,11 @@
 </div>
 <?php echo form_close();?>
 </div>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('.selectpicker').selectpicker({
+			iconBase:'fa',
+			tickIcon:'fa-check'
+		});
+	});
+</script>

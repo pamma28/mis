@@ -584,7 +584,7 @@ class Design extends Org_Controller {
 					}
 				
 			} else {
-				$this->session->set_flashdata('x','The Design Files Should in Lanscape.');	
+				$this->session->set_flashdata('x','The Design Files Should Be In Lanscape.');	
 			} 
 		} else {
 			$this->session->set_flashdata('x','Directly Access is not Allowed.');
@@ -615,64 +615,6 @@ class Design extends Org_Controller {
 
 	
 	public function printdesign(){
-		//catch column value
-		$sumpaid ="(select sum(tpaid) from transaksi where uuser=a.uuser) as 'totpaid'";
-		if ($this->input->post('fcolomn')!=null){
-			foreach($this->input->post('fcolomn') as $selected)
-			{ 
-				if ($selected != 'totpaid'){
-				$dtcol[] = $selected;
-				} else {
-				$dtcol[] = $sumpaid;
-				}
-			}
-		} else {
-		$dtcol = ['tnotrans','tdate','transname','a.uname as mname','a.unim','tpaid','tnomi','tchange','b.uname as rname','valid_to',$sumpaid,'a.ulunas'];
-		}
-		
-		//check use date range
-		if (null!=$this->input->post('fusedate')){
-			$dtrange = $this->input->post('fdtrange');
-			$dtstart = mb_substr($dtrange,0,10,'utf-8');
-			$dtend = substr($dtrange,13);
-			$dexp = $this->Mpay->exportpay($dtstart,$dtend,$dtcol);
-			$title=$dtrange;
-		}else {
-			$dexp = $this->Mpay->exportpay(null,null,$dtcol);
-			$title = Date('d-m-Y');
-		}
-		
-		// config table
-		$dtcol[3]='Member Name';
-		$dtcol[4]='Member NIM';
-		$dtcol[8]='PIC';
-		$dtcol[10]='Total Paid';
-		$dtcol[11]='Full Paid Status';
-		$header = $this->returncolomn($dtcol);
-		
-		$tmpl = array ( 'table_open'  => '<table class="table table-bordered">' );
-		$this->table->set_template($tmpl);
-		$this->table->set_heading($header);
-		//fetch data	
-				foreach($dexp as $key=>$val){
-					//manipulation allow data
-					if(array_key_exists('ulunas',$val)){
-						if ($val['ulunas']==1){
-						$dexp[$key]['ulunas']='Fully Paid';
-						}else{
-						$dexp[$key]['ulunas']='Not Yet';
-						}
-					}
-				}
-		$data['printlistlogin'] = $this->table->generate($dexp);
-		$this->session->set_flashdata('v',"Print success");
-		$this->index();
-		$this->session->set_flashdata('v',null);
-		
-		//create title
-		$period = $this->Msetting->getset('period');
-		$data['title']="Payment Data ".$period." Period<br/><small>".$title."</small>";
-		$this->load->view('dashboard/org/pay/printpay', $data);
 		
 	}
 	

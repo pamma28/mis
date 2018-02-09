@@ -29,20 +29,82 @@
 		<div class="nav-tabs-custom">
 		  	<!-- Tabs within a box -->
             <ul class="nav nav-tabs nav-primary">
-                <li class="active"><a data-toggle="tab" href="#generallist"><span class="fa fa-wrench"></span> System Parameter</a></li>
+                <li class="active"><a data-toggle="tab" href="#weblist"><span class="fa fa-home"></span>  Website Setting</a></li>
+                <li><a data-toggle="tab" href="#systemlist"><span class="fa fa-wrench"></span> System Parameter</a></li>
                 <li><a data-toggle="tab" href="#registform"><span class="fa fa-file-text"></span>  Registration Form</a></li>
+                <li><a data-toggle="tab" href="#paymentform"><span class="fa fa-money"></span>  Payment Setting</a></li>
                 <li><a data-toggle="tab" href="#notiflist"><span class="fa fa-bell"></span>  Notification Setting</a></li>
-                <li><a data-toggle="tab" href="#pagelsit"><span class="fa fa-pencil-square"></span>  Page Setting</a></li>
+                <li><a data-toggle="tab" href="#pagelist"><span class="fa fa-pencil-square"></span>  Page Setting</a></li>
                 <li><a data-toggle="tab" href="#emaillist"><span class="fa fa-envelope"></span>  Email Setting</a></li>
-                <li><a data-toggle="tab" href="#dashlist"><span class="fa fa-home"></span>  Dashboard Setting</a></li>
-                <li><a data-toggle="tab" href="#registform"><span class="fa fa-certificate"></span>  Certificate Setting</a></li>
-                <li><a data-toggle="tab" href="#registform"><span class="fa fa-file-text"></span>  Registration Form</a></li>
+                <li><a data-toggle="tab" href="#certilist"><span class="fa fa-certificate"></span>  Certificate Setting</a></li>
             </ul>
             <div class="tab-content">
-            	<div class="tab-pane table-responsive active" id="generallist">
+            	<div class="tab-pane table-responsive active" id="weblist">
+					<div class="col-md-6"> 
+							<?php echo form_open(base_url('Organizer/setting#weblist'),array('name'=>'fwebsetting','class'=>'form-horizontal','method'=>'POST'));?>
+							<div class="panel panel-primary">
+								<div class="panel-heading panel-heading-sm">
+									<h3 class="panel-title text-center"><span class="fa fa-home"></span> <b><?=$websetting['title'];?></b></h3>
+								</div>
+								<div class="panel-body">
+									<?php if ($this->session->flashdata('vweblist')!=null){ ?>
+									<div class="alert alert-success alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('vweblist');?>
+									</div>
+									<?php } else if ($this->session->flashdata('xweblist')!=null){ ?>
+									<div class="alert alert-danger alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('xweblist');?>
+									</div>		
+									<?php } ?>
+								 	<?=$websetting['table'];?>
+								</div>
+								<div class="panel-footer text-right">
+									<?=$websetting['finputs'];?>
+									<?=$websetting['fbtn'];?>
+								</div>
+							</div>
+
+						<?php  
+						echo form_close();
+						?> 
+					</div>
+					<div class="col-md-6">
+						<?php echo form_open_multipart(base_url('Organizer/setting#weblist'),array('name'=>'flogoform','class'=>'form-horizontal','method'=>'POST'));?>
+							<div class="panel panel-primary">
+								<div class="panel-heading panel-heading-sm">
+									<h3 class="panel-title text-center"><span class="fa fa-home"></span> <b><?=$logosetting['title'];?></b></h3>
+								</div>
+								<div class="panel-body">
+									<?php if ($this->session->flashdata('vweblist1')!=null){ ?>
+									<div class="alert alert-success alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('vweblist1');?>
+									</div>
+									<?php } else if ($this->session->flashdata('xweblist1')!=null){ ?>
+									<div class="alert alert-danger alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('xweblist1');?>
+									</div>		
+									<?php } ?>
+								 	<?=$logosetting['table'];?>
+								</div>
+								<div class="panel-footer text-right">
+									<?=$logosetting['finputs'];?>
+									<?=$logosetting['fbtn'];?>
+								</div>
+							</div>
+
+						<?php  
+						echo form_close();
+						?> 
+					</div>
+				</div>
+            	<div class="tab-pane table-responsive" id="systemlist">
                     
 						<?php foreach ($settinglist as $k => $v) { ?>
-						<?php echo form_open(base_url('Organizer/setting/saveparameter/'.$k),array('name'=>'fsetting'.$k,'class'=>'form-horizontal','method'=>'POST'));?>
+						<?php echo form_open(base_url('Organizer/setting#systemlist'),array('name'=>'fsetting'.$k,'class'=>'form-horizontal','method'=>'POST'));?>
 						<div class="col-md-6">
 							<div class="panel panel-primary">
 								<div class="panel-heading panel-heading-sm">
@@ -63,6 +125,7 @@
 								 	<?=$v['table'];?>
 								</div>
 								<div class="panel-footer text-right">
+									<?=$v['finputs'];?>
 									<?=$v['fbtn'];?>
 								</div>
 							</div>
@@ -77,7 +140,7 @@
 				  
 				<div class="tab-pane table-responsive" id="registform">
 						<div class="col-md-6">
-							<?php echo form_open(base_url('Organizer/setting/saveformregist/'),array('name'=>'fregistform','class'=>'form-horizontal','method'=>'POST'));?>
+							<?php echo form_open(base_url('Organizer/setting#registform'),array('name'=>'fregistform','class'=>'form-horizontal','method'=>'POST'));?>
 							<div class="panel panel-primary">
 								<div class="panel-heading panel-heading-sm">
 									<h3 class="panel-title text-center"><span class="fa fa-file-text"></span> <b><?=$registform['title'];?></b></h3>
@@ -97,6 +160,7 @@
 								 	<?=$registform['table'];?>
 								</div>
 								<div class="panel-footer text-right">
+									<?=$registform['finputs'];?>
 									<?=$registform['fbtn'];?>
 								</div>
 							</div>
@@ -105,46 +169,67 @@
 						echo form_close();
 						?> 
 						</div>
-						<div class="col-md-6">
-							<div class="box box-primary">
-							 	<div class="box-body" id="prevsettingregistform"> <p class="text-center"><i>Preview Template</i></p>
-							 	</div>
-							</div>
-						</div>
+						
 				</div>
-				<div class="tab-pane table-responsive" id="notiflist">
-						<div class="col-md-12">
-							<div class="box box-primary">
-								<div class="box-header text-center">
-									<h5 class="box-title">Notification Preview</h5>
-								</div>
-								<div class="box-body">
-									<div id="notiftextpreview">
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<?php echo form_open(base_url('Organizer/setting/saveformregist/4'),array('name'=>'fregistform','class'=>'form-horizontal','method'=>'POST'));?>
+
+				<div class="tab-pane table-responsive" id="paymentform">
+                   
+						<div class="col-md-6"> 
+							<?php echo form_open(base_url('Organizer/setting#paymentform'),array('name'=>'fpaymentform','class'=>'form-horizontal','method'=>'POST'));?>
 							<div class="panel panel-primary">
 								<div class="panel-heading panel-heading-sm">
-									<h3 class="panel-title text-center"><span class="fa fa-file-text"></span> <b><?=$notifmemform['title'];?></b></h3>
+									<h3 class="panel-title text-center"><span class="fa fa-money"></span> <b><?=$payment['title'];?></b></h3>
 								</div>
 								<div class="panel-body">
-									<?php if ($this->session->flashdata('vregist')!=null){ ?>
+									<?php if ($this->session->flashdata('vpay')!=null){ ?>
 									<div class="alert alert-success alert-dismissible" role="alert">
 										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-										<?=$this->session->flashdata('vregist');?>
+										<?=$this->session->flashdata('vpay');?>
 									</div>
-									<?php } else if ($this->session->flashdata('xregist')!=null){ ?>
+									<?php } else if ($this->session->flashdata('xpay')!=null){ ?>
 									<div class="alert alert-danger alert-dismissible" role="alert">
 										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-										<?=$this->session->flashdata('xregist');?>
+										<?=$this->session->flashdata('xpay');?>
+									</div>		
+									<?php } ?>
+								 	<?=$payment['table'];?>
+								</div>
+								<div class="panel-footer text-right">
+									<?=$payment['finputs'];?>
+									<?=$payment['fbtn'];?>
+								</div>
+							</div>
+
+						<?php  
+						echo form_close();
+						?> 
+						</div>
+					
+				</div>
+
+				<div class="tab-pane table-responsive" id="notiflist">
+						<div class="col-md-4">
+							<?php echo form_open(base_url('Organizer/setting#notiflist'),array('name'=>'fnotifform','class'=>'form-horizontal','method'=>'POST'));?>
+							<div class="panel panel-primary">
+								<div class="panel-heading panel-heading-sm">
+									<h3 class="panel-title text-center"><span class="fa fa-bell"></span> <b><?=$notifmemform['title'];?></b></h3>
+								</div>
+								<div class="panel-body">
+									<?php if ($this->session->flashdata('vnotif1')!=null){ ?>
+									<div class="alert alert-success alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('vnotif1');?>
+									</div>
+									<?php } else if ($this->session->flashdata('xnotif1')!=null){ ?>
+									<div class="alert alert-danger alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('xnotif1');?>
 									</div>		
 									<?php } ?>
 								 	<?=$notifmemform['table'];?>
 								</div>
 								<div class="panel-footer text-right">
+									<?=$notifmemform['finputs'];?>
 									<?=$notifmemform['fbtn'];?>
 								</div>
 							</div>
@@ -154,26 +239,27 @@
 							?> 
 						</div>
 						<div class="col-md-4"> 
-							<?php echo form_open(base_url('Organizer/setting/saveformregist/5'),array('name'=>'fregistform','class'=>'form-horizontal','method'=>'POST'));?>
+							<?php echo form_open(base_url('Organizer/setting#notiflist'),array('name'=>'fnotifform','class'=>'form-horizontal','method'=>'POST'));?>
 							<div class="panel panel-primary">
 								<div class="panel-heading panel-heading-sm">
-									<h3 class="panel-title text-center"><span class="fa fa-file-text"></span> <b><?=$notiforgform['title'];?></b></h3>
+									<h3 class="panel-title text-center"><span class="fa fa-bell"></span> <b><?=$notiforgform['title'];?></b></h3>
 								</div>
 								<div class="panel-body">
-									<?php if ($this->session->flashdata('vregist')!=null){ ?>
+									<?php if ($this->session->flashdata('vnotif2')!=null){ ?>
 									<div class="alert alert-success alert-dismissible" role="alert">
 										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-										<?=$this->session->flashdata('vregist');?>
+										<?=$this->session->flashdata('vnotif2');?>
 									</div>
-									<?php } else if ($this->session->flashdata('xregist')!=null){ ?>
+									<?php } else if ($this->session->flashdata('xnotif2')!=null){ ?>
 									<div class="alert alert-danger alert-dismissible" role="alert">
 										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-										<?=$this->session->flashdata('xregist');?>
+										<?=$this->session->flashdata('xnotif2');?>
 									</div>		
 									<?php } ?>
 								 	<?=$notiforgform['table'];?>
 								</div>
 								<div class="panel-footer text-right">
+									<?=$notiforgform['finputs'];?>
 									<?=$notiforgform['fbtn'];?>
 								</div>
 							</div>
@@ -183,26 +269,27 @@
 							?> 
 						</div>
 						<div class="col-md-4"> 
-							<?php echo form_open(base_url('Organizer/setting/saveformregist/6'),array('name'=>'fregistform','class'=>'form-horizontal','method'=>'POST'));?>
+							<?php echo form_open(base_url('Organizer/setting#notiflist'),array('name'=>'fnotifform','class'=>'form-horizontal','method'=>'POST'));?>
 							<div class="panel panel-primary">
 								<div class="panel-heading panel-heading-sm">
-									<h3 class="panel-title text-center"><span class="fa fa-file-text"></span> <b><?=$notifadmform['title'];?></b></h3>
+									<h3 class="panel-title text-center"><span class="fa fa-bell"></span> <b><?=$notifadmform['title'];?></b></h3>
 								</div>
 								<div class="panel-body">
-									<?php if ($this->session->flashdata('vregist')!=null){ ?>
+									<?php if ($this->session->flashdata('vnotif3')!=null){ ?>
 									<div class="alert alert-success alert-dismissible" role="alert">
 										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-										<?=$this->session->flashdata('vregist');?>
+										<?=$this->session->flashdata('vnotif3');?>
 									</div>
-									<?php } else if ($this->session->flashdata('xregist')!=null){ ?>
+									<?php } else if ($this->session->flashdata('xnotif3')!=null){ ?>
 									<div class="alert alert-danger alert-dismissible" role="alert">
 										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-										<?=$this->session->flashdata('xregist');?>
+										<?=$this->session->flashdata('xnotif3');?>
 									</div>		
 									<?php } ?>
 								 	<?=$notifadmform['table'];?>
 								</div>
 								<div class="panel-footer text-right">
+									<?=$notifadmform['finputs'];?>
 									<?=$notifadmform['fbtn'];?>
 								</div>
 							</div>
@@ -212,27 +299,171 @@
 							?> 
 						</div>
 				</div>
-				<div class="tab-pane table-responsive" id="pagelsit">
+				<div class="tab-pane table-responsive" id="pagelist">
                     
 						<div class="col-md-6"> 
-							<a href="<?=base_url('Organizer/PDS/addpds');?>" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add Setting</a> 
+							asds 
 						</div>
 					
 				</div>
 				<div class="tab-pane table-responsive" id="emaillist">
                     
 						<div class="col-md-6"> 
-							<a href="<?=base_url('Organizer/PDS/addpds');?>" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add Setting</a> 
+							<?php echo form_open(base_url('Organizer/setting#emaillist'),array('name'=>'fmailform','class'=>'form-horizontal','method'=>'POST'));?>
+							<div class="panel panel-primary">
+								<div class="panel-heading panel-heading-sm">
+									<h3 class="panel-title text-center"><span class="fa fa-envelope"></span> <b><?=$mail['title'];?></b></h3>
+								</div>
+								<div class="panel-body">
+									<?php if ($this->session->flashdata('vmail')!=null){ ?>
+									<div class="alert alert-success alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('vmail');?>
+									</div>
+									<?php } else if ($this->session->flashdata('xmail')!=null){ ?>
+									<div class="alert alert-danger alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('xmail');?>
+									</div>		
+									<?php } ?>
+								 	<?=$mail['table'];?>
+								</div>
+								<div class="panel-footer text-right">
+									<?=$mail['finputs'];?>
+									<?=$mail['fbtn'];?>
+								</div>
+							</div>
+
+						<?php  
+						echo form_close();
+						?>  
 						</div>
 					
 				</div>
-				<div class="tab-pane table-responsive" id="dashlist">
-                   
+				<div class="tab-pane table-responsive" id="certilist">
 						<div class="col-md-6"> 
-							<a href="<?=base_url('Organizer/PDS/addpds');?>" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add Setting</a> 
+							<?php echo form_open(base_url('Organizer/setting#certilist'),array('name'=>'fcertiform','class'=>'form-horizontal','method'=>'POST'));?>
+							<div class="panel panel-primary">
+								<div class="panel-heading panel-heading-sm">
+									<h3 class="panel-title text-center"><span class="fa fa-certificate"></span> <b><?=$certi['title'];?></b></h3>
+								</div>
+								<div class="panel-body">
+									<?php if ($this->session->flashdata('vcerti')!=null){ ?>
+									<div class="alert alert-success alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('vcerti');?>
+									</div>
+									<?php } else if ($this->session->flashdata('xcerti')!=null){ ?>
+									<div class="alert alert-danger alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('xcerti');?>
+									</div>		
+									<?php } ?>
+								 	<?=$certi['table'];?>
+								</div>
+								<div class="panel-footer text-right">
+									<?=$certi['finputs'];?>
+									<?=$certi['fbtn'];?>
+								</div>
+							</div>
+
+						<?php  
+						echo form_close();
+						?> 
 						</div>
-					
+						<div class="col-md-6"> 
+							<?php echo form_open_multipart(base_url('Organizer/setting#certilist'),array('name'=>'fdesignform','class'=>'form-horizontal','method'=>'POST'));?>
+							<div class="panel panel-primary">
+								<div class="panel-heading panel-heading-sm">
+									<h3 class="panel-title text-center"><span class="fa fa-font"></span> <b><?=$fontcerti['title'];?></b></h3>
+								</div>
+								<div class="panel-body">
+									<?php if ($this->session->flashdata('vfontcerti')!=null){ ?>
+									<div class="alert alert-success alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('vfontcerti');?>
+									</div>
+									<?php } else if ($this->session->flashdata('xfontcerti')!=null){ ?>
+									<div class="alert alert-danger alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('xfontcerti');?>
+									</div>		
+									<?php } ?>
+								 	<?=$fontcerti['table'];?>
+								</div>
+								<div class="panel-footer text-right">
+									<?=$fontcerti['finputs'];?>
+									<?=$fontcerti['fbtn'];?>
+								</div>
+							</div>
+
+						<?php  
+						echo form_close();
+						?> 
+						</div>
+						<br class="clearfix">
+						<div class="col-md-6"> 
+							<?php echo form_open(base_url('Organizer/setting#certilist'),array('name'=>'fdesignform','class'=>'form-horizontal','method'=>'POST'));?>
+							<div class="panel panel-primary">
+								<div class="panel-heading panel-heading-sm">
+									<h3 class="panel-title text-center"><span class="fa fa-certificate"></span> <b><?=$design['title'];?></b></h3>
+								</div>
+								<div class="panel-body">
+									<?php if ($this->session->flashdata('vdesign')!=null){ ?>
+									<div class="alert alert-success alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('vdesign');?>
+									</div>
+									<?php } else if ($this->session->flashdata('xdesign')!=null){ ?>
+									<div class="alert alert-danger alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('xdesign');?>
+									</div>		
+									<?php } ?>
+								 	<?=$design['table'];?>
+								</div>
+								<div class="panel-footer text-right">
+									<?=$design['finputs'];?>
+									<?=$design['fbtn'];?>
+								</div>
+							</div>
+
+						<?php  
+						echo form_close();
+						?> 
+						</div>
+						<div class="col-md-6"> 
+							<?php echo form_open(base_url('Organizer/setting#certilist'),array('name'=>'ftxtcertiform','class'=>'form-horizontal','method'=>'POST'));?>
+							<div class="panel panel-primary">
+								<div class="panel-heading panel-heading-sm">
+									<h3 class="panel-title text-center"><span class="fa fa-font"></span> <b><?=$txtcerti['title'];?></b></h3>
+								</div>
+								<div class="panel-body">
+									<?php if ($this->session->flashdata('vtxtcerti')!=null){ ?>
+									<div class="alert alert-success alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('vtxtcerti');?>
+									</div>
+									<?php } else if ($this->session->flashdata('xtxtcerti')!=null){ ?>
+									<div class="alert alert-danger alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('xtxtcerti');?>
+									</div>		
+									<?php } ?>
+								 	<?=$txtcerti['table'];?>
+								</div>
+								<div class="panel-footer text-right">
+									<?=$txtcerti['finputs'];?>
+									<?=$txtcerti['fbtn'];?>
+								</div>
+							</div>
+
+						<?php  
+						echo form_close();
+						?> 
+						</div>
 				</div>
+				
 					
 			</div>
         </div><!-- /.nav-tabs-custom -->
@@ -246,58 +477,19 @@
 	<!-- Modal Details Data-->
 	<div class="modal fade" id="DetailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
-			
-        </div>
-    </div>
-	</div>
-	
-	<!-- Modal Delete Data-->
-	<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4><i class="fa fa-trash"></i> Are you sure want to delete selected data?</h4>
-            </div>
-			
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-danger btn-ok btn-sm">Delete</a>
-            </div>
-        </div>
-    </div>
-	</div>
-	
-	<!-- Modal Selected Data-->
-	<div class="modal fade bs-selecteddata" id="SelectedModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-			<?php echo form_open($factselected,array('method'=>'POST'));?>
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" ><i id="selectedicon"></i> <span id="selectedtitle"></span></h4>
+       <div class="modal-content">
+        	<div class="modal-header">
+			   <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			   <h4><i class="fa fa-info"></i> <span id="titlepreview"></span></h4>
 			</div>
 			<div class="modal-body">
-					Are you sure want to <span id="selectedcontent"></span> selected data?
-					<div class="bg-info" id="selecteduser" style="max-height:100px;overflow-y: auto;width:250px;"></div>
-			</div>
-			<div class="modal-footer">
-				<?=$idac.$idtype;?>
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<input type="submit" id="selectedbutton" value="Confirm">
-			</div>
-				<?=form_close();?>
+			</div>	
         </div>
     </div>
 	</div>
 	
 	
 	<script type="text/javascript">
-	//delete modal confirmation
-	$('#confirm-delete').on('show.bs.modal', function(e) {
-		$(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
-		});
-	
 	
 	//details data	
 		$('#DetailModal').on("hidden.bs.modal", function (e) {
@@ -312,41 +504,51 @@
     });
 	});
 		
-	$(function() {
-		//Date range 
-		cb(moment().subtract(29, 'days'), moment());
+$('#DetailModal').on('show.bs.modal',function(e){
+});
 
-		$('.frange').daterangepicker({
-			locale: {format: 'YYYY-MM-DD'},
-			"startDate": new Date(),
-			"endDate": new Date(),
-			ranges: {
-			   'Today': [moment(), moment()],
-			   'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-			   'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-			   'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-			   'This Month': [moment().startOf('month'), moment().endOf('month')],
-			   'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-			}
-		}, cb);
-		
-		function cb(start, end) {
-			$('#rangedate').val(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-		}
-	});
-	
 $(document).ready(function(){
-	$('#registsuccess, #mailregistsuccess').on('changed.bs.select',function(e){
-		$.post('<?php echo base_url('Organizer/Setting/previewTemplate'); ?>', {idtmp: $(this).selectpicker('val')}, function(d) {
-			$('#prevsettingregistform').empty().html(d);
-		});
+	$('#fregistsuccess, #fmailregistsuccess').on('changed.bs.select',function(e){
+		var idtmp = $(this).selectpicker('val');
+			$('#DetailModal').modal({
+				show: true,
+				remote: "<?=base_url('Organizer/Setting/previewTemplate/')?>/"+idtmp
+			});
 	});
 
 	$('.changenotifclass').on('changed.bs.select',function(e){
-		$.post('<?php echo base_url('Organizer/Setting/previewNotification'); ?>', {idnotif: $(this).selectpicker('val')}, function(d) {
-			$('#notiftextpreview').empty().html(d);
-		});
+		var idnotif = $(this).selectpicker('val');
+			$('#DetailModal').modal({
+				show: true,
+				remote: "<?=base_url('Organizer/Setting/previewNotification/')?>/"+idnotif
+			});
 	});
+
+	var url = window.location.href;
+	var activeTab = url.substring(url.indexOf("#") + 1);
+	if (activeTab!=''){
+		$('.nav-tabs a[href="#' + activeTab + '"]').tab('show');
+	}
+	
+
+	$(".txtmail").summernote({
+		height: 200,
+		toolbar: [
+			    ['style', ['bold', 'italic', 'underline', 'clear']],
+			    ['font', ['bold','italic','underline','strikethrough', 'superscript', 'subscript','clear']],
+			    ['fontsize', ['fontname','fontsize']],
+			    ['color', ['color']],
+			    ['para', ['style','ul', 'ol', 'paragraph']],
+			    ['height', ['height']],
+			    ['misc',['codeview','undo','redo']]
+			  ]
+	});
+
+	$("#btnupdatetxtmail").click(function(){
+		$('input[name="mailheader"]').val($("#txtmailheader").summernote('code'));
+		$('input[name="mailfooter"]').val($("#txtmailfooter").summernote('code'));
+	});
+	
 });
 	</script>
 </section>

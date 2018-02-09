@@ -101,7 +101,7 @@
 						
 						<div class="box box-default bg-gray collapsed in" id="detailfooter">
 							<div class="box-body">
-								<b>Footer SMS :</b><br/>
+								<b>Footer Mail :</b><br/>
 								<?=$footer;?>
 							</div>
 						</div>

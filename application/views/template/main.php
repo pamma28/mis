@@ -2,8 +2,11 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title><?php if (isset($title)){echo $title.' - ';}?>SEF Membership</title>
+    <meta name="description" content="<?php print(webDescription());?>">
+    <meta name="keywords" content="<?php print(webTag());?>">
+    <meta name="author" content="Yunas Pamatda">
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+    <title><?php (isset($title)) ? print($title).' - ':null; print(webTitle());?></title>
     <link rel="shortcut icon" href="<?=base_url();?>/assets/images/favicon.ico" type="image/x-icon" />
 	<!-- Bootstrap 3.3.2 -->
     <link href="<?php echo base_url('assets'); ?>/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -74,7 +77,7 @@
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
 		</a>
-		<a href="<?php echo base_url(); ?>" class="logo"> <b>SEF</b> Membership</a>
+		<a href="<?php echo base_url(); ?>" class="logo"> <?=webTitle();?></a>
         <!-- Header Navbar: style can be found in header.less -->
         <nav class="navbar navbar-static-top" role="navigation">
           <!-- Sidebar toggle button-->
@@ -102,7 +105,7 @@
 
       <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
-        
+
 		<?php echo $content; ?>
 		<!-- /.content -->
       </div><!-- /.content-wrapper -->
