@@ -449,6 +449,7 @@ class Notification extends Org_Controller {
 		}
 		redirect(base_url('Organizer/Subject'));
 	}
+
 	
 	public function returncolomn($header) {
 	$find=['npublish','nicon','ncontent','uname'];

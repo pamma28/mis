@@ -19,6 +19,11 @@ class Setting extends Org_Controller {
 		//======================================================================
 		//============================== Save Handler ==========================
 		//======================================================================
+		if ($this->input->get('code')!=''){
+				$this->session->set_flashdata('vmtoken','Update Gmail Setting Success');
+				header("Location: ".base_url("Organizer/Setting#emaillist"));
+			}
+
 		if ($this->input->post('finputs')!=''){
 			$arrinputs = explode(',', $this->input->post('finputs'));
 			$s = 0; $x=0;$go = '';
@@ -101,12 +106,24 @@ class Setting extends Org_Controller {
 					}
 				} else if($this->input->post('fflash')=='mail'){
 					foreach ($arrinputs as $k => $v) {
-						//============== save setting design handler =============
+						//============== save setting mail handler =============
 						if (($this->input->post($v)!='') and ($go =='')){
 						$htmlinput = htmlspecialchars($this->input->post($v,false));
 						$hsl = $this->Msetting->updatesetting($v,$htmlinput);
 						($hsl) ? $s++ : $x++;
 						}
+					}
+				} else if($this->input->post('fflash')=='mtoken'){
+					if (($this->input->post('fmailconfigured')=='') and ($go =='')){
+						//============== save setting mail token handler =============
+						foreach ($arrinputs as $k => $v) {
+							$hsl = $this->Msetting->updatesetting($v,'');
+							($hsl) ? $x++ : $s++;
+						}
+						$go = "Remove Gmail Setting Success";
+					} else {
+						$go = "New Gmail Setting Saved";
+						$s++;
 					}
 				} else {
 					foreach ($arrinputs as $k => $v) {
@@ -382,6 +399,31 @@ class Setting extends Org_Controller {
 									); 
 		
 
+		//================= setting page =================
+		$this->table->set_template($tmpl);
+		$this->table->set_heading($header);
+
+		$columnpg=['tmpdashhome','tmpdashmem','tmpdashorg','tmpdashadm'];
+		$labelpg = ['Homepage','Dashboard Member','Dashboard Organizer','Dashboard Admin'];
+		foreach ($columnpg as $k => $v) {		
+			$temppg[$k] =array($labelpg[$k], 
+						form_dropdown(array(
+							'id'=>'f'.$columnpg[$k],
+							'name' => $columnpg[$k],
+							'class'=>'form-control selectpicker changepage',
+							'data-live-search'=>'true',
+							'required'=>'required'),$opttmp,$this->Msetting->getset($v)));
+		}
+
+		$data['pagesetting']=array('table' => $this->table->generate($temppg),
+									'title' => 'Page Setting',
+									'fbtn' => form_submit(array('value'=>'Update Setting',
+											'class'=>'btn btn-primary',
+											'id'=>'btnupdateset')),
+									'finputs' => form_hidden('finputs',implode($columnpg, ',')).form_hidden('fflash','pageset')
+									); 
+
+
 		//========== setting Mail header footer =========
 		$this->table->set_template($tmpl);
 		$this->table->set_heading($header);
@@ -407,24 +449,42 @@ class Setting extends Org_Controller {
 		//========== setting Mail token =========
 		$this->table->set_template($tmpl);
 		$this->table->set_heading($header);
-		$columnmtoken=['sendermail','sendmailcode','sendmailrefreshtoken','sendmailtoken'];
-		$labelmtoken = ['Mail Sender','Mail Code','Mail Refresh Token','Mail Token'];
-		foreach ($columnmtoken as $k => $v) {		
+		$columnmtoken=['sendermail'];
+		$arrtoken = ['sendermail','sendmailcode','sendmailrefreshtoken','sendmailtoken'];
+		$labelmtoken = ['Mail Sender'];
+		foreach ($columnmtoken as $k => $v) {
+			$mailnow = $this->Msetting->getset($v);
+			if ($mailnow!=''){
+				$valtoken = true;
+				$btntoken = form_button(array(
+											'class'=>'btn btn-danger',
+											'id'=>'btnremoveemail'),'Remove Curent Email');
+			} else {
+				$valtoken = false;
+				$this->load->library('Gmail');
+				$btntoken = '<a href="'.$this->gmail->authorize(base_url('Organizer/Setting')).'" class="btn btn-primary" id="btnnewemail">Authorize New Email</a>';
+			}		
 			$tempmtoken[$k] =array($labelmtoken[$k], 
-						form_input(array(
-							'id'=>'f'.$columnmtoken[$k],
-							'name' => $columnmtoken[$k],
-							'class'=>'form-control',
-							'value'=>$this->Msetting->getset($v),
-							'required'=>'required')));
+						form_checkbox(array(
+							'name'=>'fmailconfigured',
+							'data-toggle'=>'toggle',
+							'disabled'=>'disabled',
+							'data-on'=>'Configured as '.$mailnow,
+							'data-off'=>'Not Configured Yet',
+							'data-width'=>300,
+							'data-height'=>35,
+							'data-onstyle'=>'primary',
+							'data-offstyle'=>'danger',
+							'id'=>'senderstat',
+							'checked'=>$valtoken,
+							'value'=>'1'))
+							);
 		}
 
 		$data['mailtoken']=array('table' => $this->table->generate($tempmtoken),
 									'title' => 'Gmail API',
-									'fbtn' => form_submit(array('value'=>'Update Setting',
-											'class'=>'btn btn-primary',
-											'id'=>'btnupdateset')),
-									'finputs' => form_hidden('finputs',implode($columnmtoken, ',')).form_hidden('fflash','mtoken')
+									'fbtn' => $btntoken,
+									'finputs' => form_hidden('finputs',implode($arrtoken, ',')).form_hidden('fflash','mtoken')
 									); 
 
 
@@ -590,19 +650,14 @@ class Setting extends Org_Controller {
 											'id'=>'btnupdateset')),
 									'finputs' => form_hidden('finputs',implode($columntxtcerti, ',')).form_hidden('fflash','txtcerti')
 									); 
-		
-
-
-
-
 
 
 
 		//=============== Template ============
 		$data['jsFiles'] = array(
-							'selectpicker/select.min','moment/moment.min','daterange/daterangepicker','print/printThis','inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions','summernote/summernote');
+							'selectpicker/select.min','moment/moment.min','daterange/daterangepicker','print/printThis','inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions','summernote/summernote','toggle/bootstrap2-toggle.min');
 		$data['cssFiles'] = array(
-							'selectpicker/select.min','daterange/daterangepicker','summernote/summernote');  
+							'selectpicker/select.min','daterange/daterangepicker','summernote/summernote','toggle/bootstrap2-toggle.min');  
 		// =============== view handler ============
 		$data['title']="Setting System";
 		$data['topbar'] = $this->load->view('dashboard/topbar', NULL, TRUE);
@@ -633,41 +688,187 @@ class Setting extends Org_Controller {
 	}
 	
 	
-	public function updatepds(){
-		if ($this->input->post('fuser')!=null){
-		$us = $this->input->post('fuser');
-		$fdata = array (
-					'uname' => $this->input->post('ffullname'),					
-					'uupdate' => date("Y-m-d H:i:s"),
-					'idjk' => $this->input->post('fjk'),
-					'unim' => $this->input->post('fnim'),
-					'idfac' => $this->input->post('ffaculty'),
-					'ubplace' => $this->input->post('fbplace'),
-					'ubdate' => $this->input->post('fbdate'),
-					'uemail' => $this->input->post('femail'),
-					'uhp' => $this->input->post('fhp'),
-					'ubbm' => $this->input->post('fsocmed'),
-					'uaddrnow' => $this->input->post('faddrnow'),
-					'uaddhome' => $this->input->post('faddrhome'),
-					'ustatus' => $this->input->post('fstats')
-					);
-		$r = $this->Mpds->updatepds($fdata,$us);
+	public function account(){
+		//============== save handler ========================
+		//====================================================
+		if($this->input->post('finputs')<>''){
+			$arrinputs = explode(',',$this->input->post('finputs'));
+			$go =  "";$x=0;$s=0;
+			if($this->input->post('fflash')=='pass'){
+				$oldpass = md5($this->input->post("upassold"));
+				$newpass = $this->input->post("upassnew");
+				$confirmpass = $this->input->post("upassnew2");
+				$dtpass = $this->Mlogin->detaillogin(array("upass"),$this->session->userdata('user'))[0]['upass']; 
+				if ($oldpass == $dtpass){
+					if ($confirmpass == $newpass){
+						$arrdt = array('upass'=>md5($newpass));
+						$hsl = $this->Mlogin->updateacc($arrdt,$this->session->userdata('user'));
+						if ($hsl){
+							$go= "Update Password Setting Success";
+							$s++;
+						} else {
+							$go= "Update Password Setting Failed";
+							$x++;
+						}
+					} else {
+						$go = "Your confirmation password is mismatch with new password";
+						$x++;
+					} 
+				} else {
+					$go = "Your old password is mismatch";
+					$x++; 
+				}
+			} else if($this->input->post('fflash')=='pho'){
+					$arrfilename =explode('.', $_FILES['ufoto']['name']);
+					$extfilename = end($arrfilename);
+					$new_name = md5($this->session->userdata('user').$_FILES['ufoto']['name']).'.'.$extfilename;
+					$tmpfoto = $this->Mlogin->detaillogin(array('ufoto'),$this->session->userdata('user'));
+					$config['upload_path'] = FCPATH.'upload/foto/';
+					$config['allowed_types'] = 'png|jpg|jpeg';
+					$config['max_size']     = '300';
+					$config['overwrite'] = true;
+					$config['file_name'] = $new_name;
+					//$config['max_width'] = '500';
+					//$config['max_height'] = '500';
+					$this->load->library('upload', $config);
+
+					if ($this->upload->do_upload('ufoto')){
+			            $go = 'Upload New Profile Photo Success';
+			            $newfile = $new_name ;
+			            $hslfoto = $this->Mlogin->updateacc(array('ufoto'=>$newfile),$this->session->userdata('user'));
+			            ($hslfoto) ? $this->session->set_userdata(array('photo'=>$newfile)): null;
+			            if (($tmpfoto <> $newfile)) { unlink(FCPATH.'upload/foto/'.$tmpfoto);}
+			            $s=1;
+			               
+		            } else {
+		            	$go = $this->upload->display_errors();
+		            	$x=1;
+		            }
+		    } else {
+			foreach ($arrinputs as $k => $v) {
+						//============== save data handler =============
+						if (($this->input->post($v)!='') and ($go =='')){
+							$arrdt[$v] = $this->input->post($v);
+						}
+					}
+					$hsl = $this->Mlogin->updateacc($arrdt,$this->session->userdata('user'));
+					if ($hsl){
+						$go= "Update Account Setting Success";
+						$s++;
+					} else {
+						$go= "Update Account Setting Failed";
+						$x++;
+					}
+		    }
+			
+			($go<>'') ? $txt = $go : $txt= "Update Success";
+			($s>$x) ? $this->session->set_flashdata('v'.$this->input->post('fflash'),$txt) : $this->session->set_flashdata('x'.$this->input->post('fflash'),$txt);
+			header("Location: ".$_SERVER['REQUEST_URI']);
 		}
-		if ($r){
-		$this->session->set_flashdata('v','Update Registration Data Success');
-		} else {		
-		$this->session->set_flashdata('x','Update Registration Data Failed');
+
+
+		//========== setting account =========
+		$header = array('Setting','Value');
+		$tmpl = array ( 'table_open'  => '<table class="table table-hover">' );
+		$this->table->set_template($tmpl);
+		$this->table->set_heading($header);
+
+		$columnacc=['uname','uemail','uhp','ubbm'];
+		$labelacc = ['Full Name','Email','Phone Number','Social Media'];
+		$arracc = $this->Mlogin->detaillogin($columnacc,$this->session->userdata('user'))[0];
+		foreach ($columnacc as $k => $v) {
+
+			$tempacc[$k] =array($labelacc[$k], 
+						form_input(array(
+							'id'=>'f'.$columnacc[$k],
+							'name' => $columnacc[$k],
+							'class'=>'form-control',
+							'value'=>$arracc[$v],
+							'required'=>'required')));
+			if($columnacc[$k]=="uemail"){
+				$tempacc[$k][1] .= '<p class="text-danger hidden">Email Is Taken</p><span id="emailnow" class="hidden">'.$arracc[$v].'</span>';
+			} 
+					
 		}
-		redirect(base_url('Organizer/PDS'));
+
+		$data['acc']=array('table' => $this->table->generate($tempacc),
+									'title' => 'Account Setting',
+									'fbtn' => form_submit(array('value'=>'Update Setting',
+											'class'=>'btn btn-primary',
+											'id'=>'btnupdateacc')),
+									'finputs' => form_hidden('finputs',implode($columnacc, ',')).form_hidden('fflash','acc')
+									); 
+		
+
+		//========== setting photo =========
+		$header = array('Setting','Value');
+		$tmpl = array ( 'table_open'  => '<table class="table table-hover">' );
+		$this->table->set_template($tmpl);
+		$this->table->set_heading($header);
+
+		$columnpho=['ufoto'];
+		$labelpho = ['Profil Photo'];
+		$arrpho = $this->Mlogin->detaillogin($columnpho,$this->session->userdata('user'))[0];
+		foreach ($columnpho as $k => $v) {
+			($arrpho[$v]=='') ? $foto = "avatar.png" : $foto = $arrpho[$v];		
+			$temppho[$k] =array($labelpho[$k], 
+							'<img src="'.base_url("upload/foto/".$foto).'" class="img-thumbnail alt="user photo" width="100">'.form_upload(array(
+							'id'=>'f'.$columnpho[$k],
+							'name' => $columnpho[$k],
+							'class'=>'btn btn-default',
+							'required'=>'required')));
+		}
+		$data['pho']=array('table' => $this->table->generate($temppho),
+									'title' => 'Photo Setting',
+									'fbtn' => form_submit(array('value'=>'Update Photo',
+											'class'=>'btn btn-primary',
+											'id'=>'btnupdateset')),
+									'finputs' => form_hidden('finputs',implode($columnacc, ',')).form_hidden('fflash','pho')
+									); 
+		
+
+		//========== setting password =========
+		$header = array('Setting','Value');
+		$tmpl = array ( 'table_open'  => '<table class="table table-hover">' );
+		$this->table->set_template($tmpl);
+		$this->table->set_heading($header);
+
+		$columnpass=['upassold','upassnew','upassnew2'];
+		$labelpass = ['Old Password',"New Password","Confirm New Password"];
+		
+		foreach ($columnpass as $k => $v) {		
+			$temppass[$k] =array($labelpass[$k], 
+						form_input(array(
+							'id'=>'f'.$columnpass[$k],
+							'name' => $columnpass[$k],
+							'class'=>'form-control',
+							'value'=>'',
+							'type'=>'password',
+							'required'=>'required')));
+		}
+
+		$data['pass']=array('table' => $this->table->generate($temppass),
+									'title' => 'Password Setting',
+									'fbtn' => form_submit(array('value'=>'Update Password',
+											'class'=>'btn btn-primary',
+											'id'=>'btnupdateset')),
+									'finputs' => form_hidden('finputs','upass').form_hidden('fflash','pass')
+									); 
+
+
+		//=============== Template ============
+		$data['jsFiles'] = array(
+							'selectpicker/select.min','moment/moment.min','daterange/daterangepicker','inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions');
+		$data['cssFiles'] = array(
+							'selectpicker/select.min','daterange/daterangepicker');  
+		// =============== view handler ============
+		$data['title']="Setting Account";
+		$data['topbar'] = $this->load->view('dashboard/topbar', NULL, TRUE);
+		$data['sidebar'] = $this->load->view('dashboard/org/sidebar', NULL, TRUE);
+		$data['content'] = $this->load->view('dashboard/org/setting/account', $data, TRUE);
+		$this->load->view ('template/main', $data);
 	}
-	
-	
-	
-	public function getdetailuser(){
-		$id = $this->input->post('user');
-		echo json_encode($this->Mpds->detailuser($id));
-	}
-	
+
 	public function savesetting(){
 		if(null!= $this->input->post('fregistphase')){
 			$dtrange = $this->input->post('fregistphase');

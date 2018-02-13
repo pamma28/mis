@@ -15,60 +15,73 @@
 				<div class="panel-body">
 					<h3 class="text-center">SUMMARY OF <?=$thisperiod;?> PERIOD</h3>
 				<div class="row">
-					<div class="col-lg-3 col-xs-6">
-						  <!-- small box -->
-						  <div class="small-box bg-aqua">
-							<div class="inner">
-							  <h3><?=$totpds;?> <sub style="font-size: 20px"> out of <?=$quota;?></sub></h3>
-							  <p>Registered Member</p>
-							</div>
-							<div class="icon">
-							  <i class="fa fa-copy"></i>
-							</div>
-							<a class="small-box-footer" href="#">More info <i class="fa fa-arrow-circle-right"></i></a>
-							<div class="progress bg-gray">
-							  <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="<?=$progressreg;?>" aria-valuemin="0" aria-valuemax="100" style="width: <?=$progressreg;?>%">
-								<span class="text-bold"><?=$progressreg;?>% Complete</span>
-							  </div>
-							</div>
-						  </div>
-					</div><!-- ./col -->
-					<div class="col-lg-3 col-xs-6">
-						  <!-- small box -->
-						  <div class="small-box bg-green">
-							<div class="inner">
-							  <h3><?=$totfullpay;?><sub style="font-size: 20px">  out of <?=$quota;?></sub></h3>
-							  <p>Full Payment</p>
+					<div class="col-lg-4 col-xs-12">
+						<div class="info-box bg-aqua">
+				            <span class="info-box-icon"><i class="fa fa-copy"></i></span>
+				            <div class="info-box-content">
+				              <span class="info-box-text">Registered Member</span>
+				              <span class="info-box-number"><?=$totpds;?> out of <?=$quota;?><sub></sub></span>
 
-							</div>
-							<div class="icon">
-							  <i class="fa fa-ticket"></i>
-							</div>
-
-							<a class="small-box-footer" href="#">More info <i class="fa fa-arrow-circle-right"></i></a>
-							<div class="progress bg-gray">
-							  <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="<?=$progresspay;?>" aria-valuemin="0" aria-valuemax="100" style="width: <?=$progresspay;?>%">
-								<span class="text-bold"><?=$progresspay;?>% Complete</span>
-							  </div>
-							</div>
-						  </div>
+				              <div class="progress">
+				                <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="<?=$progressreg;?>" aria-valuemin="0" aria-valuemax="100" style="width: <?=$progressreg;?>%"></div>
+				              </div>
+				                  <span class="progress-description">
+				                    <?=$progressreg;?>% Complete
+				                  </span>
+				            </div>
+				            <div class="info-box-footer">
+				            </div>
+				            <!-- /.info-box-content -->
+				          </div>
+						  
 					</div><!-- ./col -->
-					<div class="col-lg-6 col-xs-12">
-						  <!-- small box -->
-						  <div class="small-box bg-primary">
-							<div class="inner">
-							  <h3><?=$totmoney;?></h3>
-							  <p>Money Collected</p>
-							</div>
-							<div class="icon">
-							  <i class="fa fa-money"></i>
-							</div>
-							<a class="small-box-footer" href="#">More info <i class="fa fa-arrow-circle-right"></i></a>
-						  </div>
-					</div><!-- ./col --> 
+					<div class="col-lg-4 col-xs-12">
+						<div class="info-box bg-green">
+				            <span class="info-box-icon"><i class="fa fa-ticket"></i></span>
+				            <div class="info-box-content">
+				              <span class="info-box-text">Full Payment</span>
+				              <span class="info-box-number"><?=$totfullpay;?> out of <?=$quota;?><sub></sub></span>
+
+				              <div class="progress">
+				                <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="<?=$progressreg;?>" aria-valuemin="0" aria-valuemax="100" style="width: <?=$progresspay;?>%"></div>
+				              </div>
+				                  <span class="progress-description">
+				                    <?=$progresspay;?>% Complete
+				                  </span>
+				            </div>
+				            <div class="info-box-footer">
+				            </div>
+				            <!-- /.info-box-content -->
+				          </div>
+						  
+					</div><!-- ./col -->
+					<div class="col-lg-4 col-xs-12">
+						<div class="info-box bg-blue">
+				            <span class="info-box-icon"><i class="fa fa-money"></i></span>
+				            <div class="info-box-content">
+				              <span class="info-box-text">Money Collected</span>
+				              <span class="info-box-number"><?=$totmoney;?> <sub></sub></span>
+
+				              
+				            </div>
+				            <div class="info-box-footer">
+				            </div>
+				            <!-- /.info-box-content -->
+				          </div>
+						  
+					</div><!-- ./col -->
 				</div>
 				
 				
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12 col-sm-12">
+			<div class="box box-primary">
+				<div class="box-body">
+					<?=$dashtmp;?>
 				</div>
 			</div>
 		</div>

@@ -302,7 +302,34 @@
 				<div class="tab-pane table-responsive" id="pagelist">
                     
 						<div class="col-md-6"> 
-							asds 
+							<?php echo form_open(base_url('Organizer/setting#pagelist'),array('name'=>'fpageform','class'=>'form-horizontal','method'=>'POST'));?>
+							<div class="panel panel-primary">
+								<div class="panel-heading panel-heading-sm">
+									<h3 class="panel-title text-center"><span class="fa fa-pencil-square"></span> <b><?=$pagesetting['title'];?></b></h3>
+								</div>
+								<div class="panel-body">
+									<?php if ($this->session->flashdata('vpageset')!=null){ ?>
+									<div class="alert alert-success alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('vpageset');?>
+									</div>
+									<?php } else if ($this->session->flashdata('xpageset')!=null){ ?>
+									<div class="alert alert-danger alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('xpageset');?>
+									</div>		
+									<?php } ?>
+								 	<?=$pagesetting['table'];?>
+								</div>
+								<div class="panel-footer text-right">
+									<?=$pagesetting['finputs'];?>
+									<?=$pagesetting['fbtn'];?>
+								</div>
+							</div>
+
+						<?php  
+						echo form_close();
+						?> 
 						</div>
 					
 				</div>
@@ -331,6 +358,45 @@
 								<div class="panel-footer text-right">
 									<?=$mail['finputs'];?>
 									<?=$mail['fbtn'];?>
+								</div>
+							</div>
+
+						<?php  
+						echo form_close();
+						?>  
+						</div>
+						<div class="col-md-6"> 
+							<?php echo form_open(base_url('Organizer/setting#emaillist'),array('name'=>'fmailtoken','class'=>'form-horizontal','method'=>'POST','id'=>'fmailtoken'));?>
+							<div class="panel panel-primary">
+								<div class="panel-heading panel-heading-sm">
+									<h3 class="panel-title text-center"><span class="fa fa-envelope"></span> <b><?=$mailtoken['title'];?></b></h3>
+								</div>
+								<div class="panel-body">
+									<?php if ($this->session->flashdata('vmtoken')!=null){ ?>
+									<div class="alert alert-success alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('vmtoken');?>
+									</div>
+									<?php } else if ($this->session->flashdata('xmtoken')!=null){ ?>
+									<div class="alert alert-danger alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('xmtoken');?>
+									</div>		
+									<?php } ?>
+								 	<?=$mailtoken['table'];?>
+								 	<div class="bg-info">
+								 		<blockquote>
+										<p>In order to fully remove the configuration, please remove our App (SEF Membership) from Security Account through this <a href="https://security.google.com/settings/security/permissions" target="_blank" alt="remove apps">link</a></p>
+											<div class="text-center">
+											<img class="img-rounded" src="<?=base_url('upload/system/remove gapps.JPG')?>" width="50%"><br/>
+											<small>Please remove our App, by clicking remove as shown in picture.</small>
+											</div>
+										</blockquote>
+									</div>
+								</div>
+								<div class="panel-footer text-right">
+									<?=$mailtoken['finputs'];?>
+									<?=$mailtoken['fbtn'];?>
 								</div>
 							</div>
 
@@ -508,7 +574,8 @@ $('#DetailModal').on('show.bs.modal',function(e){
 });
 
 $(document).ready(function(){
-	$('#fregistsuccess, #fmailregistsuccess').on('changed.bs.select',function(e){
+	
+	$('#fregistsuccess, #fmailregistsuccess, .changepage').on('changed.bs.select',function(e){
 		var idtmp = $(this).selectpicker('val');
 			$('#DetailModal').modal({
 				show: true,
@@ -548,7 +615,11 @@ $(document).ready(function(){
 		$('input[name="mailheader"]').val($("#txtmailheader").summernote('code'));
 		$('input[name="mailfooter"]').val($("#txtmailfooter").summernote('code'));
 	});
-	
+
+	$("#btnremoveemail").click(function(){
+		$("#fmailtoken").submit();
+	});
+
 });
 	</script>
 </section>

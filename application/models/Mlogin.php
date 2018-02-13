@@ -187,6 +187,14 @@ class Mlogin extends CI_Model{
 	return $this->db->get('user')->row();
 	}
 	
+	public function detaillogin($col,$id){
+	$this->db->select($col);
+	$this->db->join('jk','jk.idjk=user.idjk','left');
+	$this->db->join('fac','user.idfac=fac.idfac','left');
+	$this->db->where('uuser',$id);
+	return $this->db->get('user')->result_array();
+	}
+
 	public function getdetailbyphone($col,$id){
 	$this->db->select($col);
 	$this->db->join('level','user.idlevel=level.idlevel','left');

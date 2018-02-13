@@ -10,10 +10,50 @@
 <section class="content">
 	<div class="box">
 	<h2 align="center">Payment Cashier</h2>
-		
+
 	<div class="row">
-		<div class="col-md-8">
-				<?php if ($this->session->flashdata('v')!=null){ ?>
+		<div class="col-md-8 col-sm-8">
+			<div class="box box-info box-solid">
+				<div class="box-header with-border" align="center">
+				<b>Transaction History </b>
+					<div class="box-tools pull-right">
+                    <button data-widget="collapse" class="btn btn-box-tool"><i class="fa fa-caret-up fa-lg"></i></button>
+					</div>
+				</div>
+				<div class="box-body">
+				
+					<div class=" table-responsive">
+						
+						<sub>
+						<div class="col-md-12 bg-success ">
+							<h5><b>Total Transaction: <span id="tottrans">0</span> </b></h5>
+						</div>
+						<table class="table table-hover table-bordered" id="recordedtrans">
+							<tr>
+								<th>Invoice Date</th>
+								<th><?=$col[6];?></th>
+								<th><?=$col[0];?></th>
+								<th><?=$col[1];?></th>
+								<th><?=$col[4];?></th>
+								<th><?=$col[3];?></th>
+								<th><?=$col[5];?></th>
+								<th>PIC</th>
+							</tr>
+						</table>
+						<div class="col-md-6">
+							<h4><span class="bg-info"><b>Status: <span id="ulunas"> ------- </span></b></span></h4>
+						</div>
+						<div class="col-md-6 text-right">
+						<h4 class="text-right"><span class="bg-primary"><b>Total Paid Rp. <span  id="totpaid">0 </span>,-</b></span></h4>
+						</div>
+						</sub>
+						
+					</div>
+				</div>
+			</div>
+		
+
+			<?php if ($this->session->flashdata('v')!=null){ ?>
 				<div style="padding:0 20px;">
 				<div class="alert alert-success alert-dismissible" role="alert">
 					<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
@@ -36,25 +76,30 @@
 			<div class="panel-body">
 				<div class="row">
 					<div class="col-md-6 col-sm-6" align="center">
-						<div class="info-box well">
-						<span class="info-box-icon bg-green"><i class="fa fa-money"></i></span>
-						<div class="info-box-content">
-						  <span class="info-box-text">Total Paid</span>
-						  <h3>Rp. <span id="tpaid">0</span> ,-</h3>
-						</div>
-						<!-- /.info-box-content -->
-					  </div>
+						<div class="info-box bg-green">
+				            <span class="info-box-icon"><i class="fa fa-money"></i></span>
+				            <div class="info-box-content">
+				              <span class="info-box-text">Total Paid</span>
+				              <span class="info-box-number">Rp. <span id="tpaid">0</span> ,-</span>
+				              
+				            </div>
+				            <div class="info-box-footer">
+				            </div>
+				            <!-- /.info-box-content -->
+				          </div>
 					</div>
 					<div class="col-md-6 col-sm-6" align="center">
-						<div class="info-box well">
-						<span class="info-box-icon bg-primary"><i class="fa fa-money"></i></span>
-
-						<div class="info-box-content">
-						  <span class="info-box-text">Total Change</span>
-						  <h3>Rp. <span id="tchange">0</span> ,-</h3>
-						</div>
-						<!-- /.info-box-content -->
-					  </div>
+						<div class="info-box bg-gray">
+				            <span class="info-box-icon"><i class="fa fa-money"></i></span>
+				            <div class="info-box-content">
+				              <span class="info-box-text">Total Change</span>
+				              <span class="info-box-number">Rp. <span id="tchange">0</span> ,-</span>
+				              
+				            </div>
+				            <div class="info-box-footer">
+				            </div>
+				            <!-- /.info-box-content -->
+				          </div>
 					</div>
 				</div>
 				<div class="form-horizontal">
@@ -72,20 +117,38 @@
 					</div>
 					<div class="form-group">
 						<label class="col-sm-3 control-label"><?=$col[4];?></label>
-						<div class="col-sm-9"><?=$paid;?>
+						<div class="col-sm-9">
+							<div class="input-group">
+								<span class="input-group-addon">Rp.</span>
+							<?=$paid;?>
+							</div>
 						<small><i>*Please add (-) minus into nominal paid, if transaction is withdrawal.</i></small></div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-3 control-label"><?=$col[3];?></label>
-						<div class="col-sm-9"><?=$nomi;?></div>
+						<div class="col-sm-9">
+							<div class="input-group">
+								<span class="input-group-addon">Rp.</span>
+								<?=$nomi;?>
+							</div>
+						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-3 control-label"><?=$col[5];?></label>
-						<div class="col-sm-9"><?=$ret;?></div>
+						<div class="col-sm-9">
+							<div class="input-group">
+								<span class="input-group-addon">Rp.</span>
+								<?=$ret;?>
+							</div>
+						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-sm-3 control-label"><?=$col[6];?></label>
-						<div class="col-sm-9"><?=$vto;?></div>
+						<div class="col-sm-9">
+							<div class="input-group"><?=$vto;?>
+								<span class="input-group-addon">Month(s)</span>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -106,37 +169,7 @@
 			<?=form_close();?>
 		</div>
 		<div class="col-md-4">
-			<div class="row">
-				<div align="center" class="col-md-12 col-sm-12"> 
-				<div class="box box-primary box-solid">
-					<div class="box-header with-border">Info Selected Member</div>
-					<div class="bg-aqua"><h3 id="ulunas">---------</h3></div>
-					<div class="row">
-							<div class="col-md-6 col-sm-6" align="center">
-								<div class=" bg-info"><i class="fa fa-calculator fa-2x"></i>
-								<div class="panel-body" align="center">
-								  <span class="info-box-text">Total Transaction</span>
-								  <h4 id="tottrans">0</h4>
-								</div>
-								<!-- /.info-box-content -->
-								</div>
-							</div>
-							<div class="col-md-6 col-sm-6" align="center">
-								<div class="bg-success"><i class="fa fa-credit-card-alt fa-2x"></i>
-								<div class="panel-body" align="center">
-								  <span class="info-box-text">Total Paid</span>
-								  <h4>Rp. <span id="totpaid">0</span>,-</h4>
-								</div>
-								<!-- /.info-box-content -->
-								</div>
-							</div>
-					</div>
-					<small><i>
-					*Find out details transaction history (if any) in the bottom.
-					</i></small>
-				</div>
-				</div>
-			</div>
+			
 			<div class="panel panel-primary">
 			<div class="panel-heading">
 				<div class="text-center"><b>Invoice Preview</b></div>
@@ -197,35 +230,7 @@
 		</div>
 	</div>
 	</div>
-	<div class="row">
-		<div class="col-md-12 col-sm-12">
-			<div class="box box-info box-solid">
-				<div class="box-header with-border" align="center">
-				<b>Transaction History </b>
-					<div class="box-tools pull-right">
-                    <button data-widget="collapse" class="btn btn-box-tool"><i class="fa fa-caret-up fa-lg"></i></button>
-					</div>
-				</div>
-			<div class="box-body">
-			
-			<div class=" table-responsive">
-			<table class="table table-hover table-bordered" id="recordedtrans">
-				<tr>
-					<th>Invoice Date</th>
-					<th><?=$col[6];?></th>
-					<th><?=$col[0];?></th>
-					<th><?=$col[1];?></th>
-					<th><?=$col[4];?></th>
-					<th><?=$col[3];?></th>
-					<th><?=$col[5];?></th>
-					<th>PIC</th>
-				</tr>
-			</table>
-			</div>
-			</div>
-			</div>
-		</div>
-	</div>
+	
 	
 		<script>
 		 $('.selectpicker').selectpicker({

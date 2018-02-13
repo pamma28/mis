@@ -1,62 +1,109 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-$lang['Login'] = "Login";
-$lang['Logout'] = "Logout";
-$lang['Dash'] = "Dashboard";
-$lang['Language'] = "Language";
-$lang['Register'] = "Register";
-$lang['Articles'] = "Articles";
-$lang['Agendas'] = "Agendas";
-$lang['About'] = "About";
-$lang['Recent'] = "Recent News";
-$lang['ImportantD'] = "Important Dates";
-$lang['Announ'] = "Announcement";
-$lang['MenuNav'] = "Menu Navigation";
-$lang['setting'] = "Setting";
-$lang['menu'] = "Menu";
-$lang['close'] = "Close";
-$lang['account'] = "Setting Account";
+$lang = array(
+		'Login' => "Login",
+		'Logout' => "Logout",
+		'Dash' => "Dashboard",
+		'Language' => "Language",
+		'Register' => "Register",
+		'Articles' => "Articles",
+		'Agendas' => "Agendas",
+		'About' => "About",
+		'Recent' => "Recent News",
+		'ImportantD' => "Important Dates",
+		'Announ' => "Announcement",
+		'MenuNav' => "Navigation Menu",
+		'setting' => "Setting",
+		'menu' => "Menu",
+		'close' => "Close",
+		'account' => "Account Setting",
 
 
- 
-// ========== admin ===========
-$lang['backup'] = "Backup Data";
-$lang['manageacc'] = "Manage Account";
-$lang['registdata'] = "Registration Data";
-$lang['database'] = "Database";
 
-//========= Organizer ==========
-$lang['memberacc'] = "Member Account";
-$lang['regist'] = "Registration";
-$lang['payment'] = "Payment Data ";
-$lang['viewall'] = "View Data";
-$lang['new'] = "Add Data";
-$lang['managetest'] = "Manage Test";
-$lang['certi'] = "Certificate";
-$lang['bc'] = "Broadcast";
-$lang['content'] = "Content Data";
-$lang['master'] = "Master Data";
-$lang['set_rc'] = "Setting RC";
+	// ========== admin ===========
+		'backup' => "Backup Data",
+		'manageacc' => "Manage Account",
+		'registdata' => "Registration Data",
+		'database' => "Database",
+		'add' => "Add ",
 
-//========== Member ==========
-$lang['mempds'] = "Registration";
-$lang['mypds'] = "My Registration Data";
-$lang['editmypds'] = "Edit Registration Data"; 
-$lang['mempay'] =  "Payment";
-$lang['mempayproc'] = "Payment Procedure";
-$lang['memsendpay'] = "Request Validation";
-$lang['mempayvalid'] = "Validation Result";
-$lang['memmypay'] = "My Payment";
-$lang['memschetest'] = "Schedule & Test";
-$lang['memsche'] = "Schedule";
-$lang['memmysche'] =  "My Schedule";
-$lang['memchosesche'] = "Choose Schedule";
-$lang['memtest'] = "Test";
-$lang['memmytest'] = "My Test";
-$lang['memdotest'] = "Do Test";
-$lang['memtestresult'] = "Test Result";
-$lang['memcerti'] = "Certificate";
-$lang['mycerti'] = "My Certificate";
-$lang['prevcerti'] = "Preview Certificate";
-$lang['memsetacc'] = "Setting Account";
-/* End of file */
+
+
+	//========= Organizer ==========
+		'memberacc' => "Member Account",
+		'regist' => "Registration",
+		'payment' => "Payment Data ",
+		'tfvalid' => "Transfer Validation",
+		'paydata' => "Payment Data",
+		'paycashier' => "Payment Cashier",
+		'viewall' => "View All",
+		'new' => "Add Data",
+		'managetest' => "Manage Test",
+		'tname' => "Test Name",
+		'tsubj' => "Subject Test",
+		'tsubjlist' => "Subject-Test List",
+		'tsubjedit' => "Edit Subject-Test",
+		'tsubjall' => "Subject Data",
+		'tquest' => "Question",
+		'tsubjquestlist' => "Question-Subject Test List",
+		'tsubjquestedit' => "Edit Question-Subject Test",
+		'qtype' => "Question Type",
+		'qall' => "Question Data",
+		'tsche' => "Test Schedule",
+		'tactive' => "Activate Schedule",
+		'tresult' => "Test Result",
+		'tassess' => "Assess Test Result",
+		'certi' => "Certificate",
+		'certidata' => "Certificate Data",
+		'certidesign' => "Certificate Design",
+		'certiprev' => "Preview Certificate",
+		'bc' => "Broadcast",
+		'bcmail' => "Broadcast Email",
+		'bcmaillist' => "Email Broadcast List",
+		'bcmailcom' => "Compose Email",
+		'bcsms' => "Broadcast SMS",
+		'bcsmslist' => "SMS Broadcast List",
+		'bcsmscom' => "Compose SMS",
+		'bcsmstmp' => "SMS Template",
+		'content' => "Content Data",
+		'contenttmp' => "Content Template",
+		'contentatcl' => "Article",
+		'contentatcllist' => "Article List",
+		'contentatclcat' => "Article Category",
+		'contentagn' => "Agenda List",
+		'contentnotif' => "Notification List",
+		'master' => "Master Data",
+		'masterfac' => "Faculty",
+		'masterlvl' => "Class Level",
+		'mastergen' => "Gender",
+		'masterrole' => "Role",
+		'set_rc' => "Setting RC",
+
+
+
+	
+	//========== Member ==========
+		'mempds' => "Registration",
+		'mypds' => "My Registration Data",
+		'editmypds' => "Edit Registration Data",
+		'mempay' =>  "Payment",
+		'mempayproc' => "Payment Procedure",
+		'memsendpay' => "Request Validation",
+		'mempayvalid' => "Validation Result",
+		'memmypay' => "My Payment",
+		'memschetest' => "Schedule & Test",
+		'memsche' => "Schedule",
+		'memmysche' =>  "My Schedule",
+		'memchosesche' => "Choose Schedule",
+		'memtest' => "Test",
+		'memmytest' => "My Test",
+		'memdotest' => "Do Test",
+		'memtestresult' => "Test Result",
+		'memcerti' => "Certificate",
+		'mycerti' => "My Certificate",
+		'prevcerti' => "Preview Certificate",
+		'memsetacc' => "Setting Account"
+		
+		);
+
+	/* End of file */

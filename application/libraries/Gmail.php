@@ -24,6 +24,7 @@ class Gmail extends Google_Client {
         $gClient->setClientId($this->id);
         $gClient->setClientSecret($this->secret);
         $gClient->setRedirectUri($redirect);
+        $gClient->setApprovalPrompt("force");
         $gClient->setAccessType('offline');		
 		$urlauth = $gClient->createAuthUrl();
 		$CI =& get_instance();
@@ -31,19 +32,19 @@ class Gmail extends Google_Client {
 		
 		if (($CI->input->get('code')) and ($CI->Msetting->getset('sendmailcode')==null)){	
 			if($gClient->authenticate($CI->input->get('code'))){
+				$token = $gClient->getAccessToken();
+				
+				//get userinfo email
+				$gClient->setAccessToken($token); 
+				$plus = new Google_Service_Plus($gClient);
+				$me= $plus->people->get("me");
 				$dtset=array(
-					'sendermail'=>'',
+					'sendermail' => $me['emails'][0]['value'],
 					'sendmailcode'=>$CI->input->get('code'),
 					'sendmailtoken'=>$gClient->getAccessToken(),
 					'sendmailrefreshtoken'=>json_decode($gClient->getAccessToken())->refresh_token
 					);
-				//get userinfo email
-				$gClient->setAccessToken($dtset['sendmailtoken']); 
-				$plus = new Google_Service_Plus($gClient);
-				$me= $plus->people->get("me");
-				$dtset['sendermail']= $me['emails'][0]['value'];
 				$CI->Msetting->savesetting($dtset);
-				$CI->session->set_flashdata('v','Configure Gmail (Sender) success');
 			} else if ($gClient->isAccessTokenExpired()) {
 				$retoken = $CI->Msetting->getset('sendmailrefreshtoken');
 				if ($gClient->refreshToken($retoken)){

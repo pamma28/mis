@@ -16,7 +16,7 @@
 	                 
 	                </ul>
 	              </li>
-	              <li class="footer"><a href="#"><b>View all</b></a></li>
+	              <li class="footer"><a href="<?=base_url("Organizer/Dashboard/allnotification")?>"><b><?=lang('viewall');?></b></a></li>
 				</ul>
 		  </li>
 	 </ul>
