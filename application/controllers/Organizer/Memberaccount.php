@@ -288,7 +288,7 @@ class Memberaccount extends Org_Controller {
 				
 		//=============== Template ============
 		$data['jsFiles'] = array(
-							'moment/moment.min','daterange/daterangepicker','print/printThis','toggle/bootstrap2-toggle.min');
+							'inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions','inputmask/inputmask.numeric.extensions','moment/moment.min','daterange/daterangepicker','print/printThis','toggle/bootstrap2-toggle.min');
 		$data['cssFiles'] = array(
 							'daterange/daterangepicker','toggle/bootstrap2-toggle.min');  
 		// =============== view handler ============
@@ -630,17 +630,18 @@ class Memberaccount extends Org_Controller {
 						'placeholder'=>'Fullname',
 						'value'=>set_value('ffullname'),
 						'class'=>'form-control',
-						'size'=>'50');
+						'max-length'=>'50');
 		$r[] = form_input($ffname);
 		
 		$fpass = array('name'=>'fpass',
 						'id'=>'Password',
+						'type'=>'password',
 						'required'=>'required',
 						'placeholder'=>'Password',
 						'value'=>set_value('fpass'),
 						'class'=>'form-control',
 						'size'=>'50');
-		$r[] = form_input($fpass);
+		$r[] = '<div class="input-group">'.form_input($fpass).'<span class="input-group-addon"><a type="button" id="togglePassword" class="btn btn-xs btn-default"><i class="fa fa-eye"></i></a></span></div>';
 		
 		$femail = array('name'=>'femail',
 						'id'=>'Email',
@@ -654,12 +655,12 @@ class Memberaccount extends Org_Controller {
 		$r[] = form_input($femail).'<span id="valsuccess" style="display:none;" class="text-primary"><i class="fa fa-check"></i> Email Available</span><span id="valfailed" class="text-danger" style="display:none;"><i class="fa fa-ban"></i> Email Not Available</span>';
 		
 		$fhp = array('name'=>'fhp',
-						'id'=>'return',
+						'id'=>'nohp',
 						'required'=>'required',
 						'placeholder'=>'Phone Number',
 						'value'=>set_value('fhp'),
 						'class'=>'form-control',
-						'size'=>'50');
+						'max-length'=>'13');
 		$r[] = form_input($fhp);
 		
 		$r[] = form_checkbox(array(
@@ -847,13 +848,13 @@ class Memberaccount extends Org_Controller {
 	public function saveaccount(){
 	if ($this->input->post('fallow')==1){
 	$allow = 1;} else {$allow=0;}
-	
+	$mem = $this->input->post('fusername');
 	$fdata = array (
 					'ucreated' => date("Y-m-d H:i:s"),
-					'uuser' => $this->input->post('fusername'),
+					'uuser' => $mem,
 					'upass' => md5($this->input->post('fpass')),
 					'uname' => $this->input->post('ffullname'),
-					'uupdate' => date("Y-m-d H:i:s"),
+					'unim' => $mem,
 					'uemail' => $this->input->post('femail'),
 					'uhp' => $this->input->post('fhp'),
 					'idrole' => '3',
@@ -861,6 +862,13 @@ class Memberaccount extends Org_Controller {
 					);
 		$r = $this->Mlogin->addacc($fdata);
 		if ($r){
+		//======= set notif to org===========
+		$idnotif = $this->Msetting->getset('notifnewsignup');
+		$this->notifications->pushNotifToOrg(array('idnotif'=>$idnotif,'uuser'=>$mem,'nlink'=>base_url('Organizer/PDS')));
+
+		//======= set notif to member ========
+		$idnotifmem = $this->Msetting->getset('notifregistsuccess');
+		$this->notifications->pushnotif(array('idnotif'=>$idnotifmem,'uuser'=>$this->session->userdata('user'),'use_uuser'=>$mem,'nlink'=>null));
 		$this->session->set_flashdata('v','Add Member Account Success');
 		} else {		
 		$this->session->set_flashdata('x','Add Member Account Failed');

@@ -1018,6 +1018,18 @@ class Schedule extends Org_Controller {
 		$id = $this->input->get('id');
 		$r = $this->Msche->activate($id,array('jactive'=>'1','jstart'=>date('Y-m-d H:i:s')));
 	if ($r){
+
+		//======= set notif to org===========
+		$idnotif = $this->Msetting->getset('notiftestactivatedby');
+		$this->notifications->pushNotifToOrg(array('idnotif'=>$idnotif,'uuser'=>$this->session->userdata('user'),'nlink'=>base_url('Organizer/Schedule/active')));
+
+		//======= set notif to member ========
+		$idnotifmem = $this->Msetting->getset('notiftestactive');
+		$arrmem = $this->Msche->populatemember(array('user.uuser'),$id);
+		foreach ($arrmem as $k => $v) {
+			$this->notifications->pushnotif(array('idnotif'=>$idnotifmem,'uuser'=>$this->session->userdata('user'),'use_uuser'=>$v['uuser'],'nlink'=>base_url('Member/Test')));
+		}
+
 		$this->session->set_flashdata('v','Activate Schedule Success');
 		} else{
 		$this->session->set_flashdata('x','Activate Schedule Failed');

@@ -34,7 +34,7 @@
 						<span class="info-box-icon bg-aqua"><i class="fa fa-dollar"></i></span>
 						<div class="info-box-content bg-info">
 						  <span class="info-box-text">(With Reply) Credit</span>
-						  <span class="info-box-number"><span id="withrepcredit">Rp. -</span></span>
+						  <span class="info-box-number"><span id="withrepcredit">Rp. <?=$repcredit;?></span></span>
 						  <p>Cost: Rp. 40/sms</p>
 						</div><!-- /.info-box-content -->
 					  </div><!-- /.info-box -->
@@ -54,7 +54,7 @@
 						<span class="info-box-icon bg-aqua"><i class="fa fa-dollar"></i></span>
 						<div class="info-box-content bg-info">
 						  <span class="info-box-text">(No Reply) Credit</span>
-						  <span class="info-box-number"><span id="norepcredit">Rp. -</span></span>
+						  <span class="info-box-number"><span id="norepcredit">Rp. <?=$norepcredit;?></span></span>
 						  <p>Cost: Rp. 20/sms</p>
 						</div><!-- /.info-box-content -->
 					  </div><!-- /.info-box -->
@@ -63,117 +63,142 @@
 				  </div>
 				 
 				
-				
-				<div class="well">
-					<?=$metadata;?>
-				</div>
-				
-				<div class="panel panel-default">
-				<div class="panel-body">
-					<div class="row">
-						<div class="col-md-8">
-						<p><b>SMS Content: </b></p>
-						<?=$editor;?>
-						<div class="">
-						
-							<div class="input-group bg-danger">
-								<span class="btn btn-info">
-								<a href="#choosetemplate" data-toggle="collapse" id="btnfooter" class="collapse in"> 
-								<i class="fa fa-caret-up"></i>
-								<i class="bg-aqua">Use Template</i>
-								</a>
-								</span>
-							</div>
-						
-							<p id="choosetemplate" class="collapsed in"> <?=$opttmp;?></p> 
-						
-						
-						</div>
-						</div>
-						<div class="col-md-4">
+				<div class="row">
+					<div class="col-md-6">
 						<div class="well">
-						<h4 class="text-center"><strong>Special Code</strong></h4>
+							<?=$metadata;?>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="well">
+						
+							<h4 class="text-center"><strong>Special Code</strong></h4>
 							<div class="bg-info">
-								<dl class="dl-horizontal">
-									<dt><code>{honor}</code></dt> <dd>: Mr./Ms.</dd>
-									<dt><code>{name}</code></dt> <dd>: Full Name</dd>
-									<dt><code>{NIM}</code></dt> <dd>: NIM</dd>
-									<dt><code>{faculty}</code></dt> <dd>: Faculty</dd>
-									<dt><code>{period}</code></dt> <dd>: Period</dd>
-									<dt><code>{email}</code></dt> <dd>: Email</dd>
-									<dt><code>{phone}</code></dt> <dd>: Phone Number</dd>
-									<dt><code>{level}</code></dt> <dd>: Level (if any)</dd>
-									<dt><code>{payment}</code></dt> <dd>: Payment Status</dd>
-									<dt><code>{birthdate}</code></dt> <dd>: Birthdate</dd>
-								</dl>
+							<div class="row">
+							<div class="col-md-6">
+										<dl class="dl-horizontal">
+											<dt><code>{honor}</code></dt> <dd>: Mr./Ms.</dd>
+											<dt><code>{name}</code></dt> <dd>: Full Name</dd>
+											<dt><code>{NIM}</code></dt> <dd>: NIM</dd>
+											<dt><code>{faculty}</code></dt> <dd>: Faculty</dd>
+											<dt><code>{period}</code></dt> <dd>: Period</dd>
+										</dl>
+									
 							</div>
+							<div class="col-md-6">
+									
+										<dl class="dl-horizontal">
+											<dt><code>{email}</code></dt> <dd>: Email</dd>
+											<dt><code>{phone}</code></dt> <dd>: Phone Number</dd>
+											<dt><code>{level}</code></dt> <dd>: Level (if any)</dd>
+											<dt><code>{payment}</code></dt> <dd>: Payment Status</dd>
+											<dt><code>{birthdate}</code></dt> <dd>: Birthdate</dd>
+										</dl>
+							</div>
+							</div>
+						</div>
+							
 							<small class="text-info">Note: Put the code in SMS Content and it will change into each spesific detail of SMS Recipient. <br/>e.g: {name} will send as "Bill Gates"</small>
-						</div>
+							
+						
 						</div>
 					</div>
-					
 				</div>
-				<div class="panel-footer ">
-					<div class="text-left">
-						<div class="input-group">
-                        <span class="input-group-addon">
-                          <?=$usereply;?>
-                        </span>
-                        <span class="input-group-addon">
-							<b>Use Reply Features</b> (Rp.40/sms)
-                        </span>
+				
+				
+				<div class="row">
+						<div class="col-md-6">
+						<div class="panel panel-default">
+							<div class="panel-body">
+							<p><b>SMS Content: </b></p>
+							<?=$editor;?>
+							<div>						
+								<div class="input-group bg-danger">
+									<span class="btn btn-info">
+									<a href="#choosetemplate" data-toggle="collapse" id="btnfooter" class="collapse in"> 
+									<i class="fa fa-caret-up"></i>
+									<i class="bg-aqua">Use Template</i>
+									</a>
+									</span>
+								</div>
+								<p id="choosetemplate" class="collapsed in"> <?=$opttmp;?></p> 
+							</div>
+							</div>
+							<div class="panel-footer ">
+								<div class="text-right">
+								Total Credit will be used <?=$countercredit;?> Total Characters left <?=$counterchar;?> Total SMS <?=$countersms;?> 
+								</div>
+							</div>
 						</div>
-						
-						<div class="input-group">
-                        <span class="input-group-addon">
-							<a href="<?=base_url('Organizer/SmsBroadcast/helpreply');?>" data-target=".bs-help" data-toggle="modal" role="button" alt="Help">
-							<i class="fa fa-question-circle"></i>
-							<i>How to set up reply features</i></a>
-                        </span>
-                        <span class="input-group-addon">
-							<i><small>(Last syncronized in <?=$lastsync;?>)</small></i>
-						</span>
 						</div>
-					</div>
-						
-					<div class="text-left">
-						<div class="input-group">
-							<span class="input-group-addon">
-							  <?=$usefoo;?> 
-							</span>
-							<span class="input-group-addon">
-							<b>Use Footer</b>
-							</span>
+						<div class="col-md-6">
+						<div class="panel panel-default">
+							<div class="panel-body">
+							<h4 class="text-center text-primary"><b>Reply Features</b></h4>
+							<div class="text-left">
+								<div class="input-group">
+		                        <span class="input-group-addon">
+		                          <?=$usereply;?>
+		                        </span>
+		                        <span class="input-group-addon">
+									<b>Use Reply Features</b> (Rp.40/sms)
+		                        </span>
+								</div>
+								
+								<div class="input-group">
+		                        <span class="input-group-addon">
+									<a href="<?=base_url('Organizer/SmsBroadcast/helpreply');?>" data-target=".bs-help" data-toggle="modal" role="button" alt="Help">
+									<i class="fa fa-question-circle"></i>
+									<i>How to set up reply features</i></a>
+		                        </span>
+		                        <span class="input-group-addon">
+									<i><small>(Last syncronized in <?=$lastsync;?>)</small></i>
+								</span>
+								</div>
+							</div>
+							</div>
 						</div>
-						<div class="input-group">
-							<span class="input-group-addon">
-							<a href="#detailfooter" data-toggle="collapse" id="btnfooter" class="collapse in"> 
-							<i class="fa fa-caret-up"></i>
-							<i>Toogle Footer</i>
-							</a>
-							</span>
-						</div>
-						
-						<div class="box box-primary box-solid bg-gray collapsed in" id="detailfooter">
-							<div class="box-body">
-								<b>Footer SMS : </b>
-								<code><?=$footer;?></code>
-								<?=$codefooter;?>
+						<div class="panel panel-default">
+							<div class="panel-body">
+							<h4 class="text-center text-primary"><b>Footer Usage</b></h4>
+							<div class="text-left">
+								<div class="input-group">
+									<span class="input-group-addon">
+									  <?=$usefoo;?> 
+									</span>
+									<span class="input-group-addon">
+									<b>Use Footer</b>
+									</span>
+								</div>
+								<div class="input-group">
+									<span class="input-group-addon">
+									<a href="#detailfooter" data-toggle="collapse" id="btnfooter" class="collapse in"> 
+									<i class="fa fa-caret-up"></i>
+									<i>Toogle Footer</i>
+									</a>
+									</span>
+								</div>
+								
+								<div class="box box-primary box-solid bg-gray collapsed in" id="detailfooter">
+									<div class="box-body">
+										<b>Footer SMS : </b>
+										<code><?=$footer;?></code>
+										<?=$codefooter;?>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
-					<div class="text-right">
-					Total Credit will be used <?=$countercredit;?> Total Characters left <?=$counterchar;?> Total SMS <?=$countersms;?> 
 					</div>
 				</div>
-				</div>
+				
 				
 				<div class="btn-group btn-group-justified" role="group" aria-label="myButton">
 					<div class="btn-group" role="group">
 						<button type="reset" id="res" class="btn btn-danger btn-lg">Reset</button>
 					</div>
 					<div class="btn-group" role="group">
-					  <?=$listto.$nameto.$redi.$inred;?>
+					  <?=$fusersto.$listto.$nameto.$redi.$inred;?>
 					</div>
 					<div class="btn-group" role="group">
 					  <?=$inbtn;?>
@@ -247,34 +272,41 @@
 	<script type="text/javascript">
 	 
 	$(document).ready(function () {
+		getlist();
 		
 		function countcredit(){
 		var j = 0;
-		var totchar = $("#smstext").val().length + $("#mali").val().length + $('input[name="ffooter"]').val().length;
+		if($("#usefoo").is(':checked')){
+			var totchar = $("#smstext").val().length + $("#mali").val().length + $('input[name="ffooter"]').val().length;
+		} else {
+			var totchar = $("#smstext").val().length + $("#mali").val().length;
+		}
+
 		var to = $('#mto').tokchify('getValue').map(function(a) {return j++;});
 			if ($("#muserep").is(':checked')){
 				$("#mcountercredit").val((Math.ceil(totchar / 160)) * 40 * j);
 			} else {
 				$("#mcountercredit").val((Math.ceil(totchar / 160)) * 20 * j);
 			}
+			if (totchar == 0){
+				$("#mcounterchar,#mcountersms,#mcountercredit").val(0);
+				
+			} else {
+				$("#mcounterchar").val(160 - (totchar % 160));
+				$("#mcountersms").val(Math.ceil(totchar / 160));
+				
+			}
 		}
 		
 		$("#smstext,#mali").on('keyup',function () {
-			var totchar = $("#smstext").val().length + $("#mali").val().length + $('input[name="ffooter"]').val().length;
-			if (totchar == 0){
-				$("#mcounterchar,#mcountersms,#mcountercredit").val(0);
-			} else {
-				if ($("#mali").val().length > 0) {
-					totchar += 1 ;
-					}
-				$("#mcounterchar").val(160 - (totchar % 160));
-				$("#mcountersms").val(Math.ceil(totchar / 160));
-				countcredit();
-			}
+			countcredit();
 		});
 		
 		$("#muserep").on('change',function(){
+			if($("#smstext").val().length>0)
+			{
 			countcredit();
+			}
 		});
 		
 		$("#refreshcredit").click(function(){
@@ -397,6 +429,7 @@
 		$("input[name=mbc][value=0]:radio").change(function () {
 			$("#optbc").attr("class","hidden");
 			$("#optrole,#optyear,#optlvl").val('');
+			$('#mto').tokchify('setValue','');
 			getlist();
 			
 		});
@@ -425,7 +458,8 @@
 		
 		$("#submit,#redi").click(function(){
 			$('input[name="flistto"]').val( $('#mto').tokchify('getValue').map(function(a) {return a.phone;}).toString());
-			$('input[name="fnameto"]').val($('#mto').tokchify('getValue').map(function(a) {return a.name;}).toString());							
+			$('input[name="fnameto"]').val($('#mto').tokchify('getValue').map(function(a) {return a.name;}).toString());
+			$('input[name="fusersto"]').val($('#mto').tokchify('getValue').map(function(a) {return a.user;}).toString());	
 		});
 		
 		$("#submit").click(function(){
@@ -458,12 +492,13 @@
 				}, function (data) {
 					tmp = $.parseJSON(data);	
 					$('#smstext').val(tmp['tmpcontent']);
-				
+					countcredit();
 				});	
 				
 			}
 		});
+
 		
-});
+	});
   	</script>
 </section>

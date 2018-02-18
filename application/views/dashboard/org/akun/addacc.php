@@ -14,7 +14,20 @@
 </div>
 <?php echo form_close();?>
 <script>
-  $(function() {
+    $(document).ready(function(){
+        
+        $("#nohp").inputmask('08[99999999999]');
+    });
+
+    $('#togglePassword').on('click', function(){
+            $(this).find("i.fa").toggleClass('fa-eye fa-eye-slash');
+            var type    = ($(this).find("i.fa").hasClass('fa-eye-slash') ? 'text' : 'password');
+            var input   = $('#Password');
+            var replace = input.clone().attr('type', type);
+            input.replaceWith(replace);
+        });
+
+    $(function() {
     $('#idallow').bootstrapToggle({
 		on: "Allow",
 		off: "Deny",

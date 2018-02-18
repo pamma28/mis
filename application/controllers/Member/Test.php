@@ -18,8 +18,9 @@ class Test extends Mem_Controller {
 	public function index(){
 		//===================== check phase date =============
 		$data['thisperiod']=$this->Msetting->getset('period');
-		$startsche = strtotime(str_replace('/', '-', $this->Msetting->getset('beginschedule')));
-		$endsche =  strtotime(str_replace('/', '-', $this->Msetting->getset('endschedule')));
+		$schephase = explode(" - ",$this->Msetting->getset('schedulephase'));
+		$startsche = strtotime(str_replace('/', '-', $schephase[0]));
+		$endsche =  strtotime(str_replace('/', '-', $schephase[1]));
 		$today = strtotime(date("d-m-Y"));
 		$data['date'] = (($today >= $startsche) and ($today <= $endsche)) ? true : false;
 		$data['startdate'] = date('d-M-Y',$startsche);

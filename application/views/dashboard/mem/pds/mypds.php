@@ -29,9 +29,12 @@
 				<div class="panel-heading">
 					<div class="panel-title text-center">
 					<b class="text-primary">Personal Data Sheet</b>
+					<div class="pull-left">
+						<a href="<?=base_url('Member/Managepds/editpds');?>" class="btn btn-primary"><i class="fa fa-edit fa-lg"></i> Edit Data</a>
+					</div>
 					<div class="pull-right">
 						<div class="btn-group">
-							<a href="<?=base_url('Member/Managepds/editpds');?>" class="btn btn-primary"><i class="fa fa-edit fa-lg"></i> Edit Data</a>
+							
 							<a href="#" data-href="<?=base_url('Member/Registration/printpds');?>" class="btn btn-info" data-toggle="modal" data-target="#confirm-print" title="Print Data"><i class="fa fa-print fa-lg"></i> Print Data</a>
 						</div>
 					</div>

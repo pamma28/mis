@@ -49,47 +49,78 @@ class Dashboard extends Mem_Controller {
 		$data['tmptitle'] = $arrtmp[0]['tmpname'];
 		$data['tmpcontent'] = htmlspecialchars_decode($arrtmp[0]['tmpcontent']);
 
-		//============= populate articles ========
-		$totatcl = $this->Msetting->getset('renderatcl');
-		$this->load->model("Matcl");
-		$tmpatcl = $this->Matcl->dataatcl(array('idarticle','a_date','a_title','a_isi','category','cat_icon','uname'),$totatcl,1);
-		$dtatcl='';
-		foreach ($tmpatcl as $k => $v) {
-			$dtatcl .='<li class="item">
-							<div class="product-img">
-								<span class="fa fa-2x '.$v['cat_icon'].'" alt="'.$v['category'].'" title="'.$v['category'].'"></span>
-							</div>
-							<div class="product-info">
-								<a href="'.base_url('Member/Article/read?id='.$v['idarticle']).'" class="product-title">'.$v['a_title'].'</a>
-								<span class="label label-info fixed pull-right"><i class="fa fa-clock-o"></i> '.date('d-M-Y, H:i',strtotime($v['a_date'])).'</span>
-								<br/>
-								<small class="text-muted"><i class="fa fa-user"></i> '.$v['uname'].' <i class="fa fa-tags"></i> '.$v['category'].'</small>
-								<span class="product-description">
-								'.strip_tags(htmlspecialchars_decode($v['a_isi'])).'							
-								</span>
-							</div>
-							</li>';
+		//============= populate pds ========
+		$colpds = array('ucreated','uname','jkname','ubplace','ubdate','unim','fname','uemail','uhp','ubbm','uaddrnow','uaddhome','ulunas');
+		$tmppds = $this->Mpds->detailpds($colpds,$this->session->userdata('user'));
+		$lunas = $tmppds[0]['ulunas'];
+		//set row title
+		$row = $this->returncolomn($colpds);
+		unset($row[12]);
+		//set table template
+		$tmpl = array ( 'table_open'  => '<table class="table table-striped table-hover">',
+					'heading_row_start'   => '<tr>',
+                    'heading_row_end'     => '</tr>',
+                    'heading_cell_start'  => '<td>',
+                    'heading_cell_end'    => '</td>',
+
+                    'row_start'           => '<tr>',
+                    'row_end'             => '</tr>',
+                    'cell_start'          => '<td>',
+                    'cell_end'            => '</td>'
+
+					);
+		$this->table->set_template($tmpl);
+		$a=0;
+		foreach($row as $key)
+		{
+			$dtpds[$a] = array(
+				"dtcol"=>'<b>'.$key.'</b>',
+				"dtval"=>' : '.$tmppds[0][$colpds[$a]]
+				);
 			
+			if (($key=='Birthdate')){
+					$dtpds[$a] = array(
+						"dtcol"=>'<b>'.$key.'</b>',
+						"dtval"=>' : '.date('d-M-Y',strtotime($tmppds[0][$colpds[$a]]))
+						);
+					}
+			
+			
+			$a++;
 		}
-		$data['dtatcl']= $dtatcl;
+		$data['dtpds']= $this->table->generate($dtpds);
 
 
 		//============= populate agendas ========
-		$totagn = $this->Msetting->getset('renderagn');
-		$header=['<i class="fa fa-info-circle"></i> Agenda','<i class="fa fa-calendar"></i> Date','<i class="fa fa-clock-o"></i> Time','<i class="fa fa-building"></i> Place','<i class="fa fa-sticky-note"></i> Details'];
-		$tmpl = array ( 'table_open'  => '<table class="table table-hover table-striped table-responsive">' );
-		$this->table->set_template($tmpl);
-		$this->table->set_heading($header);
+		$colpay=['tdate','tnotrans','transname','tpaid'];
+		$headerpay = $this->returncolomn($colpay);
+		$tmplpay = array ( 'table_open'  => '<table class="table table-hover">');
+		$this->table->set_template($tmplpay);
+		$this->table->set_heading($headerpay);
+		$totpay = $this->Mpay->countmypay();
+		$tmppay = $this->Mpay->datamypay($colpay,'all',1,null);
+		$data['dtpay'] = $this->table->generate($tmppay);
+		$data['lunas'] = ($lunas) ? 'Fully Paid':'Not Fully Paid Yet';
+		$data['totpay'] = $this->convertmoney->convert($this->Mpay->datamypay('sum(tpaid) as totpay','all',1,null)[0]['totpay']);
 
-		$this->load->model('Magn');
-		$tmpagn = $this->Magn->showagn(array('agtitle','agdate','agtime','agplace','agdescript','idagenda'),$totagn,1);
-		foreach ($tmpagn as $k => $v) {
-			$tmpagn[$k]['agtitle'] = '<a href="'.base_url('Member/Agenda/read?id=').$v['idagenda'].'" title="'.$v['agtitle'].'">'.$v['agtitle'].'</a>';
-			$tmpagn[$k]['agdate'] =  date('d-M-Y',strtotime($v['agdate']));
-			unset($tmpagn[$k]['idagenda']);
-			
+
+		//============= populate phase ========
+		$colpha=['registphase','paymentphase','schedulephase','certiphase'];
+		$headerpha = $this->returncolomn($colpha);
+		$tmplpha = array('table_open'=>'<table class="table table-bordered text-center">');
+		$this->table->set_template($tmplpha);
+		$this->table->set_heading($headerpha);
+		foreach ($colpha as $k => $v) {
+			$t = explode(' - ', $this->Msetting->getset($v));
+			$phase = array();
+			foreach ($t as $val) {
+				$phase[] = '<span class="text-primary"><b>'.date('d-M-Y',strtotime(str_replace('/', '-',$val))).'</b></span>';
+			}
+			$vpha[$k] = implode(' <span class="text-info"><b><i>until</i></b></span> ', $phase);
 		}
-		$data['dtagn'] = $this->table->generate($tmpagn);
+		$dtpha[] = $vpha;
+		$data['dtphase'] = $this->table->generate($dtpha);
+
 
 
 		//=============== Template ============
@@ -99,8 +130,6 @@ class Dashboard extends Mem_Controller {
 		$data['jsFiles'] = array(
 							'');
 		
-		
-		
 		$data['title']="Dashboard";
 		$data['topbar'] = $this->load->view('dashboard/topbar', NULL, TRUE);
 		$data['sidebar'] = $this->load->view('dashboard/mem/sidebar', NULL, TRUE);
@@ -109,5 +138,31 @@ class Dashboard extends Mem_Controller {
 	}
 
 	 
+	public function allnotification(){
+		//===================== table handler =============
+		$this->load->library("Notifications");
+		$data["listdata"]=$this->notifications->getallmynotif();
 
+
+		//=============== Template ============
+		$data['jsFiles'] = array('selectpicker/select.min'
+							);
+		$data['cssFiles'] = array('selectpicker/select.min'
+							);  
+		// =============== view handler ============
+		$data['title']="All Notification";
+		$data['topbar'] = $this->load->view('dashboard/topbar', NULL, TRUE);
+		$data['sidebar'] = $this->load->view('dashboard/mem/sidebar', NULL, TRUE);
+		$data['content'] = $this->load->view('dashboard/mem/mynotif', $data, TRUE);
+		$this->load->view ('template/main', $data);
+	}
+
+	public function returncolomn($header) {
+	$find=['ucreated','uname','jkname','idjk','ubplace','ubdate','unim','uemail','uhp','ufoto','ubbm','uaddrnow','uaddhome','tdate','tnotrans','transname','tpaid','registphase','paymentphase','schedulephase','certiphase'];
+	$replace = ['Date Registered','Full Name','Gender','Gender','Birthplace','Birthdate','NIM','Email','Phone Number','Photo','Social Media','Current Address','Home Address','Transaction Date','Invoice Number','Transaction Type','Nominal Paid','Registration','Payment','Test Schedule','Certificate'];
+		foreach ($header as $key => $value){
+		$header[$key]  = str_replace($find, $replace, $value);
+		}
+	return $header;
+	}
 }

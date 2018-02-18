@@ -1286,6 +1286,8 @@ class Certificate extends Org_Controller {
 				// setup the text colours
 				$color['black'] = imagecolorallocate($im, 0, 0, 0);
 				$color['green'] = imagecolorallocate($im, 55, 189, 102);
+				$color['blue'] = imagecolorallocate($im, 0, 30, 255);
+				$color['red'] = imagecolorallocate($im, 255, 30, 0);
 
 				// this defines the starting height for the text block
 				$y = imagesy($im) - $height;

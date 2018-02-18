@@ -17,8 +17,8 @@
 					<h4 class="panel-title text-center "><b class="text-primary">Membership Progress</b></h4>
 				</div>
 				<div class="panel-body">
-					<div style="display:inline-block;width:100%;overflow-y:auto;">
-					<ul class="timeline timeline-horizontal">
+				<div class="col-md-12">
+					<ul class="timeline timeline-horizontal" style="width: 100%;overflow-y: auto;">
 						<?=$arrprogress;?>
 					</ul>
 				</div>
@@ -29,27 +29,37 @@
 
 			<div class="row">
 				<div class="col-md-12">
-				<div class="panel panel-primary">
-				<div class="panel-heading">
-					<h4 class="panel-title text-center"><?=$tmptitle;?></h4>
-				</div>
-				<div class="panel-body">
+				<div class="box box-primary">
+				<div class="box-body">
 					<?=$tmpcontent;?>
 				</div>
 				</div>
 				</div>
 			</div>
 
-			<hr class="divider"/>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel panel-info">
+						<div class="panel-body">
+						<h4 class="text-center text-info"><b>Important Dates</b></h4>
+						<hr/>
+						<?=$dtphase;?>
+						</div>	
+					</div>
+				</div>
+			</div>
 			<div class="row">
             	<div class="col-md-6" >
             	<div class="panel panel-default">
             		<div class="panel-body">             
-					<h4 class="text-center text-info"><b>Recent Articles</b></h4>
+					<h4 class="text-center text-info"><b>Personal Data Sheet</b></h4>
 					<hr/>
-						<ul class="products-list product-list-in-box">
-							<?=$dtatcl;?><!-- /.item -->
-						</ul>
+						
+							<?=$dtpds;?><!-- /.item -->
+						
+					</div>
+					<div class="panel-footer text-right">
+						<a class="btn btn-primary" href="<?=base_url('Member/ManagePDS');?>" alt="Manage PDS"><span class="fa fa-arrow-right"></span> Detail PDS</a>
 					</div>
 				</div>
            		 </div><!-- /.col -->
@@ -57,10 +67,21 @@
 				<div class="col-md-6">
 					<div class="panel panel-default">
 					<div class="panel-body">
-					<h4 class="text-center text-info"><b>Agendas</b></h4>
+					<h4 class="text-center text-info"><b>Payment List</b></h4>
 					<hr/>
-						<?=$dtagn;?>
+						<?=$dtpay;?>
+						<div class="row bg-success">
+							<div class="col-md-6">
+								<h4><b>Status: <span class="text-primary"><?=$lunas?></span></b></h4>
+							</div>
+							<div class="col-md-6">
+								<h4 class="text-right"><b>Total Paid: <span class="text-primary"><?=$totpay?>,-</span></b></h4>
+							</div>
+						</div>
              		</div>
+             		<div class="panel-footer text-right">
+						<a class="btn btn-primary" href="<?=base_url('Member/Confirmpay/payment');?>" alt="My Payment"><span class="fa fa-arrow-right"></span> Detail Payment</a>
+					</div>
              		</div>
 					
 				</div>

@@ -739,6 +739,10 @@ class Result extends Org_Controller {
 		$r = $this->Mresult->updateLevelMember($flevel,$member);
 		}
 		if ($r){
+		//======= set notif to member ========
+		$idnotif = $this->Msetting->getset('notiftestresult');
+		$this->notifications->pushnotif(array('idnotif'=>$idnotif,'uuser'=>$this->session->userdata('user'),'use_uuser'=>$member,'nlink'=>base_url('Member/Test/testresult')));
+		
 		$this->session->set_flashdata('v','Assesment Success');
 		} else {		
 		$this->session->set_flashdata('x','Assesment Failed');

@@ -13,7 +13,10 @@
       </div><!-- /.login-logo -->
       <div class="login-box-body">
         <p class="login-box-msg">Please sign in</p>
-	
+	 <?php
+      if ((validation_errors()) or ($this->session->flashdata("x")!=null)){?>
+      <div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <?php echo '<h5><b>Login Failed</b></h5><p><i>'.validation_errors().$this->session->flashdata('x').'</i></p></div>';} ?>
     <?php echo form_open('Login/auth',array('name'=>'login', 'method'=>'POST'));?>
           <div class="form-group has-feedback">
             <?php echo $inuser;?>
@@ -23,10 +26,7 @@
             <?php echo $inpass;?>
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
           </div>
-			<?php
-			if ((validation_errors()) or ($this->session->flashdata("x")!=null)){?>
-      <div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      <?php echo '<h5><b>Login Failed</b></h5><p><i>'.validation_errors().$this->session->flashdata('x').'</i></p></div>';} ?>
+			
           <div class="row">
             <div class="col-xs-8">    
              

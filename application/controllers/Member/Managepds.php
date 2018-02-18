@@ -186,6 +186,7 @@ class Managepds extends Mem_Controller {
 						'placeholder'=>'NIM',
 						'value'=>$g[0]['unim'],
 						'class'=>'form-control',
+						'disabled'=>'disabled',
 						'size'=>'13');
 		$r[] = form_input($fnim);
 		
@@ -231,11 +232,12 @@ class Managepds extends Mem_Controller {
 		$r[] = form_input($femail).'<span id="valsuccess" style="display:none;" class="text-primary"><i class="fa fa-check"></i> Email Available</span><span id="valfailed" class="text-danger" style="display:none;"><i class="fa fa-ban"></i> Email Not Available</span>';
 		
 		$fhp = array('name'=>'fhp',
-						'id'=>'return',
+						'id'=>'nohp',
 						'required'=>'required',
 						'placeholder'=>'Phone Number',
 						'value'=>$g[0]['uhp'],
 						'class'=>'form-control',
+						'max-length'=>13,
 						'size'=>'50');
 		$r[] = form_input($fhp);
 		
@@ -260,7 +262,7 @@ class Managepds extends Mem_Controller {
 						'class'=>'form-control');
 		$r[] = form_textarea($faddrhome,$g[0]['uaddhome']);
 		$fsend = array(	'id'=>'submit',
-						'value'=>'Update',
+						'value'=>'Update My PDS',
 						'class'=>'btn btn-primary',
 						'type'=>'submit');
 		$data['inbtn'] = form_submit($fsend);
@@ -294,8 +296,8 @@ class Managepds extends Mem_Controller {
 		}
 		$data['rdata']=$this->table->generate($dtable);
 		//=============== Template ============
-		$data['jsFiles'] = array('selectpicker/select.min','moment/moment.min','daterange/daterangepicker','print/printThis','inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions');
-		$data['cssFiles'] = array('selectpicker/select.min','daterange/daterangepicker');  
+		$data['jsFiles'] = array('selectpicker/select.min','inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions','inputmask/inputmask.numeric.extensions');
+		$data['cssFiles'] = array('selectpicker/select.min');  
 		// =============== view handler ============
 		$data['title']="Edit Registration Data";
 		$data['topbar'] = $this->load->view('dashboard/topbar', NULL, TRUE);
@@ -313,7 +315,6 @@ class Managepds extends Mem_Controller {
 					'uname' => $this->input->post('ffullname'),					
 					'uupdate' => date("Y-m-d H:i:s"),
 					'idjk' => $this->input->post('fjk'),
-					'unim' => $this->input->post('fnim'),
 					'idfac' => $this->input->post('ffaculty'),
 					'ubplace' => $this->input->post('fbplace'),
 					'ubdate' => $fixdate->format('Y-m-d'),

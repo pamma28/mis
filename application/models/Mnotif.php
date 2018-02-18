@@ -99,7 +99,7 @@ class Mnotif extends CI_Model{
 				}
 			}
 		//$this->db->join('user a','a.uuser=nread.uuser','left');
-		//$this->db->join('user b','b.uuser=nread.use_uuser','left');
+		$this->db->join('user','user.uuser=nread.uuser','left');
 		$this->db->join('notif','notif.idnotif=nread.idnotif','left');
 		$this->db->order_by('nread','asc');
 		$this->db->order_by('datesend','desc');
@@ -118,7 +118,7 @@ class Mnotif extends CI_Model{
 				}
 			}
 		//$this->db->join('user a','a.uuser=nread.uuser','left');
-		//$this->db->join('user b','b.uuser=nread.use_uuser','left');
+		$this->db->join('user','user.uuser=nread.uuser','left');
 		$this->db->join('notif','notif.idnotif=nread.idnotif','left');
 		return $this->db->count_all_results("nread");
 

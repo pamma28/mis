@@ -93,10 +93,7 @@ class Dashboard extends Org_Controller {
 	}
 
 
-	public function getmynotif(){
-		echo $this->notifications->getmynotif();
-	}
-
+	
 	public function allnotification(){
 		//===================== table handler =============
 		$this->load->library("Notifications");

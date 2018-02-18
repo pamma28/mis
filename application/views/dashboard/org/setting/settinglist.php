@@ -193,6 +193,7 @@
 									</div>		
 									<?php } ?>
 								 	<?=$payment['table'];?>
+									<div id="boxpaymentplacement"></div>
 								</div>
 								<div class="panel-footer text-right">
 									<?=$payment['finputs'];?>
@@ -202,13 +203,37 @@
 
 						<?php  
 						echo form_close();
-						?> 
+						?>
+						<div id="boxpayment" class="bankform hide">
+										<div class="panel panel-default">
+											<div class="panel-body">	
+											<p class="text-right"><button type="button" class=" btn btn-danger btn-sm btnremovepayform"><span class="fa fa-minus"></span> Delete Bank</button></p>
+										 	<table class="table table-hover">
+												<thead>
+												<tr>
+												<th>Setting</th><th>Value</th></tr>
+												</thead>
+												<tbody>
+												<tr>
+												<td>Bank Account Number</td><td><input name="no_atm[]" value="" class="form-control" required="required" type="text">
+												</td></tr>
+												<tr>
+												<td>Account Owner</td><td><input name="an_atm[]" value="" class="form-control" required="required" type="text">
+												</td></tr>
+												<tr>
+												<td>Bank Name</td><td><input name="jns_bank[]" value="" class="form-control" required="required" type="text">
+												</td></tr>
+												</tbody>
+												</table>
+										 	</div>
+										 </div>
+									</div> 
 						</div>
 					
 				</div>
 
 				<div class="tab-pane table-responsive" id="notiflist">
-						<div class="col-md-4">
+						<div class="col-md-4 col-sm-6">
 							<?php echo form_open(base_url('Organizer/setting#notiflist'),array('name'=>'fnotifform','class'=>'form-horizontal','method'=>'POST'));?>
 							<div class="panel panel-primary">
 								<div class="panel-heading panel-heading-sm">
@@ -238,7 +263,7 @@
 							echo form_close();
 							?> 
 						</div>
-						<div class="col-md-4"> 
+						<div class="col-md-4 col-sm-6"> 
 							<?php echo form_open(base_url('Organizer/setting#notiflist'),array('name'=>'fnotifform','class'=>'form-horizontal','method'=>'POST'));?>
 							<div class="panel panel-primary">
 								<div class="panel-heading panel-heading-sm">
@@ -268,7 +293,7 @@
 							echo form_close();
 							?> 
 						</div>
-						<div class="col-md-4"> 
+						<div class="col-md-4 col-sm-6"> 
 							<?php echo form_open(base_url('Organizer/setting#notiflist'),array('name'=>'fnotifform','class'=>'form-horizontal','method'=>'POST'));?>
 							<div class="panel panel-primary">
 								<div class="panel-heading panel-heading-sm">
@@ -574,7 +599,23 @@ $('#DetailModal').on('show.bs.modal',function(e){
 });
 
 $(document).ready(function(){
+	$(document).on('click', '#btnaddpayform', function() {
+            var $template = $('#boxpayment'),
+                $clone    = $template
+                                .clone()
+                                .removeClass('hide')
+                                .removeAttr('id')
+                                .insertBefore($('#boxpaymentplacement'));
+
+    });
 	
+	$(document).on('click', '.btnremovepayform', function() {
+		 var $row    = $(this).parents('.panel-default');
+		 $row.remove();
+	});
+
+
+
 	$('#fregistsuccess, #fmailregistsuccess, .changepage').on('changed.bs.select',function(e){
 		var idtmp = $(this).selectpicker('val');
 			$('#DetailModal').modal({

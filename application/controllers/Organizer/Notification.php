@@ -187,7 +187,8 @@ class Notification extends Org_Controller {
 				"fa-calendar",
 				"fa-clock-o",
 				"fa-edit",
-				"fa-check"
+				"fa-check",
+				"fa-times"
 				);
 		$selecticon = '<select name="fnicon" id="fnicon" class="form-control selectpicker" required="required">';
 
@@ -312,7 +313,8 @@ class Notification extends Org_Controller {
 				"fa-calendar",
 				"fa-clock-o",
 				"fa-edit",
-				"fa-check"
+				"fa-check",
+				"fa-times"
 				);
 		$selecticon = '<select name="fnicon" id="fnicon" class="form-control selectpicker" required="required">';
 

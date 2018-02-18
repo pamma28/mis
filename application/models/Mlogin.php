@@ -280,6 +280,7 @@ class Mlogin extends CI_Model{
 	public function getallorg(){
 		$this->db->select('uuser');
 		$this->db->where('idrole','2');
+		$this->db->where('uallow','1');
 		return $this->db->get('user')->result_array();
 	}
 }

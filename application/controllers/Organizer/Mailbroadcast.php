@@ -191,7 +191,7 @@ class Mailbroadcast extends Org_Controller {
 							));
 				array_unshift($temp[$key],$ctable);
 					//read and modify content text email
-					$txt = strip_tags(html_entity_decode($value['bccontent']));
+					$txt = strip_tags(htmlspecialchars_decode($value['bccontent']));
 					(strlen($txt)>30) ? $tmptext = mb_substr($txt,0,30).'...':$tmptext=$txt;
 					
 				$temp[$key]['bccontent']='<span class="uname hidden">'.$value['bcmailfrom'].' ('.$value['bctitle'].')</span>'.$tmptext;
@@ -299,7 +299,7 @@ class Mailbroadcast extends Org_Controller {
 								'cols'=>'150'
 								)
 								);
-			$data['fcode'] = form_hidden('fcode',html_entity_decode($this->Msetting->getset('mailfooter')));
+			$data['fcode'] = form_hidden('fcode',htmlspecialchars_decode($this->Msetting->getset('mailfooter')));
 			
 			$data['fbtnupdate']= form_submit(array('value'=>'Update Setting',
 								'class'=>'btn btn-primary',							
@@ -354,17 +354,17 @@ class Mailbroadcast extends Org_Controller {
 				if ($objWorksheet->getCell('F'.($i+1))->getValue()=='Y') 
 				{
 					$usefoo = true;
-					$fcode = html_entity_decode($objWorksheet->getCell('D'.($i+1))->getValue().'<br/>'.$this->Msetting->getset('mailfooter'));
+					$fcode = htmlspecialchars_decode($objWorksheet->getCell('D'.($i+1))->getValue().'<br/>'.$this->Msetting->getset('mailfooter'));
 				} else {
 					$usefoo = false;
-					$fcode = html_entity_decode($objWorksheet->getCell('D'.($i+1))->getValue());
+					$fcode = htmlspecialchars_decode($objWorksheet->getCell('D'.($i+1))->getValue());
 				}
 			  
                    $dtxl[$i-1]['bcdate'] = date("Y-m-d H:i:s");
                    $dtxl[$i-1]['bcrecipient'] = $to;
                    $dtxl[$i-1]['uuser'] = $this->session->userdata('user');
                    $dtxl[$i-1]['bctitle'] = $objWorksheet->getCell('B'.($i+1))->getValue();
-                   $dtxl[$i-1]['bccontent'] = htmlentities($objWorksheet->getCell('D'.($i+1))->getValue());
+                   $dtxl[$i-1]['bccontent'] = htmlspecialchars($objWorksheet->getCell('D'.($i+1))->getValue());
                    $dtxl[$i-1]['bcfrom'] = $objWorksheet->getCell('E'.($i+1))->getValue();
                    $dtxl[$i-1]['bcmailfrom'] = $this->Msetting->getset('sendermail');
                    $dtxl[$i-1]['bcket'] = 'Type: '.$bctype.'; CC: '.$cc.'; Role: ; Period: ; Level: ; Payment: ';
@@ -454,7 +454,7 @@ class Mailbroadcast extends Org_Controller {
 			foreach($dexp as $key){
 					$Dcol = "A";
 				//manipulate data
-					(array_key_exists('bccontent',$key)) ? $key['bccontent']=html_entity_decode($key['bccontent']): null;
+					(array_key_exists('bccontent',$key)) ? $key['bccontent']=htmlspecialchars_decode($key['bccontent']): null;
 					(array_key_exists('bcket',$key)) ? $key['bcket']=str_replace(";","\n",$key['bcket']): null;
 					foreach ($key as $k=>$v){
 						$objPHPExcel->getActiveSheet()->setCellValue($Dcol.$Drow,$v);
@@ -648,7 +648,7 @@ class Mailbroadcast extends Org_Controller {
 					);
 				} else if ($key=='bccontent'){
 				$dtable[$a] = array(
-					"dtcol"=>'<div class="col-md-12"><h4><strong>Content: </strong></h4>'.html_entity_decode($dbres[0]['bccontent']).'<hr/></div>'
+					"dtcol"=>'<div class="col-md-12"><h4><strong>Content: </strong></h4>'.htmlspecialchars_decode($dbres[0]['bccontent']).'<hr/></div>'
 					);
 				} else if ($key=='bcattach'){
 				$dtable[$a] = array(
@@ -682,7 +682,7 @@ class Mailbroadcast extends Org_Controller {
 			$valsub = $arrfwd[0]['bctitle'];
 			$valalias = $arrfwd[0]['bcfrom'];
 			$valusefooter = $arrfwd[0]['bcfooter'];
-			$valcode = html_entity_decode($arrfwd[0]['bccontent']);
+			$valcode = htmlspecialchars_decode($arrfwd[0]['bccontent']);
 			$arrket = explode(';',$arrfwd[0]['bcket']);
 			$valtype1 = false;
 			$valtype2 = false;
@@ -725,7 +725,7 @@ class Mailbroadcast extends Org_Controller {
 						'placeholder'=>'Mail Recipient',
 						'required'=>'required',
 						'size'=>'100',
-						'style'=>'height:auto;min-height:30px;width:80%;',
+						'style'=>'height:auto;min-height:30px;width:100%;',
 						'value'=>isset($tempfilter['mto']) ? $tempfilter['mto'] : null,
 						'class'=>'form-control'));
 		
@@ -734,7 +734,7 @@ class Mailbroadcast extends Org_Controller {
 						'id'=>'msub',
 						'placeholder'=>'Subject Mail',
 						'size'=>'112',
-						'style'=>'height:auto;min-height:30px;width:80%;',
+						'style'=>'height:auto;min-height:30px;width:100%;',
 						'required'=>'required',
 						'value'=>$valsub,
 						'class'=>'form-control'));
@@ -744,7 +744,7 @@ class Mailbroadcast extends Org_Controller {
 						'id'=>'mali',
 						'placeholder'=>'Sender Name',
 						'size'=>'112',
-						'style'=>'height:auto;min-height:30px;width:80%;',
+						'style'=>'height:auto;min-height:30px;width:100%;',
 						'required'=>'required',
 						'value'=>$valalias,
 						'class'=>'form-control'));
@@ -753,7 +753,7 @@ class Mailbroadcast extends Org_Controller {
 						array('name'=>'mcc',
 						'id'=>'mcc',
 						'size'=>'100',
-						'style'=>'height:auto;min-height:30px;width:80%;',
+						'style'=>'height:auto;min-height:30px;width:100%;',
 						'placeholder'=>'CC Mail',
 						'value'=>isset($tempfilter['mcc']) ? $tempfilter['mcc'] : null,
 						'class'=>'form-control'));
@@ -772,6 +772,7 @@ class Mailbroadcast extends Org_Controller {
 		
 		$this->form_validation->set_rules('fcode', 'HTML Code', 'required|xss_clean|strip_tags|trim');
 		
+		$data['fusersto'] = form_hidden('fusersto','');
 		$fsend = array(	'id'=>'redi',
 						'value'=>'Send, Compose more',
 						'class'=>'btn btn-primary btn-lg',
@@ -788,7 +789,7 @@ class Mailbroadcast extends Org_Controller {
 		
 		$data['sender']= $sender;
 		
-		$data['footer'] = html_entity_decode($this->Msetting->getset('mailfooter'));
+		$data['footer'] = htmlspecialchars_decode($this->Msetting->getset('mailfooter'));
 		
 		$data['usefoo'] = form_checkbox(array(
 							'name'=>'fusefoo',
@@ -854,6 +855,9 @@ class Mailbroadcast extends Org_Controller {
 	public function sendmail(){
 	$this->load->library('MY_Input');
 	$to = $this->input->post('flistto');
+	$userlist = $this->input->post('fusersto');
+	$arrusersto = explode(',',$userlist);
+	print($userlist);
 	$fatt = $this->input->post('fatt');
 	$sub = $this->input->post('msub');
 	$redi = $this->input->post('fredi');
@@ -908,22 +912,28 @@ class Mailbroadcast extends Org_Controller {
 				'bcfrom' => $this->input->post('malias'),
 				'bcmailfrom' => $this->Msetting->getset('sendermail'),
 				'bctitle' => $this->input->post('msub'),
-				'bccontent' => htmlentities($this->input->post('fcode',false)),
+				'bccontent' => htmlspecialchars($this->input->post('fcode',false)),
 				'bcattach' => implode($arrdiff,','),
 				'bcket' => 'Type: '.$bctype.'; CC: '.$this->input->post('fccto').'; Role: '.$target.'; Period: '.$year.'; Level: '.$lvl.'; Payment: '.$stat,
 				'bcfooter' => $usefoo,
 				'bctype' => 'Mail'
 				);
 		$r = $this->Mbc->savebc($fdata);
+
+		//======= set notif ===========
+		$idnotif = $this->Msetting->getset('notifbcmailby');
+		$idnotifnewmail = $this->Msetting->getset('notifbcmail');
+		($r) ? $this->notifications->pushNotifToOrg(array('idnotif'=>$idnotif,'uuser'=>$this->session->userdata('user'),'nlink'=>base_url('Organizer/Mailbroadcast'))):null;
+		
+
 		$arrto = explode(',',$to);
 		$tot = 0;
 		$failed = '';
 		
-		
-		
-		($this->input->post('fusefoo')=='1') ? $fcode = html_entity_decode($fdata['bccontent'].'<br/>'.$this->Msetting->getset('mailfooter')) : $fcode = html_entity_decode($fdata['bccontent']);
+		($this->input->post('fusefoo')=='1') ? $fcode = htmlspecialchars_decode($fdata['bccontent'].'<br/>'.$this->Msetting->getset('mailfooter')) : $fcode = htmlspecialchars_decode($fdata['bccontent']);
 		
 		$this->load->library('Convertcode');
+
 		foreach($arrto as $k=>$v){
 			//====== decode message ============
 			$decode = $this->convertcode->decodemailmsg($fcode,$v);	
@@ -931,6 +941,9 @@ class Mailbroadcast extends Org_Controller {
 			//================= gmail send ===========
 			$ret = $this->gmail->sendmail($v,$this->input->post('fccto'),$fdata['bctitle'],$fdata['bcfrom'],$decode,$arrdiff);		
 			($ret) ? $tot++:$failed[]=($k+1).'. '.$v;
+
+			//======= set notif new mail===========
+			($ret) ? $this->notifications->pushnotif(array('idnotif'=>$idnotifnewmail,'uuser'=>$this->session->userdata('user'),'use_uuser'=>$arrusersto[$k],'nlink'=>null)):null;
 
 		}
 		
@@ -966,6 +979,7 @@ class Mailbroadcast extends Org_Controller {
 		redirect(base_url('Organizer/Mailbroadcast'));
 	}
 
+
 	public function printbcmail(){
 		//catch column value
 		if ($this->input->post('fcolomn')!=null){
@@ -995,7 +1009,7 @@ class Mailbroadcast extends Org_Controller {
 		//fetch data	
 				foreach($dexp as $key=>$val){
 					//manipulation allow data
-					(array_key_exists('bccontent',$val)) ? $dexp[$key]['bccontent']=strip_tags(html_entity_decode($val['bccontent'])): null;
+					(array_key_exists('bccontent',$val)) ? $dexp[$key]['bccontent']=strip_tags(htmlspecialchars_decode($val['bccontent'])): null;
 					(array_key_exists('bcrecipient',$val)) ? $dexp[$key]['bcrecipient']=str_replace(",","<br/>",$val['bcrecipient']): null;
 					(array_key_exists('bcket',$val)) ? $dexp[$key]['bcket']=str_replace(";","<br/>",$val['bcket']): null;
 				}
@@ -1036,7 +1050,7 @@ class Mailbroadcast extends Org_Controller {
 		if(null!= $this->input->post('fcode')){
 		$this->load->library('MY_Input');
 		$dtset=array(
-				'mailfooter'=>htmlentities($this->input->post('fcode',false)));
+				'mailfooter'=>htmlspecialchars($this->input->post('fcode',false)));
 		$this->Msetting->savesetting($dtset);
 		$this->session->set_flashdata('v',"Update Setting Mail Footer Success.");
 		} else{

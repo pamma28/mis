@@ -12,6 +12,34 @@
 	<div class="box">
 	<div class="box-body">
 		<div class="row">
+			<div class="col-md-6"> 
+				<?php echo form_open(base_url('Organizer/setting/account'),array('name'=>'fdetailacc','class'=>'form-horizontal','method'=>'POST'));?>
+					<div class="panel panel-primary">
+						<div class="panel-heading panel-heading-sm">
+							<h3 class="panel-title text-center"><span class="fa fa-cogs"></span> <b><?=$acc['title'];?></b></h3>
+						</div>
+					<div class="panel-body">
+						<?php if ($this->session->flashdata('vacc')!=null){ ?>
+							<div class="alert alert-success alert-dismissible" role="alert">
+								<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+								<?=$this->session->flashdata('vacc');?>
+							</div>
+							<?php } else if ($this->session->flashdata('xacc')!=null){ ?>
+							<div class="alert alert-danger alert-dismissible" role="alert">
+								<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+								<?=$this->session->flashdata('xacc');?>
+							</div>		
+							<?php } ?>
+								<?=$acc['table'];?>
+					</div>
+					<div class="panel-footer text-right">
+						<?=$acc['finputs'];?>
+						<?=$acc['fbtn'];?>
+						</div>
+					</div>
+					<?php  echo form_close(); ?> 
+			</div>
+
 		<div class="col-md-6"> 
 			<?php echo form_open_multipart(base_url('Organizer/setting/account'),array('name'=>'fphoacc','class'=>'form-horizontal','method'=>'POST'));?>
 				<div class="panel panel-primary">
@@ -39,34 +67,8 @@
 				</div>
 				<?php  echo form_close(); ?> 
 		</div>
-
-		<div class="col-md-6"> 
-			<?php echo form_open(base_url('Organizer/setting/account'),array('name'=>'fdetailacc','class'=>'form-horizontal','method'=>'POST'));?>
-				<div class="panel panel-primary">
-					<div class="panel-heading panel-heading-sm">
-						<h3 class="panel-title text-center"><span class="fa fa-cogs"></span> <b><?=$acc['title'];?></b></h3>
-					</div>
-				<div class="panel-body">
-					<?php if ($this->session->flashdata('vacc')!=null){ ?>
-						<div class="alert alert-success alert-dismissible" role="alert">
-							<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-							<?=$this->session->flashdata('vacc');?>
-						</div>
-						<?php } else if ($this->session->flashdata('xacc')!=null){ ?>
-						<div class="alert alert-danger alert-dismissible" role="alert">
-							<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-							<?=$this->session->flashdata('xacc');?>
-						</div>		
-						<?php } ?>
-							<?=$acc['table'];?>
-				</div>
-				<div class="panel-footer text-right">
-					<?=$acc['finputs'];?>
-					<?=$acc['fbtn'];?>
-					</div>
-				</div>
-				<?php  echo form_close(); ?> 
-		</div>
+	</div>
+	<div class="row">	
 		
 		
 		<div class="col-md-6"> 

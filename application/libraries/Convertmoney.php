@@ -4,7 +4,7 @@ class Convertmoney {
 
 	function convert($money)
 	{
-		$fmt = new NumberFormatter( 'id_ID', NumberFormatter::CURRENCY );
+		$fmt = new NumberFormatter( 'id_ID', \NumberFormatter::CURRENCY );
 		$result = $fmt->formatCurrency($money,"IDR");
     
     return $result;

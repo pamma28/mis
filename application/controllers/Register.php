@@ -200,7 +200,7 @@ class Register extends CI_Controller {
 
 		//=============== Template ============
 		$data['jsFiles'] = array(
-							'inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions','inputmask/inputmask.numeric .extensions','validate/jquery.validate.min','icheck.min');
+							'inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions','inputmask/inputmask.numeric.extensions','validate/jquery.validate.min','icheck.min');
 		$data['cssFiles'] = array(
 							'form-wizard','icheck/blue'
 							);

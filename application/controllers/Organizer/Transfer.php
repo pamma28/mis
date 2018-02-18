@@ -433,7 +433,14 @@ class Transfer extends Org_Controller {
 						$this->load->model('Mpay');
 						$this->qr($no);
 						$rpay = $this->Mpay->savepayment($dtpay);
-						$rpay ? ($msg[] = 'Invoice No <a href="'.base_url("Organizer/Payment?tnotrans=".$no).'">'.$no.'</a> Made'): ($msg[] = 'Make Invoice failed');
+						if($rpay){
+							$msg[] = 'Invoice No <a href="'.base_url("Organizer/Payment?tnotrans=".$no).'">'.$no.'</a> Made';
+							//=============== sent notif ==========
+							$idnotifmem = $this->Msetting->getset('notifpayment');
+							$this->notifications->pushnotif(array('idnotif'=>$idnotifmem,'uuser'=>$this->session->userdata('user'),'use_uuser'=>$muser,'nlink'=>base_url('Member/Confirmpay/payment')));
+						} else {
+							$msg[] = 'Make Invoice failed';
+						}
 						$idtrans = $this->Mtransfer->getidtransbyno($no);
 						
 						$fdata = array (
@@ -453,6 +460,7 @@ class Transfer extends Org_Controller {
 					}
 				//update lunas
 				$this->checklunas($dttrans[0]['uuser']);
+				$idnotif = $this->Msetting->getset('notifpayconfirmsuccess');
 				} else {
 					//====== check invoice made or not yet ========
 					$idpay = $this->Mtransfer->getidtransbyid($id);
@@ -475,11 +483,14 @@ class Transfer extends Org_Controller {
 								'use_uuser' => $this->session->userdata('user'),				
 								'ttdateapp' => date("Y-m-d H:i:s")
 								);
+				$idnotif = $this->Msetting->getset('notifpayconfirmfailed');
 				}
 					
 		$r = $this->Mtransfer->updatetransfer($fdata,$id);
 		}
 		if ($r){
+		//============ sent notif ==============
+		$this->notifications->pushnotif(array('idnotif'=>$idnotif,'uuser'=>$this->session->userdata('user'),'use_uuser'=>$muser,'nlink'=>base_url('Member/Confirmpay/validationresult')));
 		$msg[]='Update Transfer Confirmation Success';
 		$this->session->set_flashdata('v',implode(', ',$msg));
 		} else {		

@@ -25,9 +25,9 @@
 						<?=form_close();?>
 					</div>
 					<div class="tab-pane" id="addwithuser">
-						<div class="text-center bg-warning h3">
-						NOTE: Username will equal to NIM, Password will equal to birthdate (ddmmyyyy).
-						</div><br/>
+						<h3 class="text-center text-info">
+						NOTE: Username will equal to NIM
+						</h3>
 						<?php echo form_open(base_url('Organizer/PDS/savepds'),array('name'=>'addlogin', 'method'=>'POST','class'=>'form-horizontal'));?>
 						<?=$r2data;?>
 						<div class="text-right">
@@ -40,7 +40,11 @@
 		
 		<?php echo form_close();?>
 		<script>
-		 $('.selectpicker').selectpicker({
+		$(document).ready(function(){
+			 $("#fhp,#inphp").inputmask('08[99999999999]');
+			
+		});
+		$('.selectpicker').selectpicker({
 		  size: 6
 		});
 		  
@@ -82,13 +86,14 @@
 			});
 
 
-			$('.selectpicker').on('change',function(e) {
+			$('#Username').on('change',function(e) {
 			var selected = $(this).find('option:selected').val();
 			$.post('<?php echo base_url('Organizer/PDS/getdetailuser'); ?>',{user: selected}, function(d) {
 				d = $.parseJSON(d);
 				$('#inpname').val(d.uname);
 				$('#inpemail').val(d.uemail);
-				$('#inphp').val(d.uhp);       
+				$('#inphp').val(d.uhp);
+				$('#NIM').val(selected);       
 				});
 			});  
 

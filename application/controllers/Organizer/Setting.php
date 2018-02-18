@@ -29,7 +29,21 @@ class Setting extends Org_Controller {
 			$s = 0; $x=0;$go = '';
 
 			//========== upload logo handler =========
-				if ($this->input->post('fflash')=='weblist1'){
+				if ($this->input->post('fflash')=='pay'){
+					$arrbanks[] = implode(',', $this->input->post('no_atm'));
+					$arrbanks[] = implode(',', $this->input->post('an_atm'));
+					$arrbanks[] = implode(',', $this->input->post('jns_bank'));
+
+					foreach ($arrinputs as $k => $v) {
+						//============== save data handler =============
+						if ($arrbanks[$k]!=''){
+						$hsl = $this->Msetting->updatesetting($v,$arrbanks[$k]);
+						($hsl) ? $s++ : $x++;
+						}
+					}
+					$go = ($s>$x) ? "Update Payment Channel Success" : "Update Payment Channel Failed";
+				
+				}else if ($this->input->post('fflash')=='weblist1'){
 					$tmplogo = $this->Msetting->getset('weblogo');
 					$config['upload_path'] = FCPATH.'upload/system/';
 					$config['allowed_types'] = 'jpeg|jpg|png';
@@ -262,22 +276,34 @@ class Setting extends Org_Controller {
 		
 
 		//========== setting payment  =========
-		$this->table->set_template($tmpl);
-		$this->table->set_heading($header);
+		
 
 		$columnpay=['no_atm','an_atm','jns_bank'];
 		$labelpay = ['Bank Account Number','Account Owner','Bank Name'];
-		foreach ($columnpay as $k => $v) {		
-			$temppay[$k] =array($labelpay[$k], 
+		$tblpay = '';
+		foreach ($columnpay as $k => $v) {
+			$arrpay[$v] = explode(',', $this->Msetting->getset($v));
+		}
+		foreach ($arrpay['no_atm'] as $i => $val) {	
+			foreach ($columnpay as $k => $v) {
+				$temppay[$i][$k] =array($labelpay[$k], 
 						form_input(array(
 							'id'=>'f'.$columnpay[$k],
-							'name' => $columnpay[$k],
+							'name' => $columnpay[$k].'[]',
 							'class'=>'form-control',
-							'value'=> $this->Msetting->getset($v),
+							'value'=> $arrpay[$v][$i],
 							'required'=>'required')));
+			}
+				$btnpay = ($i==0) ? '<p class="text-right"><button type="button" class=" btn btn-primary btn-sm" id="btnaddpayform"><span class="fa fa-plus"></span> Add More Bank</button></p>' : '<p class="text-right"><button type="button" class=" btn btn-danger btn-sm btnremovepayform"><span class="fa fa-minus"></span> Delete Bank</button></p>';
+				$this->table->set_template($tmpl);
+				$this->table->set_heading($header);
+				$tblpay .= '<div class="panel panel-default">
+								<div class="panel-body">'.$btnpay.
+									$this->table->generate($temppay[$i]).
+							'</div></div>';		
 		}
 
-		$data['payment']=array('table' => $this->table->generate($temppay),
+		$data['payment']=array('table' => $tblpay,
 									'title' => 'Payment System',
 									'fbtn' => form_submit(array('value'=>'Update Setting',
 											'class'=>'btn btn-primary',
@@ -353,8 +379,8 @@ class Setting extends Org_Controller {
 		$this->table->set_template($tmpl);
 		$this->table->set_heading($header);
 
-		$columnnotiforg=['notifbcby','notifnewpayproof','notifnewsignup','notifnewtestresult','notifresetpassword','notiftestactivatedby','notifwelcomeorg'];
-		$labelorg = ['Broadcast Message','New Payment Confirmation Requested','New Member Registration','New Test Result Submitted','Reset Password','Test Activated','Welcome Message (Org)'];
+		$columnnotiforg=['notifbcsmsby','notifbcmailby','notifnewpayproof','notifnewsignup','notifnewtestresult','notifresetpassword','notiftestactivatedby','notifwelcomeorg'];
+		$labelorg = ['Broadcast SMS by','Broadcast Mail by','New Payment Confirmation Requested','New Member Registration','New Test Result Submitted','Reset Password','Test Activated','Welcome Message (Org)'];
 		foreach ($columnnotiforg as $k => $v) {		
 			$temp5[$k] =array($labelorg[$k], 
 						form_dropdown(array(

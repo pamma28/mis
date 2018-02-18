@@ -301,6 +301,7 @@ class SmsBroadcast extends Org_Controller {
 							'class'=>'form-control',
 							'value'=>$smsfoo)
 							);
+			
 			$data['fbtnupdate']= form_submit(array('value'=>'Update Footer',
 								'class'=>'btn btn-primary',							
 								'id'=>'btnupdateset'));
@@ -324,6 +325,7 @@ class SmsBroadcast extends Org_Controller {
 	
 	public function sendsms(){
 	$to = $this->input->post('flistto');
+	$arrusersto = explode(',',$this->input->post('fusersto'));
 	$userep = $this->input->post('userep');		
 	
 	$title = $this->input->post('msub');
@@ -366,11 +368,15 @@ class SmsBroadcast extends Org_Controller {
 		$tot = 0;
 		$failed = array();
 		$this->load->library('Convertcode');
+		$idnotifnewsms = $this->Msetting->getset('notifbcsms');
 		foreach($arrto as $k=>$v){
 			$decode = $this->convertcode->decodesmsmsg($smscode,$v);	
 			//================= send sms ===========
 			$ret = $this->smssender->sendsms($v,$decode,$userep);
 			($ret) ? $tot++:$failed[]=$v;
+
+			//======= set notif new sms===========
+			($ret) ? $this->notifications->pushnotif(array('idnotif'=>$idnotifnewsms,'uuser'=>$this->session->userdata('user'),'use_uuser'=>$arrusersto[$k],'nlink'=>null)):null;
 		}
 		
 		if ($userep) {
@@ -387,7 +393,7 @@ class SmsBroadcast extends Org_Controller {
 		
 		$fdata = array (
 				'bcdate' => date("Y-m-d H:i:s"),
-				'bcrecepient' => $to,
+				'bcrecipient' => $to,
 				'uuser' => $this->session->userdata('user'),
 				'bcfrom' => strtoupper($this->input->post('malias')),
 				'bcmailfrom' => $this->Msetting->getset('nosmsnotif'),
@@ -398,6 +404,10 @@ class SmsBroadcast extends Org_Controller {
 				'bctype' => 'SMS'
 				);
 		$r = $this->Mbc->savebc($fdata);
+
+		//======= set notif ===========
+		$idnotif = $this->Msetting->getset('notifbcsmsby');
+		($r) ? $this->notifications->pushNotifToOrg(array('idnotif'=>$idnotif,'uuser'=>$this->session->userdata('user'),'nlink'=>base_url('Organizer/SMSbroadcast'))):null;
 		
 			if ($tot>0){
 				//make report
@@ -834,7 +844,7 @@ class SmsBroadcast extends Org_Controller {
 						'placeholder'=>'SMS Recipient',
 						'required'=>'required',
 						'size'=>'100',
-						'style'=>'height:auto;min-height:30px;width:80%;',
+						'style'=>'height:auto;min-height:30px;width:100%;',
 						'value'=>isset($tempfilter['mto']) ? $tempfilter['mto'] : null,
 						'class'=>'form-control'));
 		
@@ -843,7 +853,7 @@ class SmsBroadcast extends Org_Controller {
 						'id'=>'msub',
 						'placeholder'=>'SMS Title',
 						'size'=>'112',
-						'style'=>'height:auto;min-height:30px;width:80%;',
+						'style'=>'height:auto;min-height:30px;width:100%;',
 						'required'=>'required',
 						'value'=>$valsub,
 						'class'=>'form-control'));
@@ -853,7 +863,7 @@ class SmsBroadcast extends Org_Controller {
 						'id'=>'mali',
 						'placeholder'=>'Placed Before Content',
 						'size'=>'112',
-						'style'=>'height:auto;min-height:30px;width:80%;',
+						'style'=>'height:auto;min-height:30px;width:100%;',
 						'value'=>'',
 						'class'=>'form-control'));
 					
@@ -861,7 +871,8 @@ class SmsBroadcast extends Org_Controller {
 						array('name'=>'mtext',
 						'id'=>'smstext',
 						'placeholder'=>'SMS Content',
-						'cols'=>'100',
+						'style'=>'width:100%',
+						'cols'=>'',
 						'rows'=>'10',
 						'required'=>'required',
 						'value'=>isset($tempfilter['mtext']) ? $tempfilter['mtext'] : $valcode,
@@ -921,6 +932,7 @@ class SmsBroadcast extends Org_Controller {
 							'checked'=>isset($valusefoo) ? $valusefoo : false,
 							'value'=>'1')
 							);
+		$data['fusersto'] = form_hidden('fusersto','');
 		// setting account and programming
 		$accuser = $this->Msetting->getset('usersmsnotif');
 		$accpass = $this->Msetting->getset('passsmsnotif');
@@ -1006,6 +1018,10 @@ class SmsBroadcast extends Org_Controller {
 		}
 		$data['metadata'] = $dtfilter;
 		
+		//=============== some setting var ========
+		$data['repcredit'] = $this->Msetting->getset('saldosmsbc');
+		$data['norepcredit'] = $this->Msetting->getset('saldosmsnotif');
+
 		//=============== Template ============
 		$data['jsFiles'] = array(
 							'tokchi/tokchi','ajaxupload/jquery.knob','ajaxupload/jquery.ui.widget','ajaxupload/jquery.iframe-transport','ajaxupload/jquery.fileupload','toggle/bootstrap2-toggle.min');

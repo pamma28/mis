@@ -296,7 +296,7 @@ class PDS extends Org_Controller {
 				
 		//=============== Template ============
 		$data['jsFiles'] = array(
-							'selectpicker/select.min','moment/moment.min','daterange/daterangepicker','print/printThis','inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions');
+							'selectpicker/select.min','moment/moment.min','daterange/daterangepicker','print/printThis','inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions','inputmask/inputmask.numeric.extensions');
 		$data['cssFiles'] = array(
 							'selectpicker/select.min','daterange/daterangepicker');  
 		// =============== view handler ============
@@ -703,6 +703,7 @@ class PDS extends Org_Controller {
 						'placeholder'=>'NIM',
 						'value'=>set_value('fnim'),
 						'class'=>'form-control',
+						'disabled'=>'disabled',
 						'size'=>'13');
 		$r[] = form_input($fnim);
 		
@@ -725,12 +726,12 @@ class PDS extends Org_Controller {
 		
 			$fbdate = array('name'=>'fbdate',
 						'id'=>'bdate',
-						'placeholder'=>'Birthdate format (yyyy/mm/dd), eg: 1996/09/16',
+						'placeholder'=>'Birthdate format (dd-mm-yyyy), eg: 16-09-1996',
 						'value'=>set_value('fbd'),
 						'class'=>'form-control',
 						'type'=>'text',
 						'size'=>'10',
-						'data-inputmask' => "'alias': 'yyyy/mm/dd'",
+						'data-inputmask' => "'alias': 'dd-mm-yyyy'",
 						'datamask' => ''
 						);
 		$r[] = form_input($fbdate);
@@ -756,7 +757,7 @@ class PDS extends Org_Controller {
 		
 		$fsoc = array('name'=>'fsocmed',
 						'id'=>'SocialMedia',
-						'placeholder'=>'BBM PIN/Social Media',
+						'placeholder'=>'Social Media',
 						'value'=>set_value('fsocmed'),
 						'class'=>'form-control',
 						'size'=>'30');
@@ -781,8 +782,8 @@ class PDS extends Org_Controller {
 		
 		$fname['id'] = 'Fullname';
 		$r2[] = form_input($fname);
-		
-		$fnim['id']='username2';
+
+		unset($fnim['disabled']);$fnim['id']='username2';
 		$fnim['name']='fusername';
 		$r2[] = form_input($fnim).'<span id="usuccess" style="display:none;" class="text-primary"><i class="fa fa-check"></i> Username Available</span><span id="ufailed" class="text-danger" style="display:none;"><i class="fa fa-ban"></i> Username Not Available</span>';
 		
@@ -935,13 +936,13 @@ class PDS extends Org_Controller {
 		
 			$fbdate = array('name'=>'fbdate',
 						'id'=>'bdate',
-						'placeholder'=>'Birthdate format (yyyy/mm/dd), eg: 1996/09/16',
+						'placeholder'=>'Birthdate format (dd-mm-yyyy), eg: 22-12-1996',
 						'value'=>$g[0]['ubdate'],
 						'class'=>'form-control',
 						'type'=>'text',
 						'size'=>'10',
 						'required'=>'required',
-						'data-inputmask' => "'alias': 'yyyy/mm/dd'",
+						'data-inputmask' => "'alias': 'dd-mm-yyyy'",
 						'datamask' => ''
 						);
 		$r[] = form_input($fbdate);
@@ -976,7 +977,7 @@ class PDS extends Org_Controller {
 		
 		$fsoc = array('name'=>'fsocmed',
 						'id'=>'SocialMedia',
-						'placeholder'=>'BBM PIN/Social Media',
+						'placeholder'=>'Social Media',
 						'value'=>$g[0]['ubbm'],
 						'class'=>'form-control',
 						'size'=>'30');
@@ -1046,7 +1047,6 @@ class PDS extends Org_Controller {
 					'uname' => $this->input->post('ffullname'),					
 					'uupdate' => date("Y-m-d H:i:s"),
 					'idjk' => $this->input->post('fjk'),
-					'unim' => $this->input->post('fnim'),
 					'idfac' => $this->input->post('ffaculty'),
 					'ubplace' => $this->input->post('fbplace'),
 					'ubdate' => $this->input->post('fbdate'),
@@ -1090,10 +1090,9 @@ class PDS extends Org_Controller {
 					'uname' => $this->input->post('ffullname'),					
 					'uupdate' => date("Y-m-d H:i:s"),
 					'idjk' => $this->input->post('fjk'),
-					'unim' => $this->input->post('fnim'),
 					'idfac' => $this->input->post('ffaculty'),
 					'ubplace' => $this->input->post('fbplace'),
-					'ubdate' => $this->input->post('fbdate'),
+					'ubdate' => date("Y-m-d",strtotime($this->input->post('fbdate'))),
 					'uemail' => $this->input->post('femail'),
 					'uhp' => $this->input->post('fhp'),
 					'ubbm' => $this->input->post('fsocmed'),
@@ -1104,17 +1103,17 @@ class PDS extends Org_Controller {
 					);
 		$r = $this->Mpds->updatepds($fdata,$us);
 	} else if ($this->input->post('fusername')!=null){
+		$mem = $this->input->post('fusername');
 		$fdata = array (
 					'ucreated' => date("Y-m-d H:i:s"),
 					'uupdate' => date("Y-m-d H:i:s"),
-					'uuser' => $this->input->post('fusername'),
-					'upass' => md5(date("dmY",strtotime($this->input->post('fbdate')))),
+					'uuser' => $mem,
 					'uname' => $this->input->post('ffullname'),
 					'idjk' => $this->input->post('fjk'),
 					'unim' => $this->input->post('fusername'),
 					'idfac' => $this->input->post('ffaculty'),
 					'ubplace' => $this->input->post('fbplace'),
-					'ubdate' => $this->input->post('fbdate'),
+					'ubdate' => date("Y-m-d",strtotime($this->input->post('fbdate'))),
 					'uemail' => $this->input->post('femail'),
 					'uhp' => $this->input->post('fhp'),
 					'ubbm' => $this->input->post('fsocmed'),
@@ -1126,6 +1125,15 @@ class PDS extends Org_Controller {
 					'uallow' => '1'
 					);
 		$r = $this->Mpds->addpds($fdata);
+		if ($r){
+			//======= set notif to org===========
+			$idnotif = $this->Msetting->getset('notifnewsignup');
+			$this->notifications->pushNotifToOrg(array('idnotif'=>$idnotif,'uuser'=>$mem,'nlink'=>base_url('Organizer/PDS')));
+
+			//======= set notif to member ========
+			$idnotifmem = $this->Msetting->getset('notifregistsuccess');
+			$this->notifications->pushnotif(array('idnotif'=>$idnotifmem,'uuser'=>$this->session->userdata('user'),'use_uuser'=>$mem,'nlink'=>null));
+		}
 	}
 		if ($r){
 		$this->session->set_flashdata('v','Add Registration Data Success');
@@ -1217,7 +1225,7 @@ class PDS extends Org_Controller {
 	
 	public function returncolomn($header) {
 	$find=['ucreated','uupdate','uuser','uname','jkname','idjk','ubplace','ubdate','unim','uemail','uhp','ufoto','ubbm','uaddrnow','uaddhome','umin','upaycode','ustatus','ulunas','fac.idfac','idfac','fname','uallow','upass'];
-	$replace = ['Date Registered','Last Updated','Username','Full Name','Gender','Gender','Birthplace','Birthdate','NIM','Email','Phone Number','Photo','BBM/Social Media','Current Address','Home Address','Member Index Number','Payment','Status','Full Payment','Faculty','Faculty','Faculty','Allow/Deny','Password'];
+	$replace = ['Date Registered','Last Updated','Username','Full Name','Gender','Gender','Birthplace','Birthdate','NIM','Email','Phone Number','Photo','Social Media','Current Address','Home Address','Member Index Number','Payment','Status','Full Payment','Faculty','Faculty','Faculty','Allow/Deny','Password'];
 		foreach ($header as $key => $value){
 		$header[$key]  = str_replace($find, $replace, $value);
 		}

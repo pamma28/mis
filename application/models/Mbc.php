@@ -264,7 +264,7 @@ class Mbc extends CI_Model{
 	}
 	
 	public function getcontact($r=null,$y=null,$s=null,$l=null){
-		$this->db->select('uname as name,uemail as email,rolename as role,lvlabre as level,DATE_FORMAT(ucreated, "%Y") as year');
+		$this->db->select('uuser as user,uname as name,uemail as email,rolename as role,lvlabre as level,DATE_FORMAT(ucreated, "%Y") as year');
 		$this->db->where('user.idrole <>','1');
 		$this->db->order_by('ucreated','asc');
 		$this->db->where('uallow',true);
@@ -280,7 +280,7 @@ class Mbc extends CI_Model{
 	}
 	
 	public function getphone($r=null,$y=null,$s=null,$l=null){
-		$this->db->select('uname as name,uhp as phone,rolename as role,lvlabre as level,DATE_FORMAT(ucreated, "%Y") as year');
+		$this->db->select('uuser as user, uname as name,uhp as phone,rolename as role,lvlabre as level,DATE_FORMAT(ucreated, "%Y") as year');
 		$this->db->where('user.idrole <>','1');
 		$this->db->order_by('ucreated','asc');
 		$this->db->where('uallow',true);

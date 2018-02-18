@@ -25,14 +25,24 @@ class Confirmpay extends Mem_Controller {
 		$data['tmp'] = htmlspecialchars_decode($arrtmp[0]['tmpcontent']);
 
 		//==================== price & unique code ===========
-		$data['price']=$this->Msetting->getset('price');
+		$price = $this->Msetting->getset('price');
+		$data['price']=$this->convertmoney->convert($price);
 		$this->load->model('Mpds');
-		$data['code']=mb_substr($this->Mpds->detailpds(array('upaycode'),$this->session->userdata('user'))[0]['upaycode'],3,5);
+		$code = mb_substr($this->Mpds->detailpds(array('upaycode'),$this->session->userdata('user'))[0]['upaycode'],3,5);
+		$data['code']=$code;
+		$data['totpay'] = $this->convertmoney->convert($price+$code);
 
 		//================== Bank Name & Bank Account ========
-		$data['bname']= $this->Msetting->getset('jns_bank');
-		$data['accno']= $this->Msetting->getset('no_atm');
-		$data['accname'] = $this->Msetting->getset('an_atm');
+		$arrpay[] = explode(',', $this->Msetting->getset('no_atm'));
+		$arrpay[] = explode(',', $this->Msetting->getset('an_atm'));
+		$arrpay[] = explode(',', $this->Msetting->getset('jns_bank'));
+		$tmp = '<table class="table table-striped table-hover">';
+		foreach ($arrpay[0] as $k => $v) {
+			$tmp .= '<tr><th style="width:25%;vertical-align: middle" rowspan="3" class="text-center"><span class="fa fa-bank fa-3x"></th><td><span class=" text-primary"><b>'.$arrpay[2][$k].'</b></span></td></tr><tr><td>Account Number <i> '.$arrpay[0][$k].'</i></td></tr><tr><td>On the behalf of '.$arrpay[1][$k].'</td></tr>';
+		}
+		$tmp .= "</table>";
+		$data['paychannel'] = $tmp;
+		
 		//=============== Template ============
 		$data['jsFiles'] = array(
 							'');
@@ -356,8 +366,9 @@ class Confirmpay extends Mem_Controller {
 		$data['lunas'] = $this->Mpds->detailpds(array('ulunas'),$this->session->userdata('user'))[0]['ulunas'];
 		
 		//========== filter regist date ==============
-		$startpay = strtotime(str_replace('/', '-', $this->Msetting->getset('beginpay')));
-		$endpay =  strtotime(str_replace('/', '-', $this->Msetting->getset('endpay')));
+		$payphase = explode(" - ",$this->Msetting->getset('paymentphase'));
+		$startpay = strtotime(str_replace('/', '-', $payphase[0]));
+		$endpay =  strtotime(str_replace('/', '-', $payphase[1]));
 		$today = strtotime(date("d-m-Y"));
 		$data['registperiod'] = (($today >= $startpay) and ($today <= $endpay)) ? true : false;
 		$data['startpay'] = date('d-M-Y',$startpay);

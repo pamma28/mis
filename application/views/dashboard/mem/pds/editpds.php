@@ -26,11 +26,12 @@
 
 	<script type="text/javascript">
 	$(document).ready(function(){
-		  $('.selectpicker').selectpicker({
+		$('.selectpicker').selectpicker({
 		      size: 6
 		    });
-					$("#bdate").inputmask('date');
+		$("#bdate").inputmask('date');
 		    });
+		 $("#nohp").inputmask('08[99999999999]');
 		  //check email availabelity
 		  $('#Email').bind('keyup change', function() {
 			var email = $('#Email').val();

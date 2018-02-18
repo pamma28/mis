@@ -16,7 +16,7 @@
 	                 
 	                </ul>
 	              </li>
-	              <li class="footer"><a href="<?=base_url("Organizer/Dashboard/allnotification")?>"><b><?=lang('viewall');?></b></a></li>
+	              <li class="footer"><a href="<?=linkAllNotif();?>"><b><?=lang('viewall');?></b></a></li>
 				</ul>
 		  </li>
 	 </ul>
@@ -38,7 +38,7 @@
 			});
 		  
 		  $('#mybuttonnotiflist').click(function(e){
-		  $.post('<?php echo base_url('Organizer/Dashboard/getmynotif'); ?>', {}, function(d) {
+		  $.post('<?php echo base_url('Accesscontrol/getmynotif'); ?>', {}, function(d) {
 								if (d != '' )
 								{
 									$('#myrecentnotiflist').empty().html(d);

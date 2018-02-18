@@ -15,4 +15,21 @@ if (!function_exists('getmynotif'))
     }
 }
 
+if (!function_exists('linkAllNotif'))
+{
+    function linkAllNotif()
+    {
+        $CI =& get_instance();
+        $CI->load->library('session');
+        
+        switch($CI->session->userdata("role")){
+            case 1 : $link = "Admin/Dashboard/allnotification"; break;
+            case 2 : $link = "Organizer/Dashboard/allnotification"; break;
+            case 3 : $link = "Member/Dashboard/allnotification"; break;
+            default: $link = "error"; break;
+        }
+        $nlink     = base_url($link);
+        return($nlink);
+    }
+}
 

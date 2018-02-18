@@ -990,8 +990,11 @@ class Payment extends Org_Controller {
 		$r = $this->Mpay->savepayment($fdata);
 	}
 		if ($r){
-		$this->checklunas($us);
-		$this->session->set_flashdata('v','Add Payment Data Success');
+			$this->checklunas($us);
+			//======= set notif to member ========
+			$idnotifmem = $this->Msetting->getset('notifpayment');
+			$this->notifications->pushnotif(array('idnotif'=>$idnotifmem,'uuser'=>$this->session->userdata('user'),'use_uuser'=>$us,'nlink'=>null));
+			$this->session->set_flashdata('v','Add Payment Data Success');
 		} else {		
 		$this->session->set_flashdata('x','Add Payment Data Failed');
 		}

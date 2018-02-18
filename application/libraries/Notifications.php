@@ -14,7 +14,7 @@ class Notifications {
     
     public function getmynotif(){
         $user = $this->CI->session->userdata('user');
-        $arrread = array('nread.idnotif','nread.uuser','nread.use_uuser','nicon','ncontent','datesend','nread','nlink');
+        $arrread = array('nread.idnotif','user.uname','nread.uuser','nread.use_uuser','nicon','ncontent','datesend','nread','nlink');
         $countunread = $this->CI->Mnotif->countnread(array('use_uuser'=>$user,'nread'=>'0'));
         if ($countunread>5) {
             $arrnotif = $this->CI->Mnotif->datanread(
@@ -42,9 +42,10 @@ class Notifications {
             } 
             $sendtime = $this->CI->converttime->time_elapsed_string($v['datesend']); 
             ($v['nlink']=='') ? $link = "#" : $link = $v['nlink'];
+            $txtnotif = str_replace('{user}', '<b>'.$v['uname'].'</b>', $v['ncontent']);
             $list .= '<li>
                         <a href="'.$link.'" class="'.$nread.'">
-                          <p class="text-wrap: break-word;"><span class="fa '.$v['nicon'].'"></span> '.$v['ncontent'].'</p>
+                          <p class="text-wrap: break-word;"><span class="fa '.$v['nicon'].'"></span> '.$txtnotif.'</p>
                           <div class="text-right"><sup><i><b>'.$sendtime.'</b></i></sup></div>
                           
                         </a>
@@ -56,7 +57,7 @@ class Notifications {
 
     public function getallmynotif(){
         $user = $this->CI->session->userdata('user');
-        $arrall= array('nread.idnotif','nread.uuser','nread.use_uuser','nicon','ncontent','datesend','nread','nlink');
+        $arrall= array('nread.idnotif','user.uname','nread.uuser','nread.use_uuser','nicon','ncontent','datesend','nread','nlink');
         $countall = $this->CI->Mnotif->countnread(array('use_uuser'=>$user));
         
             $arrnotif = $this->CI->Mnotif->datanread(
@@ -76,9 +77,10 @@ class Notifications {
             } 
             $sendtime = $this->CI->converttime->time_elapsed_string($v['datesend']); 
             ($v['nlink']=='') ? $link = "#" : $link = $v['nlink'];
+            $txtnotif = str_replace('{user}', '<b>'.$v['uname'].'</b>', $v['ncontent']);
             $list .= '<tr><td>
                         <a href="'.$link.'" class="'.$nread.'">
-                          <p class="text-wrap: break-word;"><span class="fa '.$v['nicon'].'"></span> '.$v['ncontent'].'</p>
+                          <p class="text-wrap: break-word;"><span class="fa '.$v['nicon'].'"></span> '.$txtnotif.'</p>
                           <div class="text-right"><sup><i><b>'.$sendtime.'</b></i></sup></div>
                           
                         </a>
@@ -97,6 +99,26 @@ class Notifications {
                             'use_uuser'=>$dt['uuser'],
                             'nread'=>'0',
                             'datesend'=>date('Y-m-d H:i:s'),
+                            'nlink'=>$dt['nlink']
+                            )
+                        );
+
+        }
+        else {
+            echo 'error';
+        }
+    }
+
+    public function pushnotif($dt){
+        if(is_array($dt)){
+            $this->CI->Mnotif->insertnread(
+                        array(
+                            'idnotif'=>$dt['idnotif'],
+                            'uuser'=>$dt['uuser'],
+                            'use_uuser'=>$dt['use_uuser'],
+                            'nread'=>'0',
+                            'datesend'=>date('Y-m-d H:i:s'),
+                            'nlink'=>$dt['nlink']
                             )
                         );
 
@@ -117,6 +139,7 @@ class Notifications {
                             'use_uuser'=>$v['uuser'],
                             'nread'=>'0',
                             'datesend'=>date('Y-m-d H:i:s'),
+                             'nlink'=>$dt['nlink']
                             )
                         );
             }
