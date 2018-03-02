@@ -51,7 +51,11 @@ class Home extends CI_Controller {
 	}
 
 	public function error(){
-		echo "<h1>404 Error</h1>";
+		$data['urlprev'] = $_SERVER['REQUEST_URI']; 
+		$data['topbar'] = $this->load->view('home/topbar', NULL, TRUE);
+		$data['sidebar'] = $this->load->view('home/sidebar', NULL, TRUE);
+		$data['content'] = $this->load->view('home/error', $data, TRUE);
+		$this->load->view ('template/main', $data);
 	}
 	
 	public function agendas(){
@@ -114,4 +118,6 @@ class Home extends CI_Controller {
 		$this->load->view ('template/main', $data);
 
 	}
+
+	
 }

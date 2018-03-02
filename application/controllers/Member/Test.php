@@ -198,8 +198,9 @@ class Test extends Mem_Controller {
 		$idresult = $this->input->get('id');
 		$checkmyresult = $this->Mresult->countresult(array('idresult'=>$idresult,'a.uuser'=>$this->session->userdata('user')));
 		if ($checkmyresult=='1'){
-				$col =['jdate','jstart','jdwl_tes.idtest','jsesi','tname','tduration','jroom','a.uname','jactive'];
+				$col =['jdate','jstart','jdwl_tes.idtest','jsesi','tname','tduration','jroom','a.uname','jactive','lvlname','q_score'];
 				$data['t'] = $this->Mresult->detailresult($col,$idresult)[0];
+				$data['finalscore'] = ($data['t']['q_score']=='') ? 'N/A' : $data['t']['q_score'];
 
 				$varresult = $this->Mtest->getdetailmyresult(array('idtest','q_randcode','q_randquest'),$idresult)[0];
 				
@@ -273,9 +274,11 @@ class Test extends Mem_Controller {
 					}
 				//picked answer if any
 				$pickedanswer = $this->Mq->getpickedanswer($v,$myresultid);
+				$mark = $this->Mq->getmarkanswer($v,$myresultid);
 			
 			$finalquestion[$k]['pickedanswer'] = $pickedanswer;	
 			$finalquestion[$k]['allanswer'] = $answer;
+			$finalquestion[$k]['mark'] = ($mark=='1') ? '<span class="fa fa-check text-success"></span>' : (($mark=='0') ? '<span class="fa fa-times text-danger"></span>' : '<span class="text-success">'.($mark*10).'</span>'  );
 			$prevattach = $arrattch;
 		}
 
@@ -349,6 +352,7 @@ class Test extends Mem_Controller {
 		//save generated question into result test
 		$arrallquest = implode(array_column($finalquestion, 'idq'),',');
 						$fdt = array(
+							'q_submitted'=>date("Y-m-d H:i:s"),
 							'idtest'=>$idtest,
 							'idjdwl'=>$idjdwl,
 							'q_randcode'=>$finalcode,

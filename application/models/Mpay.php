@@ -89,11 +89,10 @@ class Mpay extends CI_Model{
 		return $this->db->insert('transaksi',$fdata);
 	}
 	
-	public function deletepds($fid= null){
-	
-		$this->db->where('id_data',$fid);
-		
-		return $this->db->delete('pds');
+	public function updatetransbyidpay($fid= null){
+		$arr = array('ttapprove'=>'0', 'ttdateapp'=>date('Y-m-d H:i:s'));
+		$this->db->where('idtrans',$fid);
+		return $this->db->update('ttransfer',$arr);
 	}
 	
 	public function optjtrans(){

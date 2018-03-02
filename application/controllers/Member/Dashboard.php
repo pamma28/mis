@@ -107,7 +107,7 @@ class Dashboard extends Mem_Controller {
 		//============= populate phase ========
 		$colpha=['registphase','paymentphase','schedulephase','certiphase'];
 		$headerpha = $this->returncolomn($colpha);
-		$tmplpha = array('table_open'=>'<table class="table table-bordered text-center">');
+		$tmplpha = array('table_open'=>'<table class="table table-bordered text-center bg-info">');
 		$this->table->set_template($tmplpha);
 		$this->table->set_heading($headerpha);
 		foreach ($colpha as $k => $v) {

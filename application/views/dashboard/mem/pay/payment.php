@@ -1,7 +1,7 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
 	
-	<h1><i class="fa fa-edit fa-lg"></i> Validation<small>Result</small></h1>
+	<h1><i class="fa fa-money"></i> My <small>Payment</small></h1>
 		<ol class="breadcrumb">
             <?=set_breadcrumb();?>
 		</ol>
@@ -22,8 +22,40 @@
 				<?=$this->session->flashdata('x');?>
 			</div>		
 			<?php } ?>
+		
 		<div class="row">
-			<div class="col-md-6"> 
+			<div class="col-md-2">
+				<div class="panel panel-info">
+					<div class="panel-body text-center">
+						<b>Your Status</b>
+						<div class="text-primary">
+						<span class="fa fa-info-circle fa-2x"></span><br/>
+						<b><?=$lunas;?></b>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-2">
+				<div class="panel panel-info">
+					<div class="panel-body text-center">
+						<b>Total Payment</b>
+						<div class="text-info">
+						<span class="fa fa-barcode fa-2x"></span><br/>
+						<b><?=$tottrans;?></b>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-2">
+				<div class="panel panel-info">
+					<div class="panel-body text-center">
+						<b>Total Money Paid</b><br/>
+						<div class="text-success">
+						<span class="fa fa-money fa-2x"></span><br/>
+							<b><?=$totpaid?></b>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div class="col-md-6 text-right">
 					<?php 
@@ -39,6 +71,7 @@
 					?>
 					<div class="text-right"><a href="<?=current_url();?>" class="label label-danger">Clear Search</a> <a class="label label-info" role="button" data-toggle="collapse" href="#collapseAdvanced" aria-expanded="<?php echo(empty($d)? 'false': 'true');?>" aria-controls="collapseExample">Advanced search</a></div>
 			</div>
+
 		</div>
 		<div class="row">
 			<div class="<?php echo(empty($d)? 'collapse': 'collapse in');?> col-md-12" id="collapseAdvanced" aria-expanded="<?php echo(empty($d)? 'false': 'true');?>">
@@ -56,7 +89,8 @@
 				?>
 			  </div>
 			</div>
-		</div>		
+		</div>
+				
 	</div>
 	<div class="box-body table-responsive">
 	<?=$listdata;?>

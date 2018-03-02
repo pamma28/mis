@@ -33,7 +33,7 @@ class Mtransfer extends CI_Model{
 		$this->db->join('user as b','ttransfer.use_uuser=b.uuser','left');
 		$this->db->where('a.idrole','3');
 		$this->db->where('a.uallow','1');
-		$this->db->order_by('ttdate','desc');
+		$this->db->order_by('ttdaterequest','desc');
 		$q = $this->db->get('ttransfer');
 		$qr = array();
 		if ($q->num_rows() > 0){	
@@ -181,7 +181,7 @@ class Mtransfer extends CI_Model{
 		$this->db->where('a.idrole','3');
 		$this->db->where('a.uuser',$this->session->userdata('user'));
 		$this->db->where('a.uallow','1');
-		$this->db->order_by('ttdate','desc');
+		$this->db->order_by('ttdaterequest','desc');
 		$q = $this->db->get('ttransfer');
 		$qr = array();
 		if ($q->num_rows() > 0){	
@@ -215,5 +215,19 @@ class Mtransfer extends CI_Model{
 		$this->db->where('a.uallow','1');
 		return $this->db->count_all_results("ttransfer");
 
+	}
+
+	public function getoptbank(){
+		$arran = explode(',', $this->Msetting->getset('an_atm'));
+		$arrno = explode(',', $this->Msetting->getset('no_atm'));
+		$arrjb = explode(',', $this->Msetting->getset('jns_bank'));
+		$return = array();
+		$return[''] = 'Choose Bank';
+		if(count($arran) > 0){
+        foreach($arran as $k => $v){
+            $return[$arrjb[$k]] = '(<b>'.$arrjb[$k].' - '.$arrno[$k].'</b>) '.$arran[$k];
+			}
+		}
+    return $return;
 	}
 }

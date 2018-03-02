@@ -882,3 +882,35 @@ clear: both;
     width: 25%;
     float: left;
 }
+
+.thumbnail {
+    position: relative;
+    width: 100px;
+}
+
+.imgava{
+	transition: .2s ease;
+ 	 backface-visibility: hidden;
+}
+
+.caption {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    width: 100%;
+    transition: .2s ease;
+  	opacity: 0;
+  	transform: translate(-50%, -50%);
+  	-ms-transform: translate(-50%, -50%);
+  	text-align: center;
+  	height: auto;
+	cursor: pointer;
+}
+
+.thumbnail:hover .caption{
+	opacity: 1;
+}
+
+.thumbnail:hover .imgava{
+	opacity: .15;
+}

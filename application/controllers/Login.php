@@ -269,4 +269,12 @@ class Login extends CI_Controller {
 
     }
 
+    public function checkloggedin(){
+    	if($this->session->userdata('user')<>''){
+    		echo '1';
+    	} else {
+    		echo '0';
+    	}
+    }
+
 }

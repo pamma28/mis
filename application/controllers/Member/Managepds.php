@@ -243,7 +243,7 @@ class Managepds extends Mem_Controller {
 		
 		$fsoc = array('name'=>'fsocmed',
 						'id'=>'SocialMedia',
-						'placeholder'=>'BBM PIN/Social Media',
+						'placeholder'=>'Social Media',
 						'value'=>$g[0]['ubbm'],
 						'class'=>'form-control',
 						'size'=>'30');
@@ -474,7 +474,7 @@ class Managepds extends Mem_Controller {
 	
 	public function returncolomn($header) {
 	$find=['ucreated','uupdate','uuser','uname','jkname','user.idjk','idjk','ubplace','ubdate','unim','uemail','uhp','ufoto','ubbm','uaddrnow','uaddhome','umin','upaycode','ustatus','ulunas','fac.idfac','user.idfac','idfac','fname','uallow','upass'];
-	$replace = ['Date Registered','Last Updated','Username','Full Name','Gender','Gender','Gender','Birthplace','Birthdate','NIM','Email','Phone Number','Photo','BBM/Social Media','Current Address','Home Address','Member Index Number','Payment','Status','Full Payment','Faculty','Faculty','Faculty','Faculty','Allow/Deny','Password'];
+	$replace = ['Date Registered','Last Updated','Username','Full Name','Gender','Gender','Gender','Birthplace','Birthdate','NIM','Email','Phone Number','Photo','Social Media','Current Address','Home Address','Member Index Number','Payment','Status','Full Payment','Faculty','Faculty','Faculty','Faculty','Allow/Deny','Password'];
 		foreach ($header as $key => $value){
 		$header[$key]  = str_replace($find, $replace, $value);
 		}

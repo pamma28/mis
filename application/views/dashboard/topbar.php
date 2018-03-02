@@ -31,8 +31,22 @@
 	  </ul>
 	  </div>
 
+	 	<!-- Modal Details Data-->
+		<div class="modal fade" id="LoggedModal" tabindex="-1" role="dialog" aria-labelledby="myLoggedLabel" aria-hidden="true">
+	    	<div class="modal-dialog">
+	        <div class="modal-content">
+	        	<div class="modal-header text-center text-yellow"><h3><b> <span class="fa fa-exclamation-triangle"></span>  Warning</b></h3></div>
+	        	<div class="modal-body text-center">
+				<h4 class="text-danger"><b>Your login session has expired, please login again.</b></h4>
+				</div>
+	        </div>
+	    	</div>
+		</div>
+	
+
 	  <script>
 	  $(document).ready(function () {
+	  	
 		  $(".mynavbar-wrapper").animate({scrollLeft: 350}, 700,'linear',function(){
 			  $(".mynavbar-wrapper").animate({scrollLeft: -350}, 400);
 			});
@@ -46,7 +60,20 @@
 								}
 							});
 		  });
+	  		$(window).on('focus', function() {
+	  			var urlrdr = "<?=base_url('Login?rdr=');?>"+window.location.pathname;
+	  			$.post('<?php echo base_url('Login/checkloggedin'); ?>',{},function(d){
+	  				if(d=='0'){
+	  					$("#LoggedModal").modal("show");
+	  					$("#LoggedModal").on("hide.bs.modal",function(){
+	  						window.location.href=urlrdr;
+	  					});
+	  				}
+	  			});
+	  		});
 	  });
+
+
 	  </script>
 	  
 	

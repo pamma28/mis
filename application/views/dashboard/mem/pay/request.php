@@ -18,7 +18,7 @@
 		<div class="row">
 			<?php if ($lunas) { ?>
 				<div class="col-md-12 col-sm-12 col-xs-12">
-				<h3 class="text-center text-primary">Your Payment is Completed</h3> <hr class="divider"/>
+				<h3 class="text-center text-primary">Your Payment Has Been Completed</h3> <hr class="divider"/>
 				<div class="panel panel-success">
 					<div class="panel-body">
 						<h3 class="text-center"><span class="label label-success"><i class="fa fa-check"></i> Please check on "My Payment" menu.</span></h3>
@@ -38,15 +38,39 @@
 			<?php } else { ?>
 			<div class="col-md-8 col-sm-12 col-xs-12">
 				<h3 class="text-center text-primary">Transfer Validation Form</h3> <hr class="divider"/>
-				<?php echo form_open(base_url('Member/Confirmpay/sendrequest'),array('name'=>'uptransfer', 'method'=>'POST','class'=>'form-horizontal'));?>
+				<?php echo form_open(base_url('Member/Confirmpay/sendrequest'),array('name'=>'uptransfer', 'method'=>'POST','class'=>'form-horizontal','id'=>"formrequest"));?>
 				<?=$rdata;?>
+				  	<div class="bg-red required hidden text-left">*Please make sure your input is not empty</div>
+				  	<div class="panel-footer text-right">
+			        <?=$inbtn;?>
+			    	</div>
+				<?php echo form_close(); ?>
 		    </div>
 		    <div class="col-md-4 col-sm-12 col-xs-12">
 		    	<div class="panel panel-info">
 		    		<div class="panel-body">
-		    			<p class="text-info">Current Price <b>Rp. <?=$price;?></b></p>
-		    			<p class="text-info">Your Unique Code <b><i><?=$code;?></i></b></p>
-		    			<h4 class="text-success bg-green">Total Price Rp. <?=($price+$code);?></h4>
+		    			<div class="table-responsive bg-info">
+		    				<small>
+								<table class="table table-condesed">
+									<tbody><tr>
+						                <th style="width:50%">Details</th>
+						                <th>Amount</th>
+						              </tr><tr>
+						                <td>Price:</td>
+						                <td><?=$price;?></td>
+						              </tr>
+						              <tr>
+						                <td>Unique Code</td>
+						                <td><?=$code;?></td>
+						              </tr>
+						              <tr>
+						                <th><h4><b>Total:</b></h4></th>
+						                <th><h4><b><?=$totpay;?></b></h4></th>
+						              </tr>
+						            </tbody>
+								</table>
+							</small>
+						</div>
 		    		</div>
 		    	</div>
 		    	<div class="panel panel-primary">
@@ -59,10 +83,25 @@
 		    	</div>
 		    </div>
 		</div>
-		    <div class="panel-footer text-right">
-		        <?=$inbtn;?>
-		    </div>
-		<?php echo form_close(); } }
+
+		<!-- Modal Confirm Request-->
+		<div class="modal fade" id="confirm-send" tabindex="-1" role="dialog" aria-labelledby="myConfirmLabel" aria-hidden="true">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h4><i class="fa fa-trash"></i> Are you sure want to request validation?</h4>
+	            </div>
+				
+	            <div class="modal-footer">
+	            	<div class="text-left"><small><i>PS: Make sure all data is correct.</i></small></div>
+	                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
+	                <a class="btn btn-primary btn-ok btn-sm" id="confirmsubmit">Send Request</a>
+	            </div>
+	        </div>
+	    </div>
+		</div>
+			  
+		<?php } }
 		} else { ?>
 			<div class="col-md-12 col-sm-12 col-xs-12">
 				<h3 class="text-center text-primary">Out of Payment Phase</h3> <hr class="divider"/>
@@ -82,7 +121,30 @@
 	<script type="text/javascript">
 	$(document).ready(function(){
 				$("#tdate").inputmask('date');
-		    });
+				$("#accno").inputmask('[999999999999999999999999999999]');
+				$("#tnomi").inputmask({mask:'[999999]','placeholder':'0'});
+	
+	$(document).on('click','#submitrequest',function(){
+			var curInputs = $(this).closest('#formrequest').find("input[type='text'],select"),isValid=true;
+			$(".col-sm-9").removeClass("has-error");
+			for(var i=0; i<curInputs.length; i++)	
+			{
+				 if (!curInputs[i].validity.valid){
+	                isValid = false;
+	                $(curInputs[i]).closest(".col-sm-9").addClass("has-error");
+	                $('.required').removeClass('hidden');
+	                
+	            }
+			}
+			if(isValid){
+			$('.required').addClass('hidden');
+			$("#confirm-send").modal("show");	
+			}
+		});
+	$(document).on('click','#confirmsubmit',function(){
+		$("#formrequest").submit();
+		});
+	});
 	</script>
 
 </section>

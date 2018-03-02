@@ -169,7 +169,8 @@
 												$a++;
 								            	} 
 								            ?>
-								            <br/> 
+								            
+											<hr class="divider"/>
 											
 								            <div class="btn-group pull-right">
 												<a class="btn btn-primary navigate" id="nextquest"> Next <i class="fa fa-angle-right"></i></a>
@@ -184,7 +185,8 @@
 											<span class="label label-success"> Answered</span>
 											</div>
 											
-											<hr class="divider"/>
+											<br/>
+											
 							          
 											<?=$idresult;?><button type="submit" class="btn btn-info btn-block" id="submittest"><h4><i class="fa fa-send"></i> Submit Test </h4></button>
 								        

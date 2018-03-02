@@ -1005,6 +1005,7 @@ class Payment extends Org_Controller {
 
 	public function deletepay(){
 		$id = $this->input->get('id');
+		$this->Mpay->updatetransbyidpay($id);
 		$r = $this->Mpay->deletepay($id);
 			// delete qr and update status full paid
 			$this->deleteqr($id);

@@ -276,8 +276,6 @@ class Setting extends Org_Controller {
 		
 
 		//========== setting payment  =========
-		
-
 		$columnpay=['no_atm','an_atm','jns_bank'];
 		$labelpay = ['Bank Account Number','Account Owner','Bank Name'];
 		$tblpay = '';
@@ -429,8 +427,8 @@ class Setting extends Org_Controller {
 		$this->table->set_template($tmpl);
 		$this->table->set_heading($header);
 
-		$columnpg=['tmpdashhome','tmpdashmem','tmpdashorg','tmpdashadm'];
-		$labelpg = ['Homepage','Dashboard Member','Dashboard Organizer','Dashboard Admin'];
+		$columnpg=['tmpdashhome','tmpdashmem','tmpdashorg','tmpdashadm','tmppayproc'];
+		$labelpg = ['Homepage','Dashboard Member','Dashboard Organizer','Dashboard Admin','Payment Procedure (Member)'];
 		foreach ($columnpg as $k => $v) {		
 			$temppg[$k] =array($labelpg[$k], 
 						form_dropdown(array(

@@ -29,6 +29,5 @@ class Accesscontrol extends Logged_Controller {
 	public function getmynotif(){
 		echo $this->notifications->getmynotif();
 	}
-
 	
 }

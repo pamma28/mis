@@ -32,7 +32,7 @@ class Confirmpay extends Mem_Controller {
 		$data['code']=$code;
 		$data['totpay'] = $this->convertmoney->convert($price+$code);
 
-		//================== Bank Name & Bank Account ========
+		//================== Bank Name & Bank Account ======== 
 		$arrpay[] = explode(',', $this->Msetting->getset('no_atm'));
 		$arrpay[] = explode(',', $this->Msetting->getset('an_atm'));
 		$arrpay[] = explode(',', $this->Msetting->getset('jns_bank'));
@@ -60,7 +60,7 @@ class Confirmpay extends Mem_Controller {
 	public function validationresult(){
 		//===================== table handler =============
 		$data['thisperiod']=$this->Msetting->getset('period');
-		$column=['idttrans','tnotrans','ttdate','ttbank','ttname','ttamount','ttapprove'];
+		$column=['idttrans','tnotrans','ttdaterequest','ttdate','ttbank','ttname','ttamount','ttapprove'];
 		$header = $this->returncolomn($column);
 		unset($header[0]);unset($header[1]);
 		$header[]='Menu';
@@ -133,7 +133,7 @@ class Confirmpay extends Mem_Controller {
 		
 		// ============= advanced filter ===============
 		$adv['Date Requested'] = form_input(
-						array('name'=>'ttdate',
+						array('name'=>'ttdaterequest',
 						'id'=>'createdon',
 						'placeholder'=>'Date Requested',
 						'value'=>isset($tempfilter['ttdate']) ? $tempfilter['ttdate'] : null,
@@ -205,6 +205,7 @@ class Confirmpay extends Mem_Controller {
 				} else{
 					$temp[$key]['ttapprove']='<span class="label label-warning">Pending</span>';
 				}
+				$temp[$key]['ttdaterequest']=date('d-M-Y',strtotime($temp[$key]['ttdaterequest'])).'<br/>';
 				$temp[$key]['ttdate']=date('d-M-Y',strtotime($temp[$key]['ttdate'])).'<br/>';
 				$temp[$key]['ttamount']=$this->convertmoney->convert($temp[$key]['ttamount']);
 				//manipulation menu
@@ -217,7 +218,7 @@ class Confirmpay extends Mem_Controller {
 				
 		//=============== Template ============
 		$data['jsFiles'] = array(
-							'toggle/bootstrap2-toggle.min','moment/moment.min','daterange/daterangepicker','print/printThis','inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions');
+							'toggle/bootstrap2-toggle.min','moment/moment.min','daterange/daterangepicker','print/printThis','inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions','inputmask/inputmask.numeric.extensions');
 		$data['cssFiles'] = array(
 							'toggle/bootstrap2-toggle.min','daterange/daterangepicker');  
 		// =============== view handler ============
@@ -230,7 +231,9 @@ class Confirmpay extends Mem_Controller {
 	
 	public function sendrequest(){
 		$fdata = array(
+					'ttdaterequest'=>date('Y-m-d H:i:s'),
 					'ttdate'=>date('Y-m-d',strtotime(str_replace('/','-',$this->input->post('ftdate')))),
+					'tttobank'=>$this->input->post('ftobank'),
 					'ttbank'=>$this->input->post('ftbank'),
 					'ttnorek'=>$this->input->post('faccno'),
 					'ttname'=>$this->input->post('faccname'),
@@ -248,11 +251,14 @@ class Confirmpay extends Mem_Controller {
 
 	public function requestvalidation(){
 		// =========== total price ==========
-		$data['price']=$this->Msetting->getset('price');
+		$price = $this->Msetting->getset('price');
+		$data['price']=$this->convertmoney->convert($price);
 		$this->load->model('Mpds');
-		$data['code']=mb_substr($this->Mpds->detailpds(array('upaycode'),$this->session->userdata('user'))[0]['upaycode'],3,5);
+		$code = mb_substr($this->Mpds->detailpds(array('upaycode'),$this->session->userdata('user'))[0]['upaycode'],3,5);
+		$data['code']= $code;
+		$data['totpay']= $this->convertmoney->convert($price+$code);
 		// =========== column ============
-		$col = ['Estimation Date','Bank Name','Account Number','Account Name','Nominal'];
+		$col = ['Estimation Date of Transfer','Destination Bank','Your Bank Name','Your Account Number','Your Account Name','Nominal Transfered'];
 		// ========= form edit ================ 
 		$fdate = array('name'=>'ftdate',
 						'id'=>'tdate',
@@ -266,11 +272,15 @@ class Confirmpay extends Mem_Controller {
 						'data-inputmask' => "'alias': 'dd/mm/yyyy'",
 						'datamask' => '');
 		$r[] = form_input($fdate);
+
+			$optbank = $this->Mtransfer->getoptbank();
+		$ftobank = 'id="tdate" required="required" class="form-control"';
+		$r[] = form_dropdown('ftobank',$optbank,null,$ftobank);
 		
 		$fbname = array('name'=>'ftbank',
 						'id'=>'tbank',
 						'required'=>'required',
-						'placeholder'=>'Bank Name',
+						'placeholder'=>'Your Bank Name',
 						'value'=>'',
 						'class'=>'form-control',
 						'size'=>'');
@@ -279,14 +289,14 @@ class Confirmpay extends Mem_Controller {
 		$faccno = array('name'=>'faccno',
 						'id'=>'accno',
 						'required'=>'required',
-						'placeholder'=>'Account Number',
+						'placeholder'=>'Your Account Number',
 						'value'=>'',
 						'class'=>'form-control');
 		$r[] = form_input($faccno);
 		
 			$faccname = array('name'=>'faccname',
 						'id'=>'accname',
-						'placeholder'=>'Account Name',
+						'placeholder'=>'Your Account Name',
 						'value'=>'',
 						'class'=>'form-control',
 						'required'=>'required',
@@ -301,13 +311,13 @@ class Confirmpay extends Mem_Controller {
 						'value'=>'',
 						'class'=>'form-control input-lg'
 						);
-		$r[] = '<div class="input-group"><span class="input-group-addon">Rp. </span>'.form_input($ftnomi).'</div><br/><span class="text-info"><i class="fa fa-info-circle"></i> Make sure it is equal with <b>total price</b></span>';
+		$r[] = '<div class="input-group"><span class="input-group-addon">Rp. </span>'.form_input($ftnomi).'</div><br/><span class="text-info"><i class="fa fa-info-circle"></i> Make sure it is equal with <b>Total of Price</b></span>';
 		
-		$fsend = array(	'id'=>'submit',
+		$fsend = array(	'id'=>'submitrequest',
 						'value'=>'Send Request',
 						'class'=>'btn btn-primary',
-						'type'=>'submit');
-		$data['inbtn'] = form_submit($fsend);
+						'title'=>"Confirm send");
+		$data['inbtn'] = form_button($fsend,'Send Request');
 		
 		//set row title
 		$row = $this->returncolomn($col);
@@ -339,13 +349,13 @@ class Confirmpay extends Mem_Controller {
 		$data['rdata']=$this->table->generate($dtable);
 
 		//============ previous request =======
-		$header =['Est. Date','Amount','Status'];
+		$header =['Requested Date','Amount','Status'];
 		//set table template
 		$tmpl = array ( 'table_open'  => '<table class="table table-hover table-striped">' );
 		$this->table->set_template($tmpl);
 		$this->table->set_heading($header);
 		//data prevreq
-		$prevreq = $this->Mtransfer->datatransfer(array('ttdate','ttamount','ttapprove'),1,1,array('a.uuser'=>$this->session->userdata('user')));
+		$prevreq = $this->Mtransfer->datatransfer(array('ttdate','ttamount','ttapprove'),null,1,array('a.uuser'=>$this->session->userdata('user')));
 		$tmpreq = $prevreq;
 		foreach($prevreq as $key=>$value){
 			//manipulation allow data
@@ -374,7 +384,7 @@ class Confirmpay extends Mem_Controller {
 		$data['startpay'] = date('d-M-Y',$startpay);
 		$data['endpay'] = date('d-M-Y', $endpay);
 		//=============== Template ============
-		$data['jsFiles'] = array('numeric/numeric.min');
+		$data['jsFiles'] = array('inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions','numeric/numeric.min','validate/jquery.validate.min');
 		$data['cssFiles'] = array('');  
 		// =============== view handler ============
 		$data['title']="Request Validation";
@@ -386,15 +396,19 @@ class Confirmpay extends Mem_Controller {
 	
 	public function detailtransfer(){
 		//fecth data from db
-		$col=['ttdate','ttdateapp','tnotrans','a.uname as mname','a.unim','ttbank','ttname','ttnorek','ttamount','a.upaycode','ttapprove','ttket'];
+		$col=['ttdaterequest','ttdate','ttbank','ttname','ttnorek','ttamount','ttdateapp','a.upaycode','ttapprove'];
 		$id = $this->input->get('id');
 		$dbres = $this->Mtransfer->mydetailtransfer($col,$id,$this->session->userdata('user'));
 		
+		
+		$data['status'] = ($dbres[0]['ttapprove']=='1') ? '<span class="label label-success">Approved</span>' : (($dbres[0]['ttapprove']=='0') ? '<span class="label label-danger">Rejected</span>' : '<span class="label label-warning">Pending</span>');
+		$data['code'] = $dbres[0]['upaycode'];
+		$data['dateproc'] = date("d-M-Y H:i", strtotime($dbres[0]['ttdateapp']));
+		unset($col[6],$col[7],$col[8]);
+		
+
 		//set row title
 		$row = $this->returncolomn($col);
-		$col[3]='mname';
-		$col[4]='unim';
-		$col[9]='upaycode';
 		//set table template
 		$tmpl = array ( 'table_open'  => '<table class="table table-striped">',
 					'heading_row_start'   => '<tr>',
@@ -411,7 +425,8 @@ class Confirmpay extends Mem_Controller {
 		$this->table->set_template($tmpl);
 		//set table data
 		$a = 0;
-		$stat = ($dbres[0]['ttapprove']) ? '<span class="label label-success">Approved</span>' : ($dbres[0]['ttapprove']==null) ? '<span class="label label-warning">Pending</span>' : '<span class="label label-danger">Rejected</span>';
+		
+
 		foreach($row as $key)
 		{
 			$dtable[$a] = array(
@@ -444,7 +459,7 @@ class Confirmpay extends Mem_Controller {
 						"dtval"=>' : '.date("d-M-Y", strtotime($dbres[0][$col[$a]]))
 						);
 					}
-			if (($key=='Date Processed')){
+			if (($key=='Date Processed') or ($key=="Date Requested")){
 					$dtable[$a] = array(
 						"dtcol"=>'<b>'.$key.'</b>',
 						"dtval"=>' : '.date("d-M-Y H:i", strtotime($dbres[0][$col[$a]]))
@@ -640,11 +655,16 @@ class Confirmpay extends Mem_Controller {
 				//manipulation menu
 				$enc = $value['tnotrans'];
 				unset($temp[$key]['idtrans']);
-				$temp[$key]['menu']='<div class="btn-group"><a href="'.base_url('Member/Confirmpay/detailpay?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Full Data" class="btn btn-primary btn-sm" title="Details"><i class="fa fa-list-alt"></i></a>'.
-				'<a href="'.base_url('Member/Confirmpay/previewinvoice?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Print Invoice" class="btn btn-info btn-sm" title="Print"><i class="fa fa-print"></i></a></div>';
+				$temp[$key]['menu']='<a href="'.base_url('Member/Confirmpay/detailpay?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Full Data" class="btn btn-primary btn-sm" title="Details"><i class="fa fa-list-alt"></i></a> '.
+				'<a href="'.base_url('Member/Confirmpay/previewinvoice?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Print Invoice" class="btn btn-info btn-sm" title="Print"><i class="fa fa-print"></i></a>';
 				}
 		$data['listdata'] = $this->table->generate($temp);
-				
+		
+		$arrtot = $this->Mpay->mydetailpay(array("(select sum(tpaid) from transaksi where uuser=a.uuser) as 'totpaid',a.ulunas"),$enc,$this->session->userdata('user'));
+		$data['totpaid'] = $this->convertmoney->convert($arrtot[0]['totpaid']);
+		$data['tottrans'] = $this->Mpay->countmypay();
+		$data['lunas'] = ($arrtot[0]['ulunas']) ? 'Fully Paid' : "Not Fully Paid Yet";
+
 		//=============== Template ============
 		$data['jsFiles'] = array(
 							'selectpicker/select.min','moment/moment.min','daterange/daterangepicker','print/printThis','inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions','numeric/numeric.min');
@@ -953,8 +973,8 @@ class Confirmpay extends Mem_Controller {
 	
 	
 	public function returncolomn($header) {
-		$find=['idttrans','ttdateapp','tnotrans','ttdate','a.uname as mname','a.uuser','a.unim','ttbank','ttname','ttnorek','ttamount','a.upaycode','ttapprove','b.uname as rname','ttket'];
-		$replace = ['Transfer ID','Date Processed','Invoice No','Date Transfered','Full Name','Username','NIM','Bank Account','Account Name','Account Number','Amount','Payment Code','Status','Processed by','Notes'];
+		$find=['idttrans','ttdaterequest','ttdateapp','tnotrans','ttdate','a.uname as mname','a.uuser','a.unim','ttbank','ttname','ttnorek','ttamount','a.upaycode','ttapprove','b.uname as rname','ttket'];
+		$replace = ['Transfer ID','Date Requested','Date Processed','Invoice No','Date Transfered','Full Name','Username','NIM','Bank Name','Account Name','Account Number','Amount','Payment Code','Status','Processed by','Notes'];
 			foreach ($header as $key => $value){
 			$header[$key]  = str_replace($find, $replace, $value);
 			}

@@ -31,7 +31,9 @@ class Scheduletest extends Mem_Controller {
 		$header = $this->returncolomn($column);
 		unset($header[0]);
 		$header[]='Menu';
-		$tmpl = array ( 'table_open'  => '<table class="table table-hover" id="mylist">' );
+		$tmpl = array ( 'table_open'  => '<table class="table table-hover" id="mylist">',
+				        'heading_cell_start'    => '<th class="col-md-2">'
+		 			);
 		$this->table->set_template($tmpl);
 		$this->table->set_heading($header);
 		$perpage = $this->Msche->countpilsche();
@@ -66,7 +68,9 @@ class Scheduletest extends Mem_Controller {
 		$header = $this->returncolomn($column);
 		unset($header[0]);
 		$header[]='Menu';
-		$tmpl = array ( 'table_open'  => '<table class="table table-hover" id="mysche">' );
+		$tmpl = array ( 'table_open'  => '<table class="table table-hover" id="mysche">',
+				        'heading_cell_start'    => '<th class="col-md-2">'
+		 			);
 		$this->table->set_template($tmpl);
 		$this->table->set_heading($header);
 		$choosen = $this->Msche->datamysche($column,0,1);
@@ -218,7 +222,8 @@ class Scheduletest extends Mem_Controller {
 		$header = $this->returncolomn($column);
 		unset($header[0]);
 		$header[]='Menu';
-		$tmpl = array ( 'table_open'  => '<table class="table table-hover" id="mysche">' );
+		$tmpl = array ( 'table_open'  => '<table class="table table-hover" id="mysche">',
+						'heading_cell_start'    => '<th class="col-md-2">');
 		$this->table->set_template($tmpl);
 		$this->table->set_heading($header);
 		$choosen = $this->Msche->datamysche($column,0,1);

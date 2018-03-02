@@ -315,4 +315,57 @@ class Mcerti extends CI_Model{
 		$this->db->where('ustatus<>',null);
 		return $this->db->get('user')->result_array();
 	}
+
+	
+
+
+	public function datamycerti($column = null, $per_page = null, $page = null, $filter = null){
+		$this->db->select($column);
+		$this->db->limit($per_page,(($page-1)*($per_page)));
+			if ($filter != null){
+			foreach($filter as $f=>$v){
+				if (($f=='period')){
+				$this->db->like('DATE_FORMAT(ucreated,"%Y")',$v);
+				} else if(($f=='uname') and ($v!='')){
+					$this->db->like('a.uname',$v);			
+				} else if(($f=='unim') and ($v!='')){
+					$this->db->like('a.unim',$v);					
+				}else{
+					$this->db->like($f,$v);			
+				}
+			}
+		}
+		$this->db->where('user.uuser',$this->session->userdata('user'));
+		$this->db->join('user','user.uuser=certificate.uuser','left');
+		$this->db->join('level','level.idlevel=user.idlevel','left');
+		$this->db->order_by('certidate','desc');
+		$q = $this->db->get('certificate');
+		$qr = array();
+		if ($q->num_rows() > 0){	
+			$qr = $q->result_array();
+			}
+	return $qr;
+	}
+
+	public function countmycerti($filter = null){
+		if ($filter != null){
+			foreach($filter as $f=>$v){
+				if (($f=='period')){
+				$this->db->like('DATE_FORMAT(ucreated,"%Y")',$v);
+				} else if(($f=='uname') and ($v!='')){
+					$this->db->like('a.uname',$v);			
+				} else if(($f=='unim') and ($v!='')){
+					$this->db->like('a.unim',$v);					
+				}else{
+					$this->db->like($f,$v);			
+				}
+			}
+		}
+		$this->db->where('user.uuser',$this->session->userdata('user'));
+		$this->db->join('user','certificate.uuser=user.uuser','left');
+		$this->db->join('level','level.idlevel=user.idlevel','left');
+		return $this->db->count_all_results("certificate");
+
+	}
+
 }

@@ -74,12 +74,12 @@
               </a>
 			  <ul class="treeview-menu">
                 <li><a href="<?=base_url("Member/Certificate");?>"><i class="fa fa-certificate fa-fw"></i> <?=lang('mycerti');?></a></li>
-                <li><a href="<?=base_url("Member/Design");?>"><i class="fa fa-image fa-fw"></i> <?=lang('prevcerti');?></a></li>
+                <li><a href="<?=base_url("Member/Certificate/preview");?>"><i class="fa fa-image fa-fw"></i> <?=lang('prevcerti');?></a></li>
                </ul>
       </li>
 			
 			<li class="treeview">
-              <a href="<?=base_url('Admin/Impexp');?>">
+              <a href="<?=base_url('Member/Setting');?>">
                 <i class="fa fa-wrench fa-fw"></i>
                 <span><?php echo lang('memsetacc');?></span>
               </a>

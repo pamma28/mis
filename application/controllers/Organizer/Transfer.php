@@ -12,13 +12,13 @@ class Transfer extends Org_Controller {
 		$this->load->library(array('table','pagination','form_validation','Convertmoney'));
 		$this->load->helper(array('form','url'));
 		
-		$this->load->model(array('Mtransfer','Msetting'));
+		$this->load->model(array('Mtransfer','Msetting','Mpay'));
     }
 
 	public function index(){
 		//===================== table handler =============
 		$data['thisperiod']=$this->Msetting->getset('period');
-		$column=['idttrans','ttdate','a.uname as mname','a.unim','ttbank','ttname','ttamount','ttapprove','b.uname as rname'];
+		$column=['idttrans','ttdaterequest','a.uname as mname','a.unim','ttbank','ttname','ttamount','ttapprove','b.uname as rname'];
 		$header = $this->returncolomn($column);
 		unset($header[0]);
 		// checkbox checkalldata
@@ -200,7 +200,7 @@ class Transfer extends Org_Controller {
 							));
 				array_unshift($temp[$key],$ctable);
 				$temp[$key]['mname']='<span class="idname">'.$temp[$key]['mname'].'</span>';
-				$temp[$key]['ttdate']=date('d-M-Y',strtotime($temp[$key]['ttdate'])).'<br/>'.date('H:i:s',strtotime($temp[$key]['ttdate']));
+				$temp[$key]['ttdaterequest']=date('d-M-Y',strtotime($temp[$key]['ttdaterequest'])).'<br/>'.date('H:i:s',strtotime($temp[$key]['ttdaterequest']));
 				$temp[$key]['ttamount']=$this->convertmoney->convert($temp[$key]['ttamount']);
 				//manipulation menu
 				$enc = $value['idttrans'];
@@ -253,16 +253,16 @@ class Transfer extends Org_Controller {
 	
 	public function detailtransfer(){
 		//fecth data from db
-		$col=['ttdate','ttdateapp','tnotrans','a.uname as mname','a.unim','ttbank','ttname','ttnorek','ttamount','a.upaycode','ttapprove','b.uname as rname','ttket'];
+		$col=['ttdaterequest','ttdate','ttdateapp','tnotrans','a.uname as mname','a.unim','ttbank','ttname','ttnorek','ttamount','a.upaycode','ttapprove','b.uname as rname','ttket'];
 		$id = $this->input->get('id');
 		$dbres = $this->Mtransfer->detailtransfer($col,$id);
 		
 		//set row title
 		$row = $this->returncolomn($col);
-		$col[3]='mname';
-		$col[4]='unim';
-		$col[9]='upaycode';
-		$col[11]='rname';
+		$col[4]='mname';
+		$col[5]='unim';
+		$col[10]='upaycode';
+		$col[12]='rname';
 		//set table template
 		$tmpl = array ( 'table_open'  => '<table class="table table-striped">',
 					'heading_row_start'   => '<tr>',
@@ -287,7 +287,7 @@ class Transfer extends Org_Controller {
 				"dtval"=>' : '.$dbres[0][$col[$a]]
 				);
 			
-			if ($key=='Date Transfered'){
+			if ($key=='Date Requested'){
 						$dtable[$a] = array(
 						"dtcol"=>'<b>'.$key.'</b>',
 						"dtval"=>' : '.date('d-M-Y, H:i',strtotime($dbres[0][$col[$a]]))
@@ -300,7 +300,12 @@ class Transfer extends Org_Controller {
 						"dtval"=>' : '.date('d-M-Y, H:i',strtotime($dbres[0][$col[$a]]))
 						);
 				}
-
+			if ($key=='Date Transfered'){
+						$dtable[$a] = array(
+						"dtcol"=>'<b>'.$key.'</b>',
+						"dtval"=>' : '.date('d-M-Y',strtotime($dbres[0][$col[$a]]))
+						);
+				}
 			if ($key=='Status'){
 						$dtable[$a] = array(
 						"dtcol"=>'<b>'.$key.'</b>',
@@ -652,8 +657,8 @@ class Transfer extends Org_Controller {
 	}
 	
 	public function returncolomn($header) {
-	$find=['idttrans','ttdateapp','tnotrans','ttdate','a.uname as mname','a.uuser','a.unim','ttbank','ttname','ttnorek','ttamount','a.upaycode','ttapprove','b.uname as rname','ttket'];
-	$replace = ['Transfer ID','Date Processed','Invoice No','Date Transfered','Full Name','Username','NIM','Bank Account','Account Name','Account Number','Amount','Payment Code','Status','PIC','Notes'];
+	$find=['idttrans','ttdaterequest','ttdateapp','tnotrans','ttdate','a.uname as mname','a.uuser','a.unim','ttbank','ttname','ttnorek','ttamount','a.upaycode','ttapprove','b.uname as rname','ttket'];
+	$replace = ['Transfer ID','Date Requested','Date Processed','Invoice No','Date Transfered','Full Name','Username','NIM','Bank Account','Account Name','Account Number','Amount','Payment Code','Status','PIC','Notes'];
 		foreach ($header as $key => $value){
 		$header[$key]  = str_replace($find, $replace, $value);
 		}

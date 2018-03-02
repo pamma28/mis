@@ -42,9 +42,21 @@
 						<div class="col-md-3 col-sm-3">
 							<div class="panel panel-default">
 								<div class="panel-body">
-									<h4 class="text-center"><b>Result</b></h4>
+									<h4 class="text-center"><b> Final Result</b></h4>
 									<hr class="divider"/>
-									<h2 class="text-center"> <span id="finalresult">NA</span></h2>
+									<h2 class="text-center"><b> <span id="finalresult"><?=$finalscore;?></span></b></h2>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-12 col-sm-12 text-center">
+							<div class="panel panel-info">
+								<div class="panel-body">
+								<p class="lead">Congratulations, We welcome you in</p>
+								<h3 class="text-primary"><b>'<?=$t['lvlname'];?>'</b></h3>
+								<p class="lead">Level</p>
 								</div>
 							</div>
 						</div>
@@ -53,12 +65,13 @@
 					<!-- Question Box -->
 					<div class="row">
 						<div class="col-md-12 col-sm-12">
-							
-							<div id="allquestion">
-							<h4 class="text-info"><b>Instruction:</b> Please do the test carefully and precisely.</h4>
+							<div class="text-center"><a class="btn btn-primary btn-sm" role="button" data-toggle="collapse" href="#allquestion" aria-expanded="false" aria-controls="allquestion">Details of Your Mark</a></div> <hr/>
 
-							<div id="question">									
-								
+							<div id="allquestion" class="collapse">
+							
+							<div id="question">
+								<div class="panel panel-info">									
+									<div class="panel-body">
 								       
 								       		<?php 
 								       			$a=1;
@@ -90,10 +103,11 @@
 								       				print('</blockquote></div>');
 								       			}
 
-								       			print('<h3 class="">'.$a.'. '.$v['question'].'</h3>'.form_hidden('quest[]',$v['idq']));
+								       			print('<h5 class="">'.$a.'. '.$v['question'].'</h5>'.form_hidden('quest[]',$v['idq']));
+												print('<div class="row"><div class="col-md-10">'); 
 												$totans = count($v['allanswer']);
 												($totans>0) ? $leftcol = floor(12/$totans) : $leftcol='12';
-												$char = 'A'; 
+												$char = 'A';
 												if (!$v['qmanual']){	
 														print('<div class="row">');
 														foreach ($v['allanswer'] as $kans => $vans) {
@@ -109,14 +123,15 @@
 													print(form_textarea(array('name'=>'ans'.$a,'class'=>'form-control','data-id'=>$a,'rows'=>4,'cols'=>40,'data-q'=>$v['idq'],'value'=>$v['pickedanswer'],'readonly'=>'readonly','disabled'=>'disabled')));
 												}
 												
-													
+												print('</div><div class="col-md-2 text-center"><div class="box box-info><div class="box-body"><b class="text-info">Your Mark</b><p>'.$v['mark'].'</p></div></div></div>');	
 												$a++;
 								            	} 
 								            ?>
 								            <br/> 
 											
 								           
-								      
+								    </div>
+								</div>  
 							</div>
 							
 
