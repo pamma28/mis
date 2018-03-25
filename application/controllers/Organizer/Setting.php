@@ -122,7 +122,7 @@ class Setting extends Org_Controller {
 					foreach ($arrinputs as $k => $v) {
 						//============== save setting mail handler =============
 						if (($this->input->post($v)!='') and ($go =='')){
-						$htmlinput = htmlspecialchars($this->input->post($v,false));
+						$htmlinput = ($v<>'cssmail') ? htmlspecialchars($this->input->post($v,false)) : $this->input->post($v);
 						$hsl = $this->Msetting->updatesetting($v,$htmlinput);
 						($hsl) ? $s++ : $x++;
 						}
@@ -313,8 +313,8 @@ class Setting extends Org_Controller {
 		//========== setting registration form =========
 		$this->table->set_template($tmpl);
 		$this->table->set_heading($header);
-		$columnregist=['formregistterm','formregistsuccess','mailregistsuccess'];
-		$label = ['Term & Condition','Template Success Registration ','Email Content'];
+		$columnregist=['formregistterm','formregistsuccess','mailregistsuccess','mailverify','mailresetaccount'];
+		$label = ['Term & Condition','(Display) Registration Success','(Email) Registration Success','Email Verification','(Email) Reset Account'];
 		$opttmp = $this->Mtmp->getopttmp();
 		$temp3 =array(
 					array($label[0],
@@ -337,6 +337,19 @@ class Setting extends Org_Controller {
 						'required'=>'required',
 						'data-live-search'=>'true',
 						'class'=>'form-control selectpicker'),$opttmp,$this->Msetting->getset('mailregistsuccess'))),
+
+					array($label[3],
+					form_dropdown(array('id'=>'fmailverify',
+						'name'=>'mailverify',
+						'required'=>'required',
+						'data-live-search'=>'true',
+						'class'=>'form-control selectpicker'),$opttmp,$this->Msetting->getset('mailverify'))),
+					array($label[4],
+					form_dropdown(array('id'=>'fmailresetaccount',
+						'name'=>'mailresetaccount',
+						'required'=>'required',
+						'data-live-search'=>'true',
+						'class'=>'form-control selectpicker'),$opttmp,$this->Msetting->getset('mailresetaccount')))
 				);
 		$data['registform']=array('table' => $this->table->generate($temp3),
 									'title' => 'Registration Form',
@@ -448,17 +461,26 @@ class Setting extends Org_Controller {
 									); 
 
 
-		//========== setting Mail header footer =========
+		//========== setting Mail Template =========
 		$this->table->set_template($tmpl);
 		$this->table->set_heading($header);
 
-		$columnmail=['mailheader','mailfooter'];
-		$labelmail = ['Header Email','Footer Email'];
+		$columnmail=['cssmail','mailtemplate','mailfooter'];
+		$labelmail = ['CSS Email','Email Template','Footer Email'];
 		foreach ($columnmail as $k => $v) {
 			$txtmail = htmlspecialchars_decode($this->Msetting->getset($v));		
 			$tempmail[$k] =array($labelmail[$k], 
 						form_hidden($columnmail[$k],
 							$txtmail).'<div id="txt'.$columnmail[$k].'" class="txtmail">'.$txtmail.'</div>');
+			if($v=='cssmail'){
+				$tempmail[$k] =array($labelmail[$k], 
+						form_textarea(array(
+							'name'=>$columnmail[$k],
+							'value' =>htmlspecialchars_decode($this->Msetting->getset($v)),
+							'class'=>'form-control',
+							'style' => 'width:100%;'
+						)));
+			}
 		}
 
 		$data['mail']=array('table' => $this->table->generate($tempmail),

@@ -3,9 +3,16 @@
   <?php if ($this->session->flashdata('rdr')!=null){ ?>
       <div class="alert alert-warning alert-dismissible" role="alert">
         <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <div class="text-center"><b><?=$this->session->flashdata('rdr');?></div></h5>
+        <div class="text-center"><b><?=$this->session->flashdata('rdr');?></div>
       </div>
-      <?php } ?>
+      <?php } 
+      if ($this->session->flashdata("v")!=null){?>
+      <div class="alert alert-success alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><div class="text-center"><b>
+      <?php echo $this->session->flashdata('v').'</b></div></div>';}
+
+      if ($this->session->flashdata("x")!=null){?>
+      <div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><div class="text-center"><b>
+      <?php echo $this->session->flashdata('x').'</b></div></div>';} ?>
 
 	<div class="login-box">
       <div class="login-logo">
@@ -14,9 +21,10 @@
       <div class="login-box-body">
         <p class="login-box-msg">Please sign in</p>
 	 <?php
-      if ((validation_errors()) or ($this->session->flashdata("x")!=null)){?>
+      if ((validation_errors()) or ($this->session->flashdata("xlogin")!=null)){?>
       <div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      <?php echo '<h5><b>Login Failed</b></h5><p><i>'.validation_errors().$this->session->flashdata('x').'</i></p></div>';} ?>
+      <?php echo '<p><b>Login Failed</b></p><p><i>'.validation_errors().$this->session->flashdata('xlogin').'</i></p></div>';} ?>
+      
     <?php echo form_open('Login/auth',array('name'=>'login', 'method'=>'POST'));?>
           <div class="form-group has-feedback">
             <?php echo $inuser;?>

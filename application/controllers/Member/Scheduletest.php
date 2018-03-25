@@ -218,10 +218,14 @@ class Scheduletest extends Mem_Controller {
 	public function myschedule(){
 		
 		//=============== data my schedule ==========
+		$schephase = explode(" - ",$this->Msetting->getset('schedulephase'));
+		$startsche = strtotime(str_replace('/', '-', $schephase[0]));
+		$endsche =  strtotime(str_replace('/', '-', $schephase[1]));
+		$today = strtotime(date("d-m-Y"));
 		$column=['jdwl_tes.idjdwl','jmdate','tname','jdate','jsesi','jroom'];
 		$header = $this->returncolomn($column);
 		unset($header[0]);
-		$header[]='Menu';
+		($today<$endsche) ? $header[]='Menu' : null;
 		$tmpl = array ( 'table_open'  => '<table class="table table-hover" id="mysche">',
 						'heading_cell_start'    => '<th class="col-md-2">');
 		$this->table->set_template($tmpl);
@@ -235,7 +239,8 @@ class Scheduletest extends Mem_Controller {
 				//manipulation menu
 				$enc = $value['idjdwl'];
 				unset($choosen[$key]['idjdwl']);
-				$choosen[$key]['menu']= '<div class="btn-group"><a href="#" data-href="'.base_url('Member/Scheduletest/deletesche?id=').$enc.'" alt="Delete Data" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirm-delete" title="Delete"><i class="fa fa-trash"></i></a></div>';
+				if ($today<$endsche) {
+				$choosen[$key]['menu']= '<div class="btn-group"><a href="#" data-href="'.base_url('Member/Scheduletest/deletesche?id=').$enc.'" alt="Delete Data" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirm-delete" title="Delete"><i class="fa fa-trash"></i></a></div>';}
 				}
 		$data['mysche'] = $this->table->generate($choosen);
 		

@@ -59,12 +59,21 @@
 
 
 												<div class="form-group">
-													<h5 class="text-center"><b class="label label-primary "><i>Your NIM will be your Username</i></b></h5>
+													<h5 class="text-center"><b class="label label-warning "><i>Your Username will be permanently used</i></b></h5>
 													<?=$inuser;?>
-													<p class="text-danger hidden"><b><i>NIM has been registered</i></b></p>
+													<p class="text-danger hidden"><b><i>Username has been registered</i></b></p>
 												</div>
-												<div class="form-group">
-															<?=$innama;?>
+												<div class="row">
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-group">
+																<?=$innama;?>
+														</div>
+													</div>
+													<div class="col-xs-6 col-sm-6 col-md-6">
+														<div class="form-group">
+																<?=$innim;?>
+														</div>
+													</div>
 												</div>
 												<div class="row">
 													<div class="col-xs-6 col-sm-6 col-md-6">

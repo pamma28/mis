@@ -9,11 +9,11 @@ class Register extends CI_Controller {
  
         $this->load->database();
  
-		$this->load->library(array('form_validation'));
+		$this->load->library(array('form_validation','Convertcode','Encryption','gmail'));
 		
 		$this->load->helper(array('string','form','dpdf','file'));
 		
-		$this->load->model(array('Mpds','Msetting','Mlogin'));
+		$this->load->model(array('Mpds','Msetting','Mlogin','Mtmp'));
 		
 		
     }
@@ -24,13 +24,23 @@ class Register extends CI_Controller {
 		// ============== Form pds ============
 		$fuser = array('name'=>'fuser',
 						'id'=>'user',
-						'title'=>'Your NIM',
-						'placeholder'=>'NIM',
+						'title'=>'Your Username',
+						'placeholder'=>'Username',
 						'required'=>'required',
 						'value'=>set_value('fuser'),
 						'class'=>'form-control input-lg',
-						'maxlength'=>'12');
+						'maxlength'=>'20');
 		$data['inuser'] = form_input($fuser);
+
+		$fnim = array('name'=>'fnim',
+						'id'=>'nim',
+						'title'=>'Your NIM',
+						'placeholder'=>'NIM',
+						'required'=>'required',
+						'value'=>set_value('fnim'),
+						'class'=>'form-control',
+						'maxlength'=>'12');
+		$data['innim'] = form_input($fnim);
 
 		$fname = array('name'=>'fname',
 						'id'=>'nama',
@@ -220,15 +230,16 @@ class Register extends CI_Controller {
 		
 		if(($this->session->userdata('captcha')==$this->input->post('fcaptcha'))) 
 		{
-			($this->input->post('fbd')!=null) ? $bdate = $this->input->post('fbd') : $bdate = date('Y-m-d H:i:s');
+			($this->input->post('fbd')!=null) ? $bdate = $this->input->post('fbd') : $bdate = '2000-12-12 00:00:00';
 			$fuser = $this->input->post('fuser');
+			$fnim = $this->input->post('fnim');
 			$qpds = array (
 				'uuser' => $fuser,
-				'upass' => md5($upaycode),
+				'upass' => md5($fnim),
 				'idfac' => $this->input->post('ffac'),
 				'ucreated' => date('Y-m-d h:i:s'),
 				'uname' => $this->input->post('fname'),
-				'unim' => $fuser,
+				'unim' => $fnim,
 				'ubbm' => $this->input->post('fktp'),
 				'ubplace' => $this->input->post('fbplc'),
 				'ubdate' => $bdate,
@@ -238,8 +249,11 @@ class Register extends CI_Controller {
 				'uaddhome' => $this->input->post('faddrhome'),
 				'idjk' => $this->input->post('fjk'),
 				//====== creating hash code email confirmation =========
-				'uvalidcode'=>md5($fuser.$bdate.$this->input->post('fname')),
-				'upaycode' => $upaycode
+				'uvalidcode'=>md5(date("Y-m-d H:i:s").$fuser.$bdate.$fnim.$this->input->post('fname')),
+				'upaycode' => $upaycode,
+				'uallow' =>'1',
+				'idrole' => '3',
+				'uvalidated'=>'0'
 				);
 		
 			$sukses = $this->Mpds->addpds($qpds);
@@ -250,21 +264,23 @@ class Register extends CI_Controller {
 				
 				//============ push notif =========
 
-				$this->notification->pushmynotif(
+				$this->notifications->pushmynotif(
 					array(
 						'idnotif'=>$this->Msetting->getset('notifregistsuccess'),
-						'uuser' => $fuser
+						'uuser' => $fuser,
+						'nlink'=>'#'
 						)
 				);
 
-				$this->notification->pushNotifToOrg(
+				$this->notifications->pushNotifToOrg(
 					array(
 						'idnotif'=>$this->Msetting->getset('notifnewsignup'),
-						'uuser' => $fuser
+						'uuser' => $fuser,
+						'nlink' => base_url('Organizer/PDS')
 						)
 				);
 
-				redirect('Register/registrationsuccess');
+				$this->registrationsuccess();
 			}
 		} else{
 			$this->session->set_flashdata('failedregist','Your captcha is incorrect');
@@ -278,14 +294,15 @@ class Register extends CI_Controller {
 		$this->load->model('Mtmp');
 		$formdata = $this->session->userdata('successregist');
 		$period = $this->Msetting->getset('period');
-		$idtmp = $this->Msetting->getset('mailregistsuccess');
-		$rawtext = htmlspecialchars_decode($this->Mtmp->gettmpdata($idtmp)->tmpcontent); 
-
+		$idtmp = htmlspecialchars_decode($this->Msetting->getset('mailtemplate'));
+		$tmpcontent = htmlspecialchars_decode($this->Mtmp->gettmpdata($this->Msetting->getset('mailverify'))->tmpcontent);
+		$rawtext = str_replace("{content_email}", $tmpcontent, $idtmp);
+		
 		// ============= email handler ===============
-		$to = 'pamma.cyber@gmail.com';//$formdata['uemail'];
+		$to = $formdata['uemail'];
 		$ccmail=null;
 		$bcfrom = "SEF Membership";
-		$sub = 'Regular Class '.$period.' - Registration Success';
+		$sub = 'Regular Class '.$period.' - Email Verification';
 		$attfile = null;
 		
 		if ((null!=$to) and (null!=$sub)){
@@ -304,12 +321,82 @@ class Register extends CI_Controller {
 		$data['title'] = 'Registration Success';
 		$data['topbar'] = $this->load->view('home/topbar', NULL, TRUE);
 		$data['sidebar'] = $this->load->view('home/sidebar', NULL, TRUE);
-		$data['content'] = $this->load->view('home/form/success', NULL, TRUE);
+		$data['content'] = '<section class="content-header"><h1>Registration Success</h1></section><section class="content">'.$this->convertcode->decodemailmsg(htmlspecialchars_decode($this->Mtmp->gettmpdata($this->Msetting->getset('formregistsuccess'))->tmpcontent),$to).'</section>';
 		$this->load->view ('template/main', $data);
 	
 	
 	}
 	
+	public function confirmregist($validcode=null){
+		if ($validcode != ''){
+			$iduser = $this->Mlogin->getuserformvalidcode($validcode);
+			if(!empty($iduser)){
+				$user = $iduser[0]->uuser;
+				$dtuser = $this->Mlogin->detailacc(array('unim','uemail','uvalidated'),$user)[0];
+
+				if ($dtuser['uvalidated']<>'1'){
+					// email handler
+					$period = $this->Msetting->getset('period');
+					$idtmp = htmlspecialchars_decode($this->Msetting->getset('mailtemplate'));
+					$tmpcontent = htmlspecialchars_decode($this->Mtmp->gettmpdata($this->Msetting->getset('mailregistsuccess'))->tmpcontent);
+					$rawtext = str_replace("{content_email}", $tmpcontent, $idtmp);
+					$to = 'pamma.cyber@gmail.com';//$dtuser['uemail'];
+					$ccmail=null;
+					$bcfrom = "SEF Membership";
+					$sub = 'Regular Class '.$period.' - Registration Success';
+					$attfile = null;
+				
+					if ((null!=$to) and (null!=$sub)){
+						
+						//====== decode message ============
+						$decode = $this->convertcode->decodemailmsg($rawtext,$to);	
+						
+						//================= gmail send ===========
+						$ret = $this->gmail->sendmail($to,$ccmail,$sub,$bcfrom,$decode,$attfile);
+					}		
+
+					// data reset password
+					$rstcode = md5($this->encryption->encrypt($user.$dtuser['unim'].$dtuser['uemail'].date('Y-m-d H:i:s')));
+					$this->Mlogin->updateacc(array('uvalidated'=>'1','urstcode'=>$rstcode,'ursttime'=>date('Y-m-d H:i:s'),'upass'=>md5($dtuser['unim'])),$user);
+					$data['rstcode']=$rstcode;
+					$data['nim'] = $dtuser['unim'];
+					$data['email'] = $dtuser['uemail'];
+					
+					// data view
+					$this->session->set_flashdata('v','Email Validation Success');
+					$data['title'] = 'Email Validation Success';
+					$data['content'] = $this->load->view('home/confirmemail/emailvalid', $data, TRUE);
+				} else {
+					// data view
+					$this->session->set_flashdata('x','Email has been validated');
+					$data['title'] = 'Email Validation Failed';
+					$data['content'] = $this->load->view('home/confirmemail/emailhasvalidated', NULL, TRUE);
+				}
+			} else {
+				// data view
+				$this->session->set_flashdata('x','Email Validation Failed, No Such Account Related to Your Validation Code');
+				$data['title'] = 'Email Validation Failed';
+				$data['content'] = $this->load->view('home/confirmemail/emailinvalid', NULL, TRUE);
+			}
+		} else {
+
+			// data view
+			$this->session->set_flashdata('x','Email Validation Failed');
+			$data['title'] = 'Email Validation Failed';
+			$data['content'] = $this->load->view('home/confirmemail/emailinvalid', NULL, TRUE);
+		}
+		//============= view handler ==================
+		$data['topbar'] = $this->load->view('home/topbar', NULL, TRUE);
+		$data['sidebar'] = $this->load->view('home/sidebar', NULL, TRUE);
+		$this->load->view ('template/main', $data);
+	}
+	
+	
+
+	public function revokeregist(){
+		$this->load->view('home/failedregist');
+	}
+
 	public function recaptcha(){
 		$this->load->library('captcha');
 		$newcaptcha = $this->captcha->createcaptcha();
@@ -348,8 +435,10 @@ class Register extends CI_Controller {
 		//$d= print_pdf($html,'',false);
 		//write_file($filename,$d);
 	}
+
 	
 	
+
 	public function sms(){
 		
 		$sender = $this->input->get('sender');
@@ -382,5 +471,24 @@ class Register extends CI_Controller {
 		//($r) ? print('[RC SEF] Thank you for your registration, check your email ('.$arrdetail[3].') for more details.'):print('[RC SEF] We cannot process your registration due to duplication of email or NIM');
 		}
 		
+	}
+
+	public function haha(){
+		$data['title'] = 'Email Validation Success';
+		$data['content'] = $this->load->view('home/email/emailvalid',null,true);
+		$data['topbar'] = $this->load->view('home/topbar', NULL, TRUE);
+		$data['sidebar'] = $this->load->view('home/sidebar', NULL, TRUE);
+		
+		$this->load->view ('template/main', $data);
+	}
+
+	public function hahaha(){
+		$this->load->library('Convertcode');
+		$dt = $this->load->view('home/email/newtemplate',null,true);
+		$r = $this->convertcode->decodemailmsg($dt,'pamma.cyber@gmail.com');
+		print($r);
+	}
+	public function hahaha2(){
+		$this->load->view('home/email/registsuccess');
 	}
 }

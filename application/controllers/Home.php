@@ -9,7 +9,7 @@ class Home extends CI_Controller {
  
         $this->load->database();
  
-		$this->load->library(array('form_validation'));
+		$this->load->library(array('form_validation','table'));
 		
 		$this->load->model('Msetting');
     }
@@ -62,7 +62,7 @@ class Home extends CI_Controller {
 		//============= populate agendas ========
 		$totagn = $this->Msetting->getset('renderagn');
 		$header=['<i class="fa fa-info-circle"></i> Agenda','<i class="fa fa-calendar"></i> Date','<i class="fa fa-clock-o"></i> Time','<i class="fa fa-building"></i> Place','<i class="fa fa-sticky-note"></i> Details'];
-		$tmpl = array ( 'table_open'  => '<table class="table table-hover table-striped table-responsive">' );
+		$tmpl = array ( 'table_open'  => '<table class="table table-hover table-striped table-responsive">');
 		$this->table->set_template($tmpl);
 		$this->table->set_heading($header);
 

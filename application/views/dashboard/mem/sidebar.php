@@ -6,7 +6,7 @@
             <div class="pull-left info">
               <p><?php echo $this->session->userdata('name');?></p>
 
-              <a href="#"><i class="fa fa-gears text-info"> <?=lang('account');?></i></a>
+              <a href="<?=base_url('Member/Setting');?>"><i class="fa fa-gears text-info"> <?=lang('account');?></i></a>
             </div>
           </div>
           <!-- sidebar menu: : style can be found in sidebar.less -->

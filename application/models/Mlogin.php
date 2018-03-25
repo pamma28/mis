@@ -10,7 +10,6 @@ class Mlogin extends CI_Model{
         $this->db->from('user');
         $this->db->where("(uemail = '$user' OR uuser = '$user')");
         $this->db->where('upass', $pass);
-        $this->db->where('uallow', '1');
         $q = $this->db->get();
 		$hasil = $q->num_rows();
 		if ($hasil > 0){
@@ -21,6 +20,35 @@ class Mlogin extends CI_Model{
 		}
 	}
 	
+	public function checkexist($user){
+		$this->db->select('uuser');
+        $this->db->from('user');
+        $this->db->where("(uemail = '$user' OR uuser = '$user')");
+        $q = $this->db->get()->num_rows();
+        $r = ($q>0) ? true : false;
+        return $r;
+	}
+
+	public function checkallow($user){
+		$this->db->select('uuser');
+        $this->db->from('user');
+        $this->db->where("(uemail = '$user' OR uuser = '$user')");
+        $this->db->where('uallow', 1);
+        $q = $this->db->get()->num_rows();
+        $r = ($q>0) ? true : false;
+        return $r;
+	}
+
+	public function checkvalid($user){
+		$this->db->select('uuser');
+        $this->db->from('user');
+        $this->db->where("(uemail = '$user' OR uuser = '$user')");
+        $this->db->where('uvalidated', 1);
+        $q = $this->db->get()->num_rows();
+        $r = ($q>0) ? true : false;
+        return $r;
+	}
+
 	public function updateuserlog($user = null){
 		$duser = array (
 				'ulastlog'=>Date('Y-m-d H:i:s'),
@@ -203,6 +231,14 @@ class Mlogin extends CI_Model{
 	return $this->db->get('user')->row();
 	}
 	
+	public function getdetailbyrstcode($col,$code){
+	$this->db->select($col);
+	$this->db->join('level','user.idlevel=level.idlevel','left');
+	$this->db->join('fac','user.idfac=fac.idfac','left');
+	$this->db->where('urstcode',$code);
+	return $this->db->get('user')->result_array();
+	}
+
 	public function updateacc($data=null,$id){
 		$this->db->where('uuser',$id);
 		return $this->db->update('user',$data);
@@ -282,5 +318,11 @@ class Mlogin extends CI_Model{
 		$this->db->where('idrole','2');
 		$this->db->where('uallow','1');
 		return $this->db->get('user')->result_array();
+	}
+
+	public function getuserformvalidcode($code){
+		$this->db->select('uuser');
+		$this->db->where('uvalidcode',$code);
+		return $this->db->get('user')->result();
 	}
 }

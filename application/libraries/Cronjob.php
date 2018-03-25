@@ -1,12 +1,11 @@
 <?php 
 if (!defined('BASEPATH')) exit('No direct script access allowed');  
  
-require_once APPPATH."/third_party/cronjob/vendor/autoload.php";
+require_once APPPATH."/third_party/atrigger/ATrigger.php";
 
-use GO\Scheduler;
-$scheduler = new Scheduler();
-
-class Cronjob extends Scheduler{
+//ATrigger::init("YOUR_APIKey","YOUR_APISecret");
+ATrigger::init("5048410639605220993","WUz5Hc7fboRe36XlE57nCs2aBdTJ26");
+class Cronjob {
 	public function __construct() {
         parent::__construct();
 		
@@ -19,14 +18,5 @@ class Cronjob extends Scheduler{
     }
 
 }
-
-//$scheduler->php(FCPATH.'try.php')->everyMinute();
-$scheduler->call(function () {
-    echo "Hello";
-
-    return " world!";
-})->everyMinute()->output('my_file.log');
-
-$scheduler->run();	
 
 ?>
