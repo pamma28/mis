@@ -41,35 +41,52 @@
   
   $('#Email').bind('keyup change', function() {
 	var email = $('#Email').val();
+    var eid = $(this).attr('id');
     $.post('<?php echo base_url('Organizer/Memberaccount/checkemail'); ?>', {email: email}, function(d) {
-                        if (d == 1)
-                        {
-                            $('#valsuccess').css('display', 'none');
-                            $('#valfailed').css('display', 'block');
-                        }
-                        else
-                        {
-                            $('#valfailed').css('display', 'none');
-                            $('#valsuccess').css('display', 'block');
-                        }
-                    });
+        if (d == 1)
+            {
+                $('#'+eid).parent().find('.text-danger').removeClass('hidden');
+                $('#btnsubmit').attr('disabled', 'disabled');
+            }
+            else
+            {
+                $('#'+eid).parent().find('.text-danger').addClass('hidden');
+                $('#btnsubmit').removeAttr('disabled');
+            }
+        });
 	});
 	
+    $('#nohp').bind('keyup change', function() {
+    var hp = $(this).val().replace("_","");
+    var eid = $(this).attr('id');
+    $.post('<?php echo base_url('Register/checkphone'); ?>', {nohp: hp}, function(d) {
+        if (d == 1)
+            {
+                $('#'+eid).parent().find('.text-danger').removeClass('hidden');
+                $('#btnsubmit').attr('disabled', 'disabled');
+            }
+            else
+            {
+                $('#'+eid).parent().find('.text-danger').addClass('hidden');
+                $('#btnsubmit').removeAttr('disabled');
+            }
+        });
+    });
+
 	$('#Username').bind('keyup change', function() {
 	var user = $('#Username').val();
+    var eid = $(this).attr('id');
     $.post('<?php echo base_url('Organizer/Memberaccount/checkuser'); ?>', {user: user}, function(d) {
-                        if (d == 1)
-                        {
-                            $('#usuccess').css('display', 'none');
-                            $('#ufailed').css('display', 'block');
-							$('#submit').attr('disabled', 'disabled');
-                        }
-                        else
-                        {
-                            $('#ufailed').css('display', 'none');
-                            $('#usuccess').css('display', 'block');
-							$('#submit').removeAttr('disabled');
-                        }
-                    });
+        if (d == 1)
+            {
+                $('#'+eid).parent().find('.text-danger').removeClass('hidden');
+                $('#btnsubmit').attr('disabled', 'disabled');
+            }
+            else
+            {
+                $('#'+eid).parent().find('.text-danger').addClass('hidden');
+                $('#btnsubmit').removeAttr('disabled');
+            }
+        });
 	});
 </script>

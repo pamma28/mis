@@ -15,6 +15,9 @@
 </div>
 <?php echo form_close();?>
 <script>
+	$(document).ready(function(){
+		$("#return").inputmask('08[99999999999]');
+	});
   // toogle chechkbox allow data
   $(function() {
     $('#idallow').bootstrapToggle({
@@ -36,16 +39,33 @@
                         {
                             $('#valsuccess').css('display', 'none');
                             $('#valfailed').css('display', 'block');
-                            $('#submit').attr('disabled', 'disabled');
+                            $('#btnedit').attr('disabled', 'disabled');
 							
                         } 
 						else if(d == 0)
                         {
                             $('#valfailed').css('display', 'none');
                             $('#valsuccess').css('display', 'block');
-							$('#submit').removeAttr('disabled');
+							$('#btnedit').removeAttr('disabled');
                         }
                     });
 	});
+
+  $('#return').bind('keyup change', function() {
+    var hp = $(this).val().replace("_","");
+    var eid = $(this).attr('id');
+    $.post('<?php echo base_url('Register/checkphone'); ?>', {nohp: hp}, function(d) {
+        if (d == 1)
+            {
+                $('#'+eid).parent().find('.text-danger').removeClass('hidden');
+                $('#btnedit').attr('disabled', 'disabled');
+            }
+            else
+            {
+                $('#'+eid).parent().find('.text-danger').addClass('hidden');
+                $('#btnedit').removeAttr('disabled');
+            }
+        });
+    });
 	
 </script>

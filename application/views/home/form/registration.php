@@ -6,6 +6,7 @@
 </section>
 
 <section class="content">
+	<?php if($registphase) {?>
 	<div class="box box-primary">
 		<div class="box-body">
 		<h3 class="text-center">Registration Form <?=$period;?></h3>
@@ -93,6 +94,7 @@
 													<div class="col-xs-6 col-sm-6 col-md-6">
 														<div class="form-group">
 															<?=$inhp;?>
+															<p class="text-danger hidden"><b><i>Phone Number has been registered</i></b></p>
 														</div>
 													</div>
 													<div class="col-xs-6 col-sm-6 col-md-6">
@@ -294,7 +296,25 @@
 								}
 							});
 			});
-			
+		
+		$('#nohp').bind('keyup change', function(e) {
+			var hp = $(this).val().replace('_','');
+			var eid = $(this).attr('id');
+			$.post('<?php echo base_url('Register/checkphone'); ?>', {nohp: hp}, function(d) {
+								if (d == 1)
+								{
+									$('#'+eid).parent().find('.text-danger').removeClass('hidden');
+									$('#btncontinue').attr('disabled', 'disabled').button('refresh');
+								}
+								else
+								{
+									$('#'+eid).parent().find('.text-danger').addClass('hidden');
+									$('#btncontinue').removeAttr('disabled').button('refresh');
+								}
+							});
+			});
+				
+		
 			$('#user').bind('keyup change', function(e) {
 			var user = $(this).val();
 			var eid = $(this).attr('id');
@@ -315,5 +335,14 @@
 
 			
 		
-	</script>					
+	</script>
+	<?php } else { ?>
+		<div class="box box-primary">
+		<div class="box box-body text-center ">
+		<h2><span class="fa fa-exclamation-triangle text-danger fa-2x"></span></h2>	
+		<h3 class="text-danger"><span class="bg-danger">Today is not registration phase. </span></h3>
+		<h3><span class="bg-blue">Please register on <?=$registdate;?></span></h3>
+		</div>
+		</div>
+	<?php }?>					
 </section>

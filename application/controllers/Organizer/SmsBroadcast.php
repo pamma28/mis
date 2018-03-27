@@ -325,12 +325,11 @@ class SmsBroadcast extends Org_Controller {
 	
 	public function sendsms(){
 	$to = $this->input->post('flistto');
-	$arrusersto = explode(',',$this->input->post('fusersto'));
-	$userep = $this->input->post('userep');		
+	$arrusersto = explode(',',$this->input->post('fusersto'));	
 	
 	$title = $this->input->post('msub');
 	$redi = $this->input->post('fredi');
-	$this->load->library('smssender');
+	$this->load->library('sms');
 	 if ((null!=$to) and (null!=$title)){
 		//specify broadcast type
 		$target='';$year='';$lvl='';$stat='';
@@ -362,7 +361,7 @@ class SmsBroadcast extends Org_Controller {
 		
 		$smscode = $this->input->post('mtext');
 		($this->input->post('malias')!='') ? $smscode = strtoupper($this->input->post('malias')).'-'.$this->input->post('mtext'): null;
-		($this->input->post('fusefoo')=='1') ? $smscode .= "~".$this->Msetting->getset('smsfooter') : null;
+		($this->input->post('fusefoo')=='1') ? $smscode .= "\n".$this->Msetting->getset('smsfooter') : null;
 		
 		$arrto = explode(',',$to);
 		$tot = 0;
@@ -372,22 +371,14 @@ class SmsBroadcast extends Org_Controller {
 		foreach($arrto as $k=>$v){
 			$decode = $this->convertcode->decodesmsmsg($smscode,$v);	
 			//================= send sms ===========
-			$ret = $this->smssender->sendsms($v,$decode,$userep);
+			$ret = $this->sms->sendsms($v,$decode);
+			
 			($ret) ? $tot++:$failed[]=$v;
 
 			//======= set notif new sms===========
 			($ret) ? $this->notifications->pushnotif(array('idnotif'=>$idnotifnewsms,'uuser'=>$this->session->userdata('user'),'use_uuser'=>$arrusersto[$k],'nlink'=>null)):null;
 		}
 		
-		if ($userep) {
-				$repstat = 'Yes';
-				$lastcreditrep = $this->Msetting->getset('saldosmsbc') - (40*$tot);
-				$lastcreditnorep = $this->Msetting->getset('saldosmsnotif');
-			} else {
-				$lastcreditrep = $this->Msetting->getset('saldosmsbc');
-				$lastcreditnorep = $this->Msetting->getset('saldosmsnotif') - (20*$tot);
-				$repstat= 'No';
-			}
 		
 		($this->input->post('fusefoo')!='') ? $usefoo = true : $usefoo = false; 
 		
@@ -400,7 +391,7 @@ class SmsBroadcast extends Org_Controller {
 				'bctitle' => $title,
 				'bccontent' => $this->input->post('mtext'),
 				'bcfooter' => $usefoo ,
-				'bcket' => 'Type: '.$bctype.'; Last Credit (Reply): '.$lastcreditrep.'; Last Credit (No Reply): '.$lastcreditnorep.'; Role: '.$target.'; Period: '.$year.'; Level: '.$lvl.'; Payment: '.$stat.'; Reply: '.$repstat.'; Status: Success '.$tot.', Failed '.count($failed).'; Failed List: '.implode($failed,','),
+				'bcket' => 'Type: '.$bctype.'; Role: '.$target.'; Period: '.$year.'; Level: '.$lvl.'; Payment: '.$stat.'; Status: Success '.$tot.', Failed '.count($failed).'; Failed List: '.implode($failed,','),
 				'bctype' => 'SMS'
 				);
 		$r = $this->Mbc->savebc($fdata);
@@ -486,7 +477,7 @@ class SmsBroadcast extends Org_Controller {
 					$val = preg_replace("/[^0-9]/", "", $v);
 					$decode = $this->convertcode->decodesmsmsg($smscode,$val);	
 					//================= send sms ===========
-					$ret = $this->smssender->sendsms($val,$decode,$userep);
+					//$ret = $this->sms->sendsms($val,$decode,$userep);
 					($ret) ? $tot++ : $failed[]=$v;
 					}
 					
@@ -805,21 +796,23 @@ class SmsBroadcast extends Org_Controller {
 			$valsub = $arrfwd[0]['bctitle'];
 			$valcode = $arrfwd[0]['bccontent'];
 			$valusefoo = $arrfwd[0]['bcfooter'];
+			$valpretext = $arrfwd[0]['bcfrom'];
 			$arrket = explode(';',$arrfwd[0]['bcket']);
 			$valtype1 = false;
 			$valtype2 = false;
 			foreach ($arrket as $k=>$v){
 				$arrkey = explode(':',$v);
 				if (strpos($arrkey[0],'Type')!== false) {
-				(strpos($arrkey[1],' Single Mail')!== false) ? $valtype1 = true :$valtype2 = true;
+				(strpos($arrkey[1],' Single SMS')!== false) ? $valtype1 = true :$valtype2 = true;
 				}
 			}
 		} else{
-			(isset($tempfilter['msub']) ? $valsub = $tempfilter['msub'] : $valsub=null);
-			(isset($tempfilter['malias']) ? $valalias = $tempfilter['malias'] : $valalias=null);
-			(isset($tempfilter['fcode']) ? $valcode = $tempfilter['fcode'] : $valcode=null);
+			$valsub=null;
+			$valalias=null;
+			$valcode=null;
 			$valtype1 = false;
 			$valtype2 = false;
+			$valpretext = null;
 			
 		}
 		
@@ -845,7 +838,7 @@ class SmsBroadcast extends Org_Controller {
 						'required'=>'required',
 						'size'=>'100',
 						'style'=>'height:auto;min-height:30px;width:100%;',
-						'value'=>isset($tempfilter['mto']) ? $tempfilter['mto'] : null,
+						'value'=>null,
 						'class'=>'form-control'));
 		
 		$adv['Title'] = form_input(
@@ -864,7 +857,7 @@ class SmsBroadcast extends Org_Controller {
 						'placeholder'=>'Placed Before Content',
 						'size'=>'112',
 						'style'=>'height:auto;min-height:30px;width:100%;',
-						'value'=>'',
+						'value'=>$valpretext,
 						'class'=>'form-control'));
 					
 		$data['editor'] = form_textarea(
@@ -875,7 +868,7 @@ class SmsBroadcast extends Org_Controller {
 						'cols'=>'',
 						'rows'=>'10',
 						'required'=>'required',
-						'value'=>isset($tempfilter['mtext']) ? $tempfilter['mtext'] : $valcode,
+						'value'=>$valcode,
 						'class'=>'form-control')
 						);
 		$data['usereply'] = form_checkbox(
@@ -934,14 +927,11 @@ class SmsBroadcast extends Org_Controller {
 							);
 		$data['fusersto'] = form_hidden('fusersto','');
 		// setting account and programming
-		$accuser = $this->Msetting->getset('usersmsnotif');
-		$accpass = $this->Msetting->getset('passsmsnotif');
-		$accno = $this->Msetting->getset('nosmsnotif');
-		$urlrep = $this->Msetting->getset('httpsmsbc');
-		$urlnorep = $this->Msetting->getset('httpsmsnotif');
-		$funcrep = $this->Msetting->getset('apismsbc');
-		$funcnorep = $this->Msetting->getset('apismsnotif');
-		$funccredit = $this->Msetting->getset('ceksaldosms');
+		$accuser = $this->Msetting->getset('smsuserkey');
+		$accpass = $this->Msetting->getset('smspasskey');
+		$urlrep = $this->Msetting->getset('smsurl');
+		$funcrep = $this->Msetting->getset('smsapi');
+		$funccredit = $this->Msetting->getset('smsapibalance');
 			
 		$data['sender'] = $accuser;
 		$data['accuser']= form_input(array(
@@ -950,12 +940,7 @@ class SmsBroadcast extends Org_Controller {
 						'class'=>'form-control',
 						'value'=>$accuser)
 						);
-		$data['accno']= form_input(array(
-						'name'=>'faccno',
-						'id'=>'accno',
-						'class'=>'form-control',
-						'value'=>$accno)
-						);
+		
 		$data['accpass']=form_password(array(
 						'name'=>'faccpass',
 						'id'=>'accpass',
@@ -968,24 +953,14 @@ class SmsBroadcast extends Org_Controller {
 						'class'=>'form-control',
 						'value'=>$urlrep)
 						);
-		$data['urlnotif']= form_input(array(
-						'name'=>'furlnotif',
-						'id'=>'urlnotif',
-						'class'=>'form-control',
-						'value'=>$urlnorep)
-						);
-		$data['funcbc']= form_input(array(
+		
+		$data['funcnotif']= form_input(array(
 						'name'=>'fapibc',
 						'id'=>'apibc',
 						'class'=>'form-control',
 						'value'=>$funcrep)
 						);
-		$data['funcnotif']= form_input(array(
-						'name'=>'fapinotif',
-						'id'=>'apinotif',
-						'class'=>'form-control',
-						'value'=>$funcnorep)
-						);
+		
 		$data['funcsaldo']= form_input(array(
 						'name'=>'fapisaldo',
 						'id'=>'apisaldo',
@@ -1019,8 +994,8 @@ class SmsBroadcast extends Org_Controller {
 		$data['metadata'] = $dtfilter;
 		
 		//=============== some setting var ========
-		$data['repcredit'] = $this->Msetting->getset('saldosmsbc');
-		$data['norepcredit'] = $this->Msetting->getset('saldosmsnotif');
+		$data['smscredit'] = $this->Msetting->getset('smscredit');
+		$data['expdate'] = $this->Msetting->getset('smsexpiration');
 
 		//=============== Template ============
 		$data['jsFiles'] = array(
@@ -1165,19 +1140,21 @@ class SmsBroadcast extends Org_Controller {
 	}
 	
 	public function checkcredit(){
-		$this->load->library('smssender');
-		$ret = $this->smssender->ceksaldo();
-		echo $ret;
-		return $ret;
+		$this->load->library('sms');
+		$ret = $this->sms->checkcredit();
+		$dt = json_decode($ret);
+		print(json_encode($dt->message));
+		return $dt;
 	}
 	
 	public function updatecredit(){
-		$this->load->library('smssender');
-		$temp = json_decode($this->smssender->ceksaldo());
-		if ($temp[0]!="Error") 
+		$this->load->library('sms');
+		$temp = json_decode($this->sms->checkcredit());
+		
+		if (isset($temp->message->value)) 
 		{	$fsetting = array(
-					'saldosmsnotif'=>$temp[0],
-					'saldosmsbc'=>$temp[1]
+					'smscredit'=>$temp->message->value,
+					'smsexpiration'=>$temp->message->text
 					);
 			$r = $this->Msetting->savesetting($fsetting);
 		} else {
@@ -1939,6 +1916,27 @@ class SmsBroadcast extends Org_Controller {
 		echo json_encode($data);
 	}
 	
+	public function savesetting(){
+		if(null!= $this->input->post('faccuser')){
+			$user = $this->input->post('faccuser');
+			$pass = $this->input->post('faccpass');
+			$urlsms = $this->input->post('furlbc');
+			$apisms = $this->input->post('fapibc');
+			$apisaldo = $this->input->post('fapisaldo');
+		$dtset=array(
+				'smsuserkey'=>$user,
+				'smspasskey'=>$pass,
+				'smsurl'=>$urlsms,
+				'smsapi'=>$apisms,
+				'smsapibalance'=>$apisaldo
+				);
+		$this->Msetting->savesetting($dtset);
+		$this->session->set_flashdata('v',"Update Setting SMS Broadcast Success.");
+		} else{
+		$this->session->set_flashdata('x',"Update Setting SMS Broadcast Failed.");
+		}
+		redirect(base_url('Organizer/Smsbroadcast/composesms'));
+	}
 	
 	public function returncolomn($header) {
 	$find=['bcdate','bctitle','bcrecipient','bcmailfrom','bccontent','bcket','uname','bcfrom','tmpdate','tmpname','tmpcontent'];

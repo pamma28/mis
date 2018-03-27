@@ -813,14 +813,16 @@ class Setting extends Org_Controller {
 		}
 
 
+
+
 		//========== setting account =========
 		$header = array('Setting','Value');
 		$tmpl = array ( 'table_open'  => '<table class="table table-hover">' );
 		$this->table->set_template($tmpl);
 		$this->table->set_heading($header);
 
-		$columnacc=['uname','uemail','uhp','ubbm'];
-		$labelacc = ['Full Name','Email','Phone Number','Social Media'];
+		$columnacc=['ufoto','uname','uemail','uhp','ubbm'];
+		$labelacc = ['Photo','Full Name','Email','Phone Number','Social Media'];
 		$arracc = $this->Mlogin->detaillogin($columnacc,$this->session->userdata('user'))[0];
 		foreach ($columnacc as $k => $v) {
 
@@ -834,6 +836,17 @@ class Setting extends Org_Controller {
 			if($columnacc[$k]=="uemail"){
 				$tempacc[$k][1] .= '<p class="text-danger hidden">Email Is Taken</p><span id="emailnow" class="hidden">'.$arracc[$v].'</span>';
 			} 
+			else if($columnacc[$k]=="ufoto"){
+				$tempacc[$k][1] = '<div class="thumbnail text-center">
+							        <img src="'.base_url("upload/foto/".$arracc[$v]).'" alt="" class="img-responsive imgava" alt="user photo">
+							        <div class="caption">
+							        	<button type="button" class="btn" data-toggle="modal" data-target="#fotoModal">
+							            <i class="fa fa-cloud-upload fa-2x"></i> <br/>
+							            <small><b>Upload</b></small>
+							            </button>
+							        </div>
+							    </div>';
+			}  
 					
 		}
 
@@ -847,25 +860,30 @@ class Setting extends Org_Controller {
 		
 
 		//========== setting photo =========
-		$header = array('Setting','Value');
-		$tmpl = array ( 'table_open'  => '<table class="table table-hover">' );
+		
+		$tmpl = array ( 'table_open'  => '<table class="table table-hover text-center">',
+						'row_open' );
 		$this->table->set_template($tmpl);
-		$this->table->set_heading($header);
-
+		
 		$columnpho=['ufoto'];
-		$labelpho = ['Profil Photo'];
 		$arrpho = $this->Mlogin->detaillogin($columnpho,$this->session->userdata('user'))[0];
 		foreach ($columnpho as $k => $v) {
 			($arrpho[$v]=='') ? $foto = "avatar.png" : $foto = $arrpho[$v];		
-			$temppho[$k] =array($labelpho[$k], 
-							'<img src="'.base_url("upload/foto/".$foto).'" class="img-thumbnail alt="user photo" width="100">'.form_upload(array(
+			$temppho[$k] =array( 
+							'<div class="text-center">
+							<div class="well">
+								<div id="prevmyphoto" class="img-thumbnail" style="height:200px;width:200px;">
+							     </div>
+							</div>
+							<hr/><p><b>Upload New Photo (Max 300kb)</b></p>'.form_upload(array(
 							'id'=>'f'.$columnpho[$k],
 							'name' => $columnpho[$k],
 							'class'=>'btn btn-default',
-							'required'=>'required')));
+							'style'=> 'margin:0px auto',
+							'required'=>'required')).'</div>');
 		}
 		$data['pho']=array('table' => $this->table->generate($temppho),
-									'title' => 'Photo Setting',
+									'title' => 'Change Photo',
 									'fbtn' => form_submit(array('value'=>'Update Photo',
 											'class'=>'btn btn-primary',
 											'id'=>'btnupdateset')),
@@ -904,7 +922,7 @@ class Setting extends Org_Controller {
 
 		//=============== Template ============
 		$data['jsFiles'] = array(
-							'selectpicker/select.min','moment/moment.min','daterange/daterangepicker','inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions');
+							'selectpicker/select.min','moment/moment.min','daterange/daterangepicker','inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions','uploadpreview/uploadPreview');
 		$data['cssFiles'] = array(
 							'selectpicker/select.min','daterange/daterangepicker');  
 		// =============== view handler ============

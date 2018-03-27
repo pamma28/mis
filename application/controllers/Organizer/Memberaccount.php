@@ -622,7 +622,7 @@ class Memberaccount extends Org_Controller {
 						'value'=>set_value('fusername'),
 						'class'=>'form-control',
 						'size'=>'50');
-		$r[] = form_input($funame).'<span id="usuccess" style="display:none;" class="text-primary"><i class="fa fa-check"></i> Username Available</span><span id="ufailed" class="text-danger" style="display:none;"><i class="fa fa-ban"></i> Username Not Available</span>';
+		$r[] = form_input($funame).'<span class="text-danger hidden"><b><i class="fa fa-ban"></i><i> Username Is Not Available</i></b></span>';
 		
 		$ffname = array('name'=>'ffullname',
 						'id'=>'Fullname',
@@ -641,7 +641,7 @@ class Memberaccount extends Org_Controller {
 						'value'=>set_value('fpass'),
 						'class'=>'form-control',
 						'size'=>'50');
-		$r[] = '<div class="input-group">'.form_input($fpass).'<span class="input-group-addon"><a type="button" id="togglePassword" class="btn btn-xs btn-default"><i class="fa fa-eye"></i></a></span></div>';
+		$r[] = '<div class="input-group">'.form_input($fpass).'<span class="input-group-addon"><a type="button" id="togglePassword" class=""><i class="fa fa-eye"></i></a></span></div>';
 		
 		$femail = array('name'=>'femail',
 						'id'=>'Email',
@@ -652,7 +652,7 @@ class Memberaccount extends Org_Controller {
 						'class'=>'form-control',
 						'size'=>'50'
 						);
-		$r[] = form_input($femail).'<span id="valsuccess" style="display:none;" class="text-primary"><i class="fa fa-check"></i> Email Available</span><span id="valfailed" class="text-danger" style="display:none;"><i class="fa fa-ban"></i> Email Not Available</span>';
+		$r[] = form_input($femail).'<span class="text-danger hidden"><b><i class="fa fa-ban"></i><i> Email Is Not Available</i></b></span>';
 		
 		$fhp = array('name'=>'fhp',
 						'id'=>'nohp',
@@ -661,7 +661,7 @@ class Memberaccount extends Org_Controller {
 						'value'=>set_value('fhp'),
 						'class'=>'form-control',
 						'max-length'=>'13');
-		$r[] = form_input($fhp);
+		$r[] = form_input($fhp).'<span class="text-danger hidden"><b><i class="fa fa-ban"></i><i> Phone Number Is Not Available</i></b></span>';
 		
 		$r[] = form_checkbox(array(
 							'name'=>'fallow',
@@ -674,7 +674,7 @@ class Memberaccount extends Org_Controller {
 							'value'=>'1')
 							);
 		
-		$fsend = array(	'id'=>'submit',
+		$fsend = array(	'id'=>'btnsubmit',
 						'value'=>'Create',
 						'class'=>'btn btn-primary',
 						'type'=>'submit');
@@ -758,7 +758,7 @@ class Memberaccount extends Org_Controller {
 						'value'=>$g[0]['uhp'],
 						'class'=>'form-control',
 						'size'=>'50');
-		$r[] = form_input($fhp);
+		$r[] = form_input($fhp).'<span class="text-danger hidden"><b><i class="fa fa-ban"></i><i> Phone Number Is Not Available</i></b></span>';
 		
 		$r[] = form_checkbox(array(
 							'name'=>'fallow',
@@ -772,7 +772,7 @@ class Memberaccount extends Org_Controller {
 							);
 		
 		$data['inid'] = form_hidden('fuser',$g[0]['uuser']);
-		$fsend = array(	'id'=>'submit',
+		$fsend = array(	'id'=>'btnedit',
 						'value'=>'Update',
 						'class'=>'btn btn-primary',
 						'type'=>'submit');

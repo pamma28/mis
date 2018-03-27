@@ -208,6 +208,13 @@ class Register extends CI_Controller {
 		$this->session->set_userdata('captcha',$captcha->getPhrase());
 		}
 
+		//============== data ==============
+		$registphase = explode(" - ",$this->Msetting->getset('registphase'));
+		$startregist = strtotime(str_replace('/', '-', $registphase[0]));
+		$endregist =  strtotime(str_replace('/', '-', $registphase[1]));
+		$today = strtotime(date("d-m-Y"));
+		$data['registphase'] = (($today >= $startregist) and ($today <= $endregist)) ? true : false;
+		$data['registdate'] = date("d-M-Y",$startregist)." until ".date('d-M-Y',$endregist);
 		//=============== Template ============
 		$data['jsFiles'] = array(
 							'inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions','inputmask/inputmask.numeric.extensions','validate/jquery.validate.min','icheck.min');
@@ -416,6 +423,10 @@ class Register extends CI_Controller {
 		echo $this->Mlogin->checkuser($us);
 	}
 
+	public function checkphone(){
+		$us = $this->input->post('nohp');
+		echo $this->Mlogin->checkhp($us);
+	}	
 	
 	public function printmail(){
 		$data['dt'] = $this->Msetting->getset('period');

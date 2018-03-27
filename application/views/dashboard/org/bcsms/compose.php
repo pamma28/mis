@@ -27,15 +27,20 @@
 			($sender=='') ? print('<h4 class="text-center text-danger">You need to configure the SMS Account (WebSms) through bottom box.</h4>'):null;
 			?>	
 		    <div class="box-body <?php ($sender!='') ? print('visible'):print('hidden'); ?>">
+				
+				 
+				
 				<div class="row">
+					<div class="col-md-6">
+						<div class="row">
 				
 					<div class="col-md-4 col-sm-6 col-xs-12">
 					  <div class="info-box">
-						<span class="info-box-icon bg-aqua"><i class="fa fa-dollar"></i></span>
+						<span class="info-box-icon bg-blue"><i class="fa fa-dollar"></i></span>
 						<div class="info-box-content bg-info">
-						  <span class="info-box-text">(With Reply) Credit</span>
-						  <span class="info-box-number"><span id="withrepcredit">Rp. <?=$repcredit;?></span></span>
-						  <p>Cost: Rp. 40/sms</p>
+						  <span class="info-box-text">Total Credit</span>
+						  <span class="info-box-number"><span id="creditleft"> <?=$smscredit;?></span></span>
+						 	<h5><i>1 Credit = 1 SMS</i></h5>
 						</div><!-- /.info-box-content -->
 					  </div><!-- /.info-box -->
 					</div><!-- /.col -->
@@ -43,7 +48,7 @@
 					<div class="col-md-4 col-sm-6 col-xs-12">
 					  <div class="info-box">
 						<div class="bg-yellow">
-							<p class="text-info text-center"> Press the "Refresh Credit", to update the credit.</p>
+							<p class="text-info text-center"> Press the "Refresh Credit"<br/> to update the credit.</p>
 							<button class="btn btn-block btn-info btn-lg" id="refreshcredit" type="button"><i class="fa fa-refresh" id="iconrefresh"></i> Refresh Credit</button>
 						</div>
 					  </div><!-- /.info-box -->
@@ -51,20 +56,16 @@
 					
 					<div class="col-md-4 col-sm-6 col-xs-12">
 					  <div class="info-box">
-						<span class="info-box-icon bg-aqua"><i class="fa fa-dollar"></i></span>
+						<span class="info-box-icon bg-blue"><i class="fa fa-calendar"></i></span>
 						<div class="info-box-content bg-info">
-						  <span class="info-box-text">(No Reply) Credit</span>
-						  <span class="info-box-number"><span id="norepcredit">Rp. <?=$norepcredit;?></span></span>
-						  <p>Cost: Rp. 20/sms</p>
+						  <span class="info-box-text">Expiration Date</span>
+						  <span class="info-box-number"><span id="activedate"><?=$expdate;?></span></span>
+						  <h5><i>Expired, Credit = 0</i></h5>
 						</div><!-- /.info-box-content -->
 					  </div><!-- /.info-box -->
 					</div><!-- /.col -->
 
 				  </div>
-				 
-				
-				<div class="row">
-					<div class="col-md-6">
 						<div class="well">
 							<?=$metadata;?>
 						</div>
@@ -133,33 +134,7 @@
 						</div>
 						<div class="col-md-6">
 						<div class="panel panel-default">
-							<div class="panel-body">
-							<h4 class="text-center text-primary"><b>Reply Features</b></h4>
-							<div class="text-left">
-								<div class="input-group">
-		                        <span class="input-group-addon">
-		                          <?=$usereply;?>
-		                        </span>
-		                        <span class="input-group-addon">
-									<b>Use Reply Features</b> (Rp.40/sms)
-		                        </span>
-								</div>
-								
-								<div class="input-group">
-		                        <span class="input-group-addon">
-									<a href="<?=base_url('Organizer/SmsBroadcast/helpreply');?>" data-target=".bs-help" data-toggle="modal" role="button" alt="Help">
-									<i class="fa fa-question-circle"></i>
-									<i>How to set up reply features</i></a>
-		                        </span>
-		                        <span class="input-group-addon">
-									<i><small>(Last syncronized in <?=$lastsync;?>)</small></i>
-								</span>
-								</div>
-							</div>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<div class="panel-body">
+							<div class="panel-body bg-info">
 							<h4 class="text-center text-primary"><b>Footer Usage</b></h4>
 							<div class="text-left">
 								<div class="input-group">
@@ -182,7 +157,7 @@
 								<div class="box box-primary box-solid bg-gray collapsed in" id="detailfooter">
 									<div class="box-body">
 										<b>Footer SMS : </b>
-										<code><?=$footer;?></code>
+										<code id="idfooter"><?=$footer;?></code>
 										<?=$codefooter;?>
 									</div>
 								</div>
@@ -213,32 +188,30 @@
 	<div class="box-footer clearfix">
 			<?php echo form_open($furlsave,array('name'=>'fsetting', 'method'=>'POST','class'=>'form-horizontal'));?>
 			<fieldset class="scheduler-border">
-			<legend class="scheduler-border"><a role="button" data-toggle="collapse" href="#collapseSetting" aria-expanded="false" aria-controls="collapseSetting">Setting SMS Account (WebSms)</a></legend>
+			<legend class="scheduler-border"><a role="button" data-toggle="collapse" href="#collapseSetting" aria-expanded="false" aria-controls="collapseSetting">Setting SMS Account (Zenziva)</a></legend>
 			<div id="collapseSetting" class="collapse">
 				<div class="row well">
 				<div class="col-md-6 col-sm-12">
-				<h4 class="text-info text-center"><span class="fa fa-user"></span> Account Details (WebSms)</h4>
-				<p><b>WebSms User: </b> <?=$accuser;?></p>
-				<p><b>WebSms Phone Number: </b> <?=$accno;?></p>
-				<p><b>WebSms Password: </b>
+				<h4 class="text-info text-center"><span class="fa fa-user"></span> Account Details (Zenziva)</h4>
+				<p><b>User Key: </b> <?=$accuser;?></p>
+				<p><b>Pass Key: </b>
 					<div class="input-group"><?=$accpass;?>
-					<span class="input-group-addon"><a class="btn btn-xs btn-default" type="button" id="togglePassword"><i class="fa fa-eye"></i></a></span>
+					<span class="input-group-addon"><a class="" type="button" id="togglePassword"><i class="fa fa-eye"></i></a></span>
 					</div>
 				</p>
+				<p class="bg-info"><i>Check on SMS API setting on zenziva account, or click <a href="https://reguler.zenziva.net/" target="_blank" alt="Login Zenziva" class="text-primary">here</a></i></p>
 				</div>
 				
 				<div class="col-md-6 col-sm-12">
 				<h4 class="text-warning text-center"><span class="fa fa-gear"></span> Programming Details</h4>
-				<p><b>WebSms (With Reply) URL: </b> <?=$urlbc;?></p>
-				<p><b>WebSms(No Reply) URL: </b> <?=$urlnotif;?></p>
-				<p><b>WebSms (With Reply) API: </b> <?=$funcbc;?></p>
-				<p><b>WebSms(No Reply) API: </b> <?=$funcnotif;?></p>
-				<p><b>WebSms Check Credit Function: </b> <?=$funcsaldo;?></p>
+				<p><b>SMS URL: </b> <?=$urlbc;?></p>
+				<p><b>SMS API: </b> <?=$funcnotif;?></p>
+				<p><b>Credit API: </b> <?=$funcsaldo;?></p>
 					<div class="bg-info">
 					<h4><i class="text-info fa fa-links"></i> Link References </h4>
 					<ul>
-						<li><a href="web.sms-anda.com:6148/pilihan.php?fungsi=http_api&op=daftar" target="_blank" alt="WebSMS reference">WebSMS reference</a> </li>
-						<li><a href="http://www.freesms4us.com/kirimsms.php" target="_blank" alt="SMS Notification reference">SMS Notification reference</a> </li>
+						<li><a href="http://www.zenziva.id/integrasi-aplikasi-website-anda-dengan-sms-api/" target="_blank" alt="Zenziva reference">Zenziva API reference</a> </li>
+						<li><a href="https://reguler.zenziva.net/" target="_blank" alt="Login Zenziva">Login Zenziva</a> </li>
 					</ul>
 					</div>
 				
@@ -273,35 +246,37 @@
 	 
 	$(document).ready(function () {
 		getlist();
+		countcredit();
 		
 		function countcredit(){
-		var j = 0;
-		if($("#usefoo").is(':checked')){
-			var totchar = $("#smstext").val().length + $("#mali").val().length + $('input[name="ffooter"]').val().length;
-		} else {
-			var totchar = $("#smstext").val().length + $("#mali").val().length;
-		}
+			var j = 0;
+			if($("#usefoo").is(':checked')){
+				var totchar = $("#smstext").val().length + $("#mali").val().length + $('input[name="ffooter"]').val().length;
+			} else {
+				var totchar = $("#smstext").val().length + $("#mali").val().length;
+			}
 
-		var to = $('#mto').tokchify('getValue').map(function(a) {return j++;});
-			if ($("#muserep").is(':checked')){
-				$("#mcountercredit").val((Math.ceil(totchar / 160)) * 40 * j);
-			} else {
-				$("#mcountercredit").val((Math.ceil(totchar / 160)) * 20 * j);
-			}
-			if (totchar == 0){
-				$("#mcounterchar,#mcountersms,#mcountercredit").val(0);
+			var to = $('#mto').tokchify('getValue').map(function(a) {return j++;});
+				$("#mcountercredit").val((Math.ceil(totchar / 160)) * 1 * j);
 				
-			} else {
-				$("#mcounterchar").val(160 - (totchar % 160));
-				$("#mcountersms").val(Math.ceil(totchar / 160));
-				
-			}
+				if (totchar == 0){
+					$("#mcounterchar,#mcountersms,#mcountercredit").val(0);
+					
+				} else {
+					$("#mcounterchar").val(160 - (totchar % 160));
+					$("#mcountersms").val(Math.ceil(totchar / 160));
+					
+				}
 		}
 		
 		$("#smstext,#mali").on('keyup',function () {
 			countcredit();
 		});
-		
+
+		$("#usefoo").on('change',function(){
+			countcredit();
+		});
+
 		$("#muserep").on('change',function(){
 			if($("#smstext").val().length>0)
 			{
@@ -318,13 +293,11 @@
 				if (data.length < 100){
                 credit = $.parseJSON(data);
 				$.post('<?=base_url('Organizer/SmsBroadcast/updatecredit')?>',{
-				rep: credit[1],
-				norep: credit[0]
 				});
 				}
-			if ($.isNumeric(credit[0])){
-				$("#withrepcredit").text("Rp. " + credit[1]);
-				$("#norepcredit").text("Rp. " + credit[0]);
+			if (credit['value']!=''){
+				$("#creditleft").text(credit['value']);
+				$("#activedate").text(credit['text']);
 			} else {
 				$("#withrepcredit,#norepcredit").text('Network Error');
 			}
@@ -385,6 +358,7 @@
 	                                    tokchi.removeToken(tokenHTMLNode);
 	                                })
 	                        );
+	                        countcredit();
 	                    },
 						
 						onUnwrapToken : function (tokchi, tokenHTMLNode, tokenObj) {

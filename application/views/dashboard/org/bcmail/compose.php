@@ -393,6 +393,8 @@ $(function(){
 
         fail:function(e, data){
             data.context.addClass('error');
+            alert('Upload Failed');
+
         },
 		
 		done: function (e, data) {
@@ -402,18 +404,20 @@ $(function(){
 			data.context.find('span').addClass('fa fa-check fa-lg text-primary');
 			data.context.find('small').html('<p>Upload Success</p>');
 			data.context.find('b').text(res.file);
+
 			var flist = $('input[name="flistfile"]').val();
 				if (flist=='') {
 				$('input[name="flistfile"]').val(res.file);
 				} else{
 				$('input[name="flistfile"]').val($('input[name="flistfile"]').val() + ',' + res.file);
 				}
+			alert('Upload Success');
 			} else {
 			data.context.find('span').addClass('fa fa-exclamation-circle fa-lg text-danger');
 			data.context.addClass('error');
 			data.context.find('small').html(res.error).text();
+			alert('Upload Failed');
 			}
-			
         }
 
     });

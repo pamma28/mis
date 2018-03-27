@@ -757,9 +757,8 @@ class Mailbroadcast extends Org_Controller {
 						'placeholder'=>'CC Mail',
 						'value'=>isset($tempfilter['mcc']) ? $tempfilter['mcc'] : null,
 						'class'=>'form-control'));
-		$data['attach']= form_upload(array('name'=>'mattach[]',
+		$data['attach']= form_upload(array('name'=>'mattach',
 						'id'=>'attach',
-						'multiple'=>'multiple',
 						'class'=>'btn btn-default'));
 		$data['listto']=form_hidden('flistto');
 		$data['nameto']=form_hidden('fnameto');
@@ -853,119 +852,136 @@ class Mailbroadcast extends Org_Controller {
 	}
 		
 	public function sendmail(){
-	$this->load->library('MY_Input');
-	$to = $this->input->post('flistto');
-	$userlist = $this->input->post('fusersto');
-	$arrusersto = explode(',',$userlist);
-	print($userlist);
-	$fatt = $this->input->post('fatt');
-	$sub = $this->input->post('msub');
-	$redi = $this->input->post('fredi');
-		$files = $_FILES['mattach'];
-	if(($files!=null) and($fatt==1)){	
-			$file['file']= array(
-				'name'=>$files['name'][0],
-				'type'=>$files['type'][0],
-				'tmp_name'=>$files['tmp_name'][0],
-				'error'=>$files['error'][0],
-				'size'=>$files['size'][0]
-			);
-			$name[] = $this->uploadfile($file);
+		$this->load->library('MY_Input');
+		$to = $this->input->post('flistto');
+		$userlist = $this->input->post('fusersto');
+		$arrusersto = explode(',',$userlist);
 		
-	} else if ((null!=$to) and (null!=$sub)){
-		//filter file uploaded
-		$arrdiff = array_diff(explode(',',$this->input->post('flistfile')),	explode(',',$this->input->post('fcancelfile')));
-		//specify broadcast type
-		$target='';$year='';$lvl='';$stat='';
-		if ($this->input->post('mbc')==1) {
-			$bctype="Broadcast Mail";
-			if ($this->input->post('optrole')==''){
-				$target='All User';
+		$fatt = $this->input->post('fatt');
+		$sub = $this->input->post('msub');
+		$redi = $this->input->post('fredi');
+		$files = $_FILES['mattach'];	
+		if(($files!=null) and($fatt==1)){	
+			$config['upload_path'] = FCPATH.'temp_upload/';
+			$config['allowed_types'] = '*';
+			$config['max_size']     = '20000';
+			$config['overwrite'] = true;
+			$this->load->library('upload', $config);
+			if ($this->upload->do_upload('mattach')){
+				$filename = str_replace(' ', '_', $files['name']);
+				$arr_ret = array(
+					'status'=>'success',
+					'file' => $filename
+				);
+				if ($this->session->userdata('mailattach')!=''){
+					$arrfilename = $this->session->userdata('mailattach').",".$filename;
+					$this->session->set_userdata('mailattach',$arrfilename);
 				} else {
-				$target=$this->Mbc->getrole($this->input->post('optrole'));
-				}
-			if ($this->input->post('optyear')==''){
-				$year = "All Year";
-				} else {
-				$year = $this->input->post('optyear');
-				}
-			if ($this->input->post('optlvl')==''){
-				$lvl= "All Level";
-				} else {
-				$lvl = $this->Mbc->getlevel($this->input->post('optlvl'));
-				}
-			if ($this->input->post('optlunas')==''){
-				$stat= "All Status";
-				} else {
-				($this->input->post('optlvl')=='1') ? $stat = 'Fully Paid': $stat= 'Not Fully Paid' ;
+					$this->session->set_userdata('mailattach',$filename);
 				}
 			} else {
-			$bctype="Single Mail";
-			}
-		
-		($this->input->post('fusefoo')!='') ? $usefoo = true : $usefoo = false; 
-		
-		$fdata = array (
-				'bcdate' => date("Y-m-d H:i:s"),
-				'bcrecipient' => $to,
-				'uuser' => $this->session->userdata('user'),
-				'bcfrom' => $this->input->post('malias'),
-				'bcmailfrom' => $this->Msetting->getset('sendermail'),
-				'bctitle' => $this->input->post('msub'),
-				'bccontent' => htmlspecialchars($this->input->post('fcode',false)),
-				'bcattach' => implode($arrdiff,','),
-				'bcket' => 'Type: '.$bctype.'; CC: '.$this->input->post('fccto').'; Role: '.$target.'; Period: '.$year.'; Level: '.$lvl.'; Payment: '.$stat,
-				'bcfooter' => $usefoo,
-				'bctype' => 'Mail'
+				$arr_ret = array(
+					'status'=>'failed',
+					'file' => $files['name'],
+					'error' => $this->upload->display_errors()
 				);
-		$r = $this->Mbc->savebc($fdata);
-
-		//======= set notif ===========
-		$idnotif = $this->Msetting->getset('notifbcmailby');
-		$idnotifnewmail = $this->Msetting->getset('notifbcmail');
-		($r) ? $this->notifications->pushNotifToOrg(array('idnotif'=>$idnotif,'uuser'=>$this->session->userdata('user'),'nlink'=>base_url('Organizer/Mailbroadcast'))):null;
-		
-
-		$arrto = explode(',',$to);
-		$tot = 0;
-		$failed = '';
-		
-		($this->input->post('fusefoo')=='1') ? $fcode = htmlspecialchars_decode($fdata['bccontent'].'<br/>'.$this->Msetting->getset('mailfooter')) : $fcode = htmlspecialchars_decode($fdata['bccontent']);
-		
-		$this->load->library('Convertcode');
-
-		foreach($arrto as $k=>$v){
-			//====== decode message ============
-			$decode = $this->convertcode->decodemailmsg($fcode,$v);	
-		
-			//================= gmail send ===========
-			$ret = $this->gmail->sendmail($v,$this->input->post('fccto'),$fdata['bctitle'],$fdata['bcfrom'],$decode,$arrdiff);		
-			($ret) ? $tot++:$failed[]=($k+1).'. '.$v;
-
-			//======= set notif new mail===========
-			($ret) ? $this->notifications->pushnotif(array('idnotif'=>$idnotifnewmail,'uuser'=>$this->session->userdata('user'),'use_uuser'=>$arrusersto[$k],'nlink'=>null)):null;
-
-		}
-		
-		$this->load->library('upload');
-		if((''!=$this->input->post('flistfile')) and ($redi==null))
-		{
-			$filename = explode(',',$this->input->post('flistfile'));
-			foreach($filename as $k=>$v){
-			$path = FCPATH.'temp_upload/' . $filename[$k];
-            unlink($path);
 			}
-		}
-		if ($r){
-			$this->session->set_flashdata('v','Send Mail Success');
-			} else {		
-			$this->session->set_flashdata('x','Send Mail Failed');
+			print json_encode($arr_ret);
+			
+		} else if ((null!=$to) and (null!=$sub)){
+			//filter file uploaded
+			$arrdiff = array_diff(explode(',',$this->input->post('flistfile')),	explode(',',$this->input->post('fcancelfile')));
+			//specify broadcast type
+			$target='';$year='';$lvl='';$stat='';
+			if ($this->input->post('mbc')==1) {
+				$bctype="Broadcast Mail";
+				if ($this->input->post('optrole')==''){
+					$target='All User';
+					} else {
+					$target=$this->Mbc->getrole($this->input->post('optrole'));
+					}
+				if ($this->input->post('optyear')==''){
+					$year = "All Year";
+					} else {
+					$year = $this->input->post('optyear');
+					}
+				if ($this->input->post('optlvl')==''){
+					$lvl= "All Level";
+					} else {
+					$lvl = $this->Mbc->getlevel($this->input->post('optlvl'));
+					}
+				if ($this->input->post('optlunas')==''){
+					$stat= "All Status";
+					} else {
+					($this->input->post('optlvl')=='1') ? $stat = 'Fully Paid': $stat= 'Not Fully Paid' ;
+					}
+				} else {
+				$bctype="Single Mail";
+				}
+			
+			($this->input->post('fusefoo')!='') ? $usefoo = true : $usefoo = false; 
+			
+			$fdata = array (
+					'bcdate' => date("Y-m-d H:i:s"),
+					'bcrecipient' => $to,
+					'uuser' => $this->session->userdata('user'),
+					'bcfrom' => $this->input->post('malias'),
+					'bcmailfrom' => $this->Msetting->getset('sendermail'),
+					'bctitle' => $this->input->post('msub'),
+					'bccontent' => htmlspecialchars($this->input->post('fcode',false)),
+					'bcattach' => implode($arrdiff,','),
+					'bcket' => 'Type: '.$bctype.'; CC: '.$this->input->post('fccto').'; Role: '.$target.'; Period: '.$year.'; Level: '.$lvl.'; Payment: '.$stat,
+					'bcfooter' => $usefoo,
+					'bctype' => 'Mail'
+					);
+			$r = $this->Mbc->savebc($fdata);
+
+			//======= set notif ===========
+			$idnotif = $this->Msetting->getset('notifbcmailby');
+			$idnotifnewmail = $this->Msetting->getset('notifbcmail');
+			($r) ? $this->notifications->pushNotifToOrg(array('idnotif'=>$idnotif,'uuser'=>$this->session->userdata('user'),'nlink'=>base_url('Organizer/Mailbroadcast'))):null;
+			
+
+			$arrto = explode(',',$to);
+			$tot = 0;
+			$failed = '';
+			
+			($this->input->post('fusefoo')=='1') ? $fcode = htmlspecialchars_decode($fdata['bccontent'].'<br/>'.$this->Msetting->getset('mailfooter')) : $fcode = htmlspecialchars_decode($fdata['bccontent']);
+			
+			$this->load->library('Convertcode');
+
+			foreach($arrto as $k=>$v){
+				//====== decode message ============
+				$decode = $this->convertcode->decodemailmsg($fcode,$v);	
+			
+				//================= gmail send ===========
+				$ret = $this->gmail->sendmail($v,$this->input->post('fccto'),$fdata['bctitle'],$fdata['bcfrom'],$decode,$arrdiff);		
+				($ret) ? $tot++:$failed[]=($k+1).'. '.$v;
+
+				//======= set notif new mail===========
+				($ret) ? $this->notifications->pushnotif(array('idnotif'=>$idnotifnewmail,'uuser'=>$this->session->userdata('user'),'use_uuser'=>$arrusersto[$k],'nlink'=>null)):null;
+
 			}
-			(null==$redi) ? redirect(base_url('Organizer/Mailbroadcast')) : redirect(base_url('Organizer/Mailbroadcast/composemail'));
-		} else {
-			$this->session->set_flashdata('x','Send Mail Failed');
-			redirect(base_url('Organizer/Mailbroadcast/composemail'));
-		}
+			
+			$this->load->library('upload');
+			if((''!=$this->input->post('flistfile')) and ($redi==null))
+			{
+				$filename = explode(',',$this->input->post('flistfile'));
+				foreach($filename as $k=>$v){
+				$path = FCPATH.'temp_upload/' . $filename[$k];
+	            unlink($path);
+				}
+			}
+			if ($r){
+				$this->session->set_flashdata('v','Send Mail Success');
+				} else {		
+				$this->session->set_flashdata('x','Send Mail Failed');
+				}
+				(null==$redi) ? redirect(base_url('Organizer/Mailbroadcast')) : redirect(base_url('Organizer/Mailbroadcast/composemail'));
+			} else {
+				$this->session->set_flashdata('x','Send Mail Failed');
+				redirect(base_url('Organizer/Mailbroadcast/composemail'));
+			}
 	}
 
 	public function deletemail(){
@@ -1045,6 +1061,8 @@ class Mailbroadcast extends Org_Controller {
 		
 		echo json_encode($r);
 	}
+
+
 	
 	public function savesetting(){
 		if(null!= $this->input->post('fcode')){

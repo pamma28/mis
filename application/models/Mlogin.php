@@ -302,6 +302,17 @@ class Mlogin extends CI_Model{
 		}
 	}
 
+	public function checkhp($us){
+		$this->db->select('uuser');
+		$this->db->where('uhp',$us);
+		$rt = $this->db->get('user')->num_rows();
+		if ($rt>0){
+		return 1;
+		} else{
+		return 0;
+		}
+	}
+
 	public function getuserstatus($user){
 		$this->db->select('ustatus');
 		$this->db->where('uuser',$user);
