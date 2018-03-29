@@ -244,11 +244,26 @@ class Scheduletest extends Mem_Controller {
 				}
 		$data['mysche'] = $this->table->generate($choosen);
 		
+		//=========== reminder test =========
+		if($this->Msetting->checkexist('membersche_'.$this->session->userdata('user'))){
+			$reminder= $this->Msetting->getset('membersche_'.$this->session->userdata('user'));
+		} else {
+			$reminder = $this->Msetting->addsetting('membersche_'.$this->session->userdata('user'),'');
+		}
+
+		$data['reminder'] = form_input(
+							array(
+								'id'=>'inputreminder',
+								'name'=>'freminder',
+								'class'=>'form-control',
+								'type' => 'text',
+								'value' => $reminder
+							));
+
 		//=============== Template ============
-		$data['jsFiles'] = array(
-							'');
+		$data['jsFiles'] = array('moment/moment.min','daterange/daterangepicker');
 		$data['cssFiles'] = array(
-							'loading/loadingcircle');  
+							'loading/loadingcircle','daterange/daterangepicker',);  
 		// =============== view handler ============
 		$data['title']="My Schedule";
 		$data['topbar'] = $this->load->view('dashboard/topbar', NULL, TRUE);

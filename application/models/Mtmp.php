@@ -112,6 +112,24 @@ class Mtmp extends CI_Model{
 		}
     return $return;
 	}
+
+	public function getopttmpsms(){
+		$this->db->select('idtmplte,tmpname,tmpcontent');
+		$this->db->where('tmptype','SMS');
+		$this->db->order_by('idtmplte');
+		$q = $this->db->get('template');
+		$return = array();
+		$return[''] = 'Choose to use template';
+		if($q->num_rows() > 0){
+        foreach($q->result_array() as $row){
+        	$tmpcontent = $row['tmpcontent'];
+			(strlen($tmpcontent)>50) ? $content = mb_substr($tmpcontent,0,50).'...': $content = $tmpcontent;
+			
+            $return[$row['idtmplte']] = '('.$row['tmpname'].') '.$content;
+			}
+		}
+    return $return;
+	}
 	
 	public function gettmpdata($id){
 		$this->db->select('tmpcontent');

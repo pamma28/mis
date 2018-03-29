@@ -313,8 +313,8 @@ class Setting extends Org_Controller {
 		//========== setting registration form =========
 		$this->table->set_template($tmpl);
 		$this->table->set_heading($header);
-		$columnregist=['formregistterm','formregistsuccess','mailregistsuccess','mailverify','mailresetaccount'];
-		$label = ['Term & Condition','(Display) Registration Success','(Email) Registration Success','Email Verification','(Email) Reset Account'];
+		$columnregist=['formregistterm','formregistsuccess'];
+		$label = ['Term & Condition','Registration Success'];
 		$opttmp = $this->Mtmp->getopttmp();
 		$temp3 =array(
 					array($label[0],
@@ -329,27 +329,7 @@ class Setting extends Org_Controller {
 						'name'=>'formregistsuccess',
 						'required'=>'required',
 						'data-live-search'=>'true',
-						'class'=>'form-control selectpicker'),$opttmp,$this->Msetting->getset('formregistsuccess'))),
-
-					array($label[2],
-					form_dropdown(array('id'=>'fmailregistsuccess',
-						'name'=>'mailregistsuccess',
-						'required'=>'required',
-						'data-live-search'=>'true',
-						'class'=>'form-control selectpicker'),$opttmp,$this->Msetting->getset('mailregistsuccess'))),
-
-					array($label[3],
-					form_dropdown(array('id'=>'fmailverify',
-						'name'=>'mailverify',
-						'required'=>'required',
-						'data-live-search'=>'true',
-						'class'=>'form-control selectpicker'),$opttmp,$this->Msetting->getset('mailverify'))),
-					array($label[4],
-					form_dropdown(array('id'=>'fmailresetaccount',
-						'name'=>'mailresetaccount',
-						'required'=>'required',
-						'data-live-search'=>'true',
-						'class'=>'form-control selectpicker'),$opttmp,$this->Msetting->getset('mailresetaccount')))
+						'class'=>'form-control selectpicker'),$opttmp,$this->Msetting->getset('formregistsuccess')))
 				);
 		$data['registform']=array('table' => $this->table->generate($temp3),
 									'title' => 'Registration Form',
@@ -459,6 +439,60 @@ class Setting extends Org_Controller {
 											'id'=>'btnupdateset')),
 									'finputs' => form_hidden('finputs',implode($columnpg, ',')).form_hidden('fflash','pageset')
 									); 
+
+
+		//================= setting template mail =================
+		$this->table->set_template($tmpl);
+		$this->table->set_heading($header);
+
+		$columntmpmail=['mailregistsuccess','mailresetaccount','mailverify'];
+		$labeltmpmail = ['Registration Success','Reset Account','Mail Confirmation'];
+		foreach ($columntmpmail as $k => $v) {		
+			$temptmpmail[$k] =array($labeltmpmail[$k], 
+						form_dropdown(array(
+							'id'=>'f'.$columntmpmail[$k],
+							'name' => $columntmpmail[$k],
+							'class'=>'form-control selectpicker changepage',
+							'data-live-search'=>'true',
+							'required'=>'required'),$opttmp,$this->Msetting->getset($v)));
+		}
+
+		$data['template']=array('table' => $this->table->generate($temptmpmail),
+									'title' => 'Mail Template',
+									'fbtn' => form_submit(array('value'=>'Update Setting',
+											'class'=>'btn btn-primary',
+											'id'=>'btnupdateset')),
+									'finputs' => form_hidden('finputs',implode($columntmpmail, ',')).form_hidden('fflash','tmpmail')
+									); 
+
+
+		//================= setting template sms =================
+		$this->table->set_template($tmpl);
+		$this->table->set_heading($header);
+
+		$opttmpsms = $this->Mtmp->getopttmpsms();
+		$columntmpsms=['smsregistsuccess','smspayvalid','smsreminderschedule','smscertiready'];
+		$labeltmpsms = ['Registration Success','Payment Approved','Test Reminder','Certificate Ready'];
+		foreach ($columntmpsms as $k => $v) {		
+			$temptmpsms[$k] =array($labeltmpsms[$k], 
+						form_dropdown(array(
+							'id'=>'f'.$columntmpsms[$k],
+							'name' => $columntmpsms[$k],
+							'class'=>'form-control selectpicker changepage',
+							'data-live-search'=>'true',
+							'required'=>'required'),$opttmpsms,$this->Msetting->getset($v)));
+		}
+
+		$data['tmpsms']=array('table' => $this->table->generate($temptmpsms),
+									'title' => 'SMS Template',
+									'fbtn' => form_submit(array('value'=>'Update Setting',
+											'class'=>'btn btn-primary',
+											'id'=>'btnupdateset')),
+									'finputs' => form_hidden('finputs',implode($columntmpsms, ',')).form_hidden('fflash','tmpsms')
+									); 
+
+
+
 
 
 		//========== setting Mail Template =========

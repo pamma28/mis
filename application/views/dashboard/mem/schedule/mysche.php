@@ -31,8 +31,26 @@
 				</div>
 				<div class="panel-body">
 				<?=$mysche;?>
+				
 				</div>
 			</div>
+			<div class="box box-info">
+					<div class="box-body">
+						<h4><b>Setting Your Reminder</b></h4>
+						<?php echo form_open(base_url('Member/Scheduletest/myschedule'),array('class'=>'form-inline','method'=>'POST','id'=>'formreminder'));?>
+						<label class="form-label">
+							Test Reminder :
+						</label>
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+							<?=$reminder;?>
+						</div>
+						<input type="submit" value="Update Reminder" class="btn btn-primary">
+						<?php echo form_close();?>
+
+						<h5><span class="bg-info text-primary"><i class="fa fa-info-circle"></i> <i>The reminder will send you SMS about the Test.</i></span></h5>
+					</div>
+				</div>
 		</div>
 		
 	</div>
@@ -58,6 +76,22 @@
 	$('#confirm-delete').on('show.bs.modal', function(e) {
 		$(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
 		});
+
+	//date reminder
+	$(function() {
+	    $('#inputreminder').daterangepicker({
+	    	singleDatePicker: true,
+	    	timePicker: true,
+	    	autoUpdateInput: false,
+	    	timePickerIncrement: 5,
+	    	locale: {format: 'DD-MM-YYYY HH:mm:ss',
+	    			cancelLabel: 'Clear'}
+	    });
+	});
+	
+	$('#inputreminder').on('apply.daterangepicker', function(ev, picker) {
+      $(this).val(picker.startDate.format('DD-MM-YYYY HH:mm:ss'));
+	});
 	</script>
 
 </section>

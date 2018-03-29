@@ -20,6 +20,7 @@ class Mlogin extends CI_Model{
 		}
 	}
 	
+
 	public function checkexist($user){
 		$this->db->select('uuser');
         $this->db->from('user');

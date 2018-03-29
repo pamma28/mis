@@ -18,6 +18,17 @@ class Msetting extends CI_Model{
 		return $r;
 	}
 	
+	public function checkexist($val){
+		$this->db->select('setval');
+		$this->db->where('setname',$val);
+		$r = ($this->db->count_all_results('setting')>0) ? true: false;
+		return $r;
+	}
+
+	public function addsetting($key, $val){
+		$this->db->insert('setting',array('setname'=>$key,'setval'=>$val,'uuser'=>$this->session->userdata('user')));
+	} 
+
 	public function getset($dt){
 		$this->db->select('setval');
 		$this->db->where('setname',$dt);

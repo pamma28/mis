@@ -31,10 +31,10 @@
             <ul class="nav nav-tabs nav-primary">
                 <li class="active"><a data-toggle="tab" href="#weblist"><span class="fa fa-home"></span>  Website Setting</a></li>
                 <li><a data-toggle="tab" href="#systemlist"><span class="fa fa-wrench"></span> System Parameter</a></li>
-                <li><a data-toggle="tab" href="#registform"><span class="fa fa-file-text"></span>  Registration Form</a></li>
+                <li><a data-toggle="tab" href="#pagelist"><span class="fa fa-pencil-square"></span>  Page Setting</a></li>
+                <li><a data-toggle="tab" href="#template"><span class="fa fa-file-text"></span>  Template</a></li>
                 <li><a data-toggle="tab" href="#paymentform"><span class="fa fa-money"></span>  Payment Setting</a></li>
                 <li><a data-toggle="tab" href="#notiflist"><span class="fa fa-bell"></span>  Notification Setting</a></li>
-                <li><a data-toggle="tab" href="#pagelist"><span class="fa fa-pencil-square"></span>  Page Setting</a></li>
                 <li><a data-toggle="tab" href="#emaillist"><span class="fa fa-envelope"></span>  Email Setting</a></li>
                 <li><a data-toggle="tab" href="#certilist"><span class="fa fa-certificate"></span>  Certificate Setting</a></li>
             </ul>
@@ -138,36 +138,70 @@
 					
 				</div>
 				  
-				<div class="tab-pane table-responsive" id="registform">
-						<div class="col-md-6">
-							<?php echo form_open(base_url('Organizer/setting#registform'),array('name'=>'fregistform','class'=>'form-horizontal','method'=>'POST'));?>
+				<div class="tab-pane table-responsive" id="template">
+					<div class="col-md-6">
+							<?php echo form_open(base_url('Organizer/setting#template'),array('name'=>'ftemplatemail','class'=>'form-horizontal','method'=>'POST'));?>
 							<div class="panel panel-primary">
 								<div class="panel-heading panel-heading-sm">
-									<h3 class="panel-title text-center"><span class="fa fa-file-text"></span> <b><?=$registform['title'];?></b></h3>
+									<h3 class="panel-title text-center"><span class="fa fa-envelope-o"></span> <b><?=$template['title'];?></b></h3>
 								</div>
 								<div class="panel-body">
-									<?php if ($this->session->flashdata('vregist')!=null){ ?>
+									<?php if ($this->session->flashdata('vtmpmail')!=null){ ?>
 									<div class="alert alert-success alert-dismissible" role="alert">
 										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-										<?=$this->session->flashdata('vregist');?>
+										<?=$this->session->flashdata('vtmpmail');?>
 									</div>
-									<?php } else if ($this->session->flashdata('xregist')!=null){ ?>
+									<?php } else if ($this->session->flashdata('xtmpmail')!=null){ ?>
 									<div class="alert alert-danger alert-dismissible" role="alert">
 										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-										<?=$this->session->flashdata('xregist');?>
+										<?=$this->session->flashdata('xtmpmail');?>
 									</div>		
 									<?php } ?>
-								 	<?=$registform['table'];?>
+								 	<?=$template['table'];?>
+								 	<h4 class="text-primary "><span class="bg-info"><i class="fa fa-info-circle"></i> Option obtained from Content Template, add more Content Template for more option.</span></h4>
 								</div>
 								<div class="panel-footer text-right">
-									<?=$registform['finputs'];?>
-									<?=$registform['fbtn'];?>
+									<?=$template['finputs'];?>
+									<?=$template['fbtn'];?>
 								</div>
 							</div>
 
 						<?php  
 						echo form_close();
 						?> 
+						</div>
+						
+						<div class="col-md-6">
+							<?php echo form_open(base_url('Organizer/setting#template'),array('name'=>'ftemplatesms','class'=>'form-horizontal','method'=>'POST'));?>
+							<div class="panel panel-primary">
+								<div class="panel-heading panel-heading-sm">
+									<h3 class="panel-title text-center"><span class="fa fa-envelope-square"></span> <b><?=$tmpsms['title'];?></b></h3>
+								</div>
+								<div class="panel-body">
+									<?php if ($this->session->flashdata('vtmpsms')!=null){ ?>
+									<div class="alert alert-success alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('vtmpsms');?>
+									</div>
+									<?php } else if ($this->session->flashdata('xtmpsms')!=null){ ?>
+									<div class="alert alert-danger alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('xtmpsms');?>
+									</div>		
+									<?php } ?>
+								 	<?=$tmpsms['table'];?>
+								 	<h4 class="text-primary "><span class="bg-info"><i class="fa fa-info-circle"></i> Option obtained from SMS Template, add more SMS Template for more option.</span></h4> 
+								</div>
+								<div class="panel-footer text-right">
+									<?=$tmpsms['finputs'];?>
+									<?=$tmpsms['fbtn'];?>
+								</div>
+							</div>
+
+						<?php  
+						echo form_close();
+						?>
+
 						</div>
 						
 				</div>
@@ -325,7 +359,37 @@
 						</div>
 				</div>
 				<div class="tab-pane table-responsive" id="pagelist">
-                    
+                    	<div class="col-md-6">
+							<?php echo form_open(base_url('Organizer/setting#pagelist'),array('name'=>'fregistform','class'=>'form-horizontal','method'=>'POST'));?>
+							<div class="panel panel-primary">
+								<div class="panel-heading panel-heading-sm">
+									<h3 class="panel-title text-center"><span class="fa fa-file-text"></span> <b><?=$registform['title'];?></b></h3>
+								</div>
+								<div class="panel-body">
+									<?php if ($this->session->flashdata('vregist')!=null){ ?>
+									<div class="alert alert-success alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('vregist');?>
+									</div>
+									<?php } else if ($this->session->flashdata('xregist')!=null){ ?>
+									<div class="alert alert-danger alert-dismissible" role="alert">
+										<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+										<?=$this->session->flashdata('xregist');?>
+									</div>		
+									<?php } ?>
+								 	<?=$registform['table'];?>
+								</div>
+								<div class="panel-footer text-right">
+									<?=$registform['finputs'];?>
+									<?=$registform['fbtn'];?>
+								</div>
+							</div>
+
+						<?php  
+						echo form_close();
+						?> 
+						</div>
+						
 						<div class="col-md-6"> 
 							<?php echo form_open(base_url('Organizer/setting#pagelist'),array('name'=>'fpageform','class'=>'form-horizontal','method'=>'POST'));?>
 							<div class="panel panel-primary">
