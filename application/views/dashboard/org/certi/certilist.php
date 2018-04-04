@@ -279,6 +279,24 @@
         </div>
     </div>
 	</div>
+
+	<!-- Modal preview certi-->
+	<div class="modal fade" id="previewprint" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content ">
+        	<div class="modal-header">
+        		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        		<h4 class="modal-title"><i class="fa fa-print"></i> Preview Print</h4>
+        	</div>
+        	<div id="imgpreview" class="text-center" style="padding:20px;">
+        	</div>
+        			
+        <div class="modal-footer ">
+        	 <button class="btn btn-default text-center"><i class="fa fa-print fa-3x"></i>Print</button>
+        </div>
+        </div>
+    </div>
+	</div>
 	
 	<!-- Modal Delete Data-->
 	<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -318,6 +336,22 @@
         </div>
     </div>
 	</div>
+
+	<!-- Modal Take Data-->
+	<div class="modal fade" id="confirm-take" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4><i class="fa fa-check"></i> Are you sure want to change 'Certificate Status' into taken?</h4>
+            </div>
+			
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary btn-ok btn-sm">Take</a>
+            </div>
+        </div>
+    </div>
+	</div>
 	
 	
 	<script type="text/javascript">
@@ -331,6 +365,10 @@
 
 	//delete modal confirmation
 	$('#confirm-delete').on('show.bs.modal', function(e) {
+		$(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+		});
+
+	$('#confirm-take').on('show.bs.modal', function(e) {
 		$(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
 		});
 	
@@ -354,6 +392,15 @@
 	//details data	
 		$('#DetailModal').on("hidden.bs.modal", function (e) {
 		$(e.target).removeData("bs.modal").find(".modal-body").empty();
+		});
+
+	//preview certi
+		$('#previewprint').on("show.bs.modal", function (e) {
+			$(this).find("#imgpreview").append('<img src="'+$(e.relatedTarget).data('href')+'" class="img img-thumbnail" width="80%"/>');
+		});
+
+		$('#previewprint').on("hidden.bs.modal", function (e) {
+		$(e.target).find("#imgpreview").html('');
 		});
 			
 			

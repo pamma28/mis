@@ -32,10 +32,10 @@
 						</div>
 						<div class="panel-body">
 								
-								<h4><b>Certificate No: <?=$nocerti?></b></h4>
-								<h4><b>Issued Date: <?=$certidate?></b></h4>
-								<h4><b>Level: <?=$lvlname;?></b></h4>
-								<h4><b>Status: </b></h4>
+								<h4><b>Certificate No: <span class="text-primary"><?=$nocerti?></span></b></h4>
+								<h4><b>Issued Date: <span class="text-green"><?=$certidate?></span></b></h4>
+								<h4><b>Level: <span class="text-blue"><?=$lvlname;?></span></b></h4>
+								<h4><b>Status: <span class="text-yellow"><?=$cstatus;?></b></span></h4>
 							<hr class="clearfix">
 									<?=$mysche;?>
 						</div>
@@ -61,6 +61,8 @@
         </div>
     </div>
 	</div>
+
+	
 	
 	<script type="text/javascript">
 		//delete modal confirmation

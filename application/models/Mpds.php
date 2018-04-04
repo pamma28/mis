@@ -238,4 +238,21 @@ class Mpds extends CI_Model{
 		}
 	
 	}
+
+	public function updatestatus($txt,$user,$onoff){
+		$this->db->select('ustatus');
+		$this->db->where('uuser',$user);
+		$stat = $this->db->get('user')->row()->ustatus;
+		if($onoff){
+			if (strpos($stat, $txt) !== false) {
+				$newstat = $stat;
+			} else {
+				$newstat = $stat.','.$txt;
+			}
+		}else{
+			$newstat = str_replace(','.$txt, '', $stat);
+		}
+		$this->db->where('uuser',$user);
+		return 	$this->db->update('user',array('ustatus'=>$newstat));
+	}
 }

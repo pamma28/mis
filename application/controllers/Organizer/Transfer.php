@@ -602,14 +602,18 @@ class Transfer extends Org_Controller {
 	}
 	
 	public function checklunas($user=null){
-		$this->load->model('Mpay');
+		$this->load->model(array('Mpay','Mpds'));
 		$price = $this->Msetting->getset('price');
 		if ($user!=null){
 		$r = $this->Mpay->checkfullpaid($user);
 			if ($r>=$price){
 			$h = $this->Mpay->updatefullpaid($user,1);
+				//update status member
+				$this->Mpds->updatestatus('Completed Payment',$user,true);
 			} else {
 			$h = $this->Mpay->updatefullpaid($user,0);
+				//update status member
+				$this->Mpds->updatestatus('Completed Payment',$user,false);
 			}
 		} else{
 			$alluser = $this->Mpay->getalluser();
@@ -618,13 +622,16 @@ class Transfer extends Org_Controller {
 				$r = $this->Mpay->checkfullpaid($val['uuser']);
 				if ($r>=$price){
 				$h = $this->Mpay->updatefullpaid($val['uuser'],1);
+				//update status member
+				$this->Mpds->updatestatus('Completed Payment',$val['uuser'],true);
 				} else {
 				$h = $this->Mpay->updatefullpaid($val['uuser'],0);
+				//update status member
+				$this->Mpds->updatestatus('Completed Payment',$val['uuser'],false); 
 				}
 			}
 			$this->session->set_flashdata('v',"Update Full Paid status of ".$tot." User(s) success");
-			$this->index();
-			$this->session->set_flashdata('v',null);
+			redirect('Organizer/Payment');
 		
 		}
 	}

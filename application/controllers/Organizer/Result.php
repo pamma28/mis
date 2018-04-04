@@ -726,7 +726,12 @@ class Result extends Org_Controller {
 						);
 			$this->Mresult->updateresult($fdata,$idresult,$v);
 			}
-
+			//determine final score
+			$this->Mresult->determinefinalscore($idresult);
+			//update user status
+			$this->load->model('Mpds');
+			$member = $this->Mresult->detailresult(array('a.uuser'),$idresult)[0]['uuser'];
+			$this->Mpds->updatestatus('Test Result',$member,true);
 		$fpic= $this->session->userdata('user');
 		$arrdetail = $this->Mresult->getScoreMember($idresult,$fpic);
 		$qscore = $arrdetail->q_score;

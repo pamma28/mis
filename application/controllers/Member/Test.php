@@ -54,7 +54,7 @@ class Test extends Mem_Controller {
 							<a href="'.base_url('Member/Test/detailtest?id=').$enc.'" alt="Detail Data" class="btn btn-info btn-sm" data-toggle="modal" data-target="#DetailModal" title="Detail Test"><i class="fa fa-list-alt"></i> Detail Test</a>
 								</div>';
 					} else {
-						$menu = '<div class="btn-group btn-group-vertical"><a href="'.base_url('Member/Test/resulttest?id=').$enc.'" alt="Result Test" class="btn btn-info btn-sm" data-toggle="modal" data-target="#DetailModal" title="Check Result"><i class="fa fa-info-circle"></i> Check Result</a></div>';
+						$menu = '<div class="btn-group btn-group-vertical"><a href="'.base_url('Member/Test/testresult').'" alt="Result Test" class="btn btn-info btn-sm"  title="Check Result"><i class="fa fa-info-circle"></i> Check Result</a></div>';
 					}
 				$temp[$key]['menu'] = $menu;
 				unset($temp[$key]['idjdwl']);
@@ -163,7 +163,10 @@ class Test extends Mem_Controller {
 					$data['active'] = '';
 					$data['remain'] = (strtotime($arrsche['jstart']."+".$arrsche['tduration']." minutes"));
 					$data['runout'] = ($data['remain'] > strtotime(date('Y-m-d H:i:s'))) ? '1' : '0';
-											
+					
+					//update status member
+					$this->load->model('Mpds');
+					$this->Mpds->updatestatus('Done Test',$this->session->userdata('user'),true);						
 				} else {
 					$data['active'] = '1';
 				}

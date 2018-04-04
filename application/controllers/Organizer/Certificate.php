@@ -19,7 +19,7 @@ class Certificate extends Org_Controller {
 	
 		//===================== table handler =============
 		$data['thisperiod']=$this->Msetting->getset('period');
-		$column=['certificate.idcerti','nocerti','certidate','uname','unim','lvlname','cspeak','cread','clisten','cwrite','cgrammar'];
+		$column=['certificate.idcerti','nocerti','certidate','uname','unim','lvlname','cspeak','cread','clisten','cwrite','cgrammar','ctaken'];
 		$header = $this->returncolomn($column);
 		unset($header[0]);
 		// checkbox checkalldata
@@ -182,12 +182,15 @@ class Certificate extends Org_Controller {
 							));
 				array_unshift($temp[$key],$ctable);
 				$temp[$key]['uname']='<span class="idname">'.$temp[$key]['uname'].'</span>';
+				$temp[$key]['ctaken'] = ($value['ctaken']=='1') ? '<label class="label label-success">Taken</label>' : '<label class="label label-warning">Not Yet</label>';
 				$temp[$key]['certidate']=date('d-M-Y',strtotime($temp[$key]['certidate'])).'<br/>'.date('H:i:s',strtotime($temp[$key]['certidate']));
 				//manipulation menu
 				$enc = $value['idcerti'];
 				unset($temp[$key]['idcerti']);
-				$temp[$key]['menu']='<div class="btn-group-vertical"><a href="'.base_url('Organizer/Certificate/printcerti?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Full Data" class="btn btn-primary btn-sm"><i class="fa fa-print"></i> </a>'.
-				'<a href="'.base_url('Organizer/Certificate/editcerti?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Edit Data" class="btn btn-info btn-sm"><i class="fa fa-edit"></i></a>'.
+				$temp[$key]['menu']='<div class="btn-group-vertical">
+				<a href="#" data-href="'.base_url('Organizer/Certificate/takencerti?id=').$enc.'" data-target="#confirm-take" data-toggle="modal" alt="Take Certificate" title="Take Certificate" class="btn btn-info btn-sm"><i class="fa fa-check"></i> </a>'.
+				'<a href="#" data-href="'.base_url('Organizer/Certificate/previewcerti/'.$enc).'" data-target="#previewprint" data-toggle="modal" role="button" alt="Print Data" class="btn btn-primary btn-sm"><i class="fa fa-print"></i> </a>'.
+				'<a href="'.base_url('Organizer/Certificate/editcerti?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Edit Data" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></a>'.
 				'<a href="#" data-href="'.base_url('Organizer/Certificate/deletecerti?id=').$enc.'" alt="Delete Data" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash"></i></a></div>';
 				}
 		$data['listlogin'] = $this->table->generate($temp);
@@ -933,8 +936,8 @@ class Certificate extends Org_Controller {
 		
 		//create title
 		$period = $this->Msetting->getset('period');
-		$data['title']="Member Account Data ".$period." Period<br/><small>".$title."</small>";
-		$this->load->view('dashboard/org/akun/printacc', $data);
+		$data['title']="Certificate Data ".$period." Period<br/><small>".$title."</small>";
+		$this->load->view('dashboard/org/certi/printcerti', $data);
 		
 	}
 
@@ -1253,6 +1256,25 @@ class Certificate extends Org_Controller {
 		}
 		return implode('/',$arrformat);
 	}
+
+	public function takencerti(){
+		$idcerti = $this->input->get('id');
+		if($idcerti!=''){
+			$r =$this->Mcerti->updatecerti(array('ctaken'=>1),$idcerti);
+			if ($r) {
+				$this->session->set_flashdata('v','Update Certificate Taken Success');
+				//update member status
+				$this->load->model('Mpds');
+				$member = $this->Mcerti->detailcerti(array('user.uuser'),$idcerti)[0]['uuser'];
+				$this->Mpds->updatestatus('Received Certificate',$member,true);
+			} else {
+				$this->session->set_flashdata('x','Update Certificate Taken Failed');
+			}
+		}else{
+			$this->session->set_flashdata('x','Please make sure you select correct id of Certificate');
+		}
+		redirect('Organizer/Certificate');
+	}
 	
 	public function savesetting(){
 		if(null!= $this->input->post('period')){
@@ -1330,8 +1352,8 @@ class Certificate extends Org_Controller {
 	}
 
 	public function returncolomn($header) {
-	$find=['nocerti','certidate','uname','unim','lvlname','cspeak','cread','clisten','cwrite','cgrammar'];
-	$replace = ['Certicate Number','Certificate Date','Full Name','NIM','Level','Speak','Read','Listen','Write','Grammar'];
+	$find=['nocerti','certidate','uname','unim','lvlname','cspeak','cread','clisten','cwrite','cgrammar','ctaken'];
+	$replace = ['Certicate Number','Certificate Date','Full Name','NIM','Level','Speak','Read','Listen','Write','Grammar','Taken'];
 		foreach ($header as $key => $value){
 		$header[$key]  = str_replace($find, $replace, $value);
 		}

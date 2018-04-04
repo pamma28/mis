@@ -239,7 +239,7 @@ class Managepds extends Mem_Controller {
 						'class'=>'form-control',
 						'max-length'=>13,
 						'size'=>'50');
-		$r[] = form_input($fhp);
+		$r[] = form_input($fhp).'<p class="text-danger hidden"><i class="fa fa-ban"></i> Phone Number has taken</p>';
 		
 		$fsoc = array('name'=>'fsocmed',
 						'id'=>'SocialMedia',
@@ -324,6 +324,12 @@ class Managepds extends Mem_Controller {
 					'uaddrnow' => $this->input->post('faddrnow'),
 					'uaddhome' => $this->input->post('faddrhome')
 					);
+		//update completed data
+		if (count(array_filter($fdata))==11) {$this->Mpds->updatestatus('Completed Data',$this->session->userdata('user'),1); 
+			} else {
+			$this->Mpds->updatestatus('Completed Data',$this->session->userdata('user'),0);
+			}
+
 		$r = $this->Mpds->updatepds($fdata,$this->session->userdata('user'));
 		
 		if ($r){
@@ -334,72 +340,6 @@ class Managepds extends Mem_Controller {
 		redirect(base_url('Member/Managepds'));
 	}
 	
-		
-	public function savepds(){
-	
-	// separation save method
-	if ($this->input->post('fpilusername')!=null){
-		$us = $this->input->post('fpilusername');
-		$fdata = array (
-					'uname' => $this->input->post('ffullname'),					
-					'uupdate' => date("Y-m-d H:i:s"),
-					'idjk' => $this->input->post('fjk'),
-					'unim' => $this->input->post('fnim'),
-					'idfac' => $this->input->post('ffaculty'),
-					'ubplace' => $this->input->post('fbplace'),
-					'ubdate' => $this->input->post('fbdate'),
-					'uemail' => $this->input->post('femail'),
-					'uhp' => $this->input->post('fhp'),
-					'ubbm' => $this->input->post('fsocmed'),
-					'uaddrnow' => $this->input->post('faddrnow'),
-					'uaddhome' => $this->input->post('faddrhome'),
-					'ustatus' => 'Registered',
-					'ulunas' => '0'
-					);
-		$r = $this->Mpds->updatepds($fdata,$us);
-	} else if ($this->input->post('fusername')!=null){
-		$fdata = array (
-					'ucreated' => date("Y-m-d H:i:s"),
-					'uupdate' => date("Y-m-d H:i:s"),
-					'uuser' => $this->input->post('fusername'),
-					'upass' => md5(date("dmY",strtotime($this->input->post('fbdate')))),
-					'uname' => $this->input->post('ffullname'),
-					'idjk' => $this->input->post('fjk'),
-					'unim' => $this->input->post('fusername'),
-					'idfac' => $this->input->post('ffaculty'),
-					'ubplace' => $this->input->post('fbplace'),
-					'ubdate' => $this->input->post('fbdate'),
-					'uemail' => $this->input->post('femail'),
-					'uhp' => $this->input->post('fhp'),
-					'ubbm' => $this->input->post('fsocmed'),
-					'uaddrnow' => $this->input->post('faddrnow'),
-					'uaddhome' => $this->input->post('faddrhome'),
-					'ustatus' => 'Registered',
-					'ulunas' => '0',
-					'idrole' => '3',
-					'uallow' => '1'
-					);
-		$r = $this->Mpds->addpds($fdata);
-	}
-		if ($r){
-		$this->session->set_flashdata('v','Add Registration Data Success');
-		} else {		
-		$this->session->set_flashdata('x','Add Registration Data Failed');
-		}
-		redirect(base_url('Member/Managepds'));
-	
-	}
-
-	public function deletepds(){
-		$id = $this->input->get('id');
-		$r = $this->Mpds->deletepds($id);
-	if ($r){
-		$this->session->set_flashdata('v','Delete Success');
-		} else{
-		$this->session->set_flashdata('x','Delete Failed');
-		} 
-		redirect(base_url('Member/Managepds'));
-	}
 
 	public function printpds(){
 		//catch column value

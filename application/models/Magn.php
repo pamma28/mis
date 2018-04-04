@@ -99,14 +99,32 @@ class Magn extends CI_Model{
 		$this->db->limit($per_page,(($page-1)*($per_page)));
 			if ($filter != null){
 			foreach($filter as $f=>$v){
-				if (($f=='smstype')){
-				$this->db->like('bcket','Type: '.$v);
-				} else{
+				
 					$this->db->like($f,$v);			
-				}
 			}
 		}
 		$this->db->where('agdate >= CURDATE()');
+		$this->db->join('user','agenda.uuser=user.uuser','left');
+		$this->db->order_by('agdate','desc');
+		$this->db->order_by('agtime','desc');
+		$q = $this->db->get('agenda');
+		$qr = array();
+		if ($q->num_rows() > 0){	
+			$qr = $q->result_array();
+			}
+	return $qr;
+	}
+
+	public function showprevagn($column = null, $per_page = null, $page = null, $filter = null){
+		$this->db->select($column);
+		$this->db->limit($per_page,(($page-1)*($per_page)));
+			if ($filter != null){
+			foreach($filter as $f=>$v){
+				
+					$this->db->like($f,$v);			
+			}
+		}
+		$this->db->where('agdate < CURDATE()');
 		$this->db->join('user','agenda.uuser=user.uuser','left');
 		$this->db->order_by('agdate','desc');
 		$this->db->order_by('agtime','desc');

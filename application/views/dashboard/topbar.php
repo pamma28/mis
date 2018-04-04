@@ -61,7 +61,7 @@
 							});
 		  });
 	  		$(window).on('focus', function() {
-	  			var urlrdr = "<?=base_url('Login?rdr=');?>"+window.location.pathname;
+	  			var urlrdr = "<?=base_url('Login?rdr=');?>"+encodeURIComponent(window.location.pathname);
 	  			$.post('<?php echo base_url('Login/checkloggedin'); ?>',{},function(d){
 	  				if(d=='0'){
 	  					$("#LoggedModal").modal("show");

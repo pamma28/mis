@@ -17,11 +17,17 @@ class Dashboard extends Mem_Controller {
 
 	public function index(){
 		//============= data progress =========
-		$arrprog = ['Registered','Complete Form','Complete Payment','Choose Schedule','Do Test','Test Result','Receive Certificate','Graduate'];
+		$arrprog = ['Registered','Completed Data','Completed Payment','Choosen Schedule','Done Test','Test Result','Received Certificate','Graduated'];
 
-		$stat = $this->Mlogin->getuserstatus($this->session->userdata('user'));
+		$stat = explode(',', $this->Mlogin->getuserstatus($this->session->userdata('user')));
 		$tmpprog=''; $style = 'primary'; $badge = 'fa-check'; $details ='Completed'; $bgpanel='';
 		foreach($arrprog as $k=>$v){
+			if (!in_array($v, $stat)) {
+				$badge = 'fa-times'; 
+				$style = 'danger';
+				$details = 'Incomplete';
+				$bgpanel = 'text-gray disabled';
+			}
 			$tmpprog .='<li class="timeline-item">
 							<div class="timeline-badge '.$style.'"><i class="fa '.$badge.'"></i></div>
 							<div class="timeline-panel '.$bgpanel.'">
@@ -32,12 +38,6 @@ class Dashboard extends Mem_Controller {
 								</div>
 							</div>
 						</li>';
-			if ($stat==$v) {
-				$badge = 'fa-times'; 
-				$style = 'danger';
-				$details = 'Incomplete';
-				$bgpanel = 'text-gray disabled';
-			}
 		}
 
 		$data['arrprogress'] = $tmpprog;

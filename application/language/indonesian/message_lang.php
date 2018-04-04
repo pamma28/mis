@@ -19,6 +19,7 @@ $lang = array(
 		'close' => "Tutup",
 		'menu' => "Pilihan",
 		'account' => "Pengaturan Akun",
+		'Home' => 'Halaman Awal',
 
 
 
@@ -80,8 +81,30 @@ $lang = array(
 		'mastergen' => "Data Jenis Kelamin",
 		'masterrole' => "Data Hak Akses",
 		'backup' => "Unduh Data",
-		'set_rc' => "Pengaturan RC"
+		'set_rc' => "Pengaturan RC",
 
+	//========== Member ==========
+		'mempds' => "Pendaftaran",
+		'mypds' => "Data Pendaftaranku",
+		'editmypds' => "Ubah Data Pendaftaranku",
+		'mempay' =>  "Pembayaran",
+		'mempayproc' => "Prosedur Pembayaran",
+		'memsendpay' => "Permintaan Validasi",
+		'mempayvalid' => "Hasil Validasi",
+		'memmypay' => "Pembayaranku",
+		'memschetest' => "Jadwal & Tes",
+		'memsche' => "Jadwal",
+		'memmysche' =>  "Jadwalku",
+		'memchosesche' => "Pilih Jadwal",
+		'memtest' => "Tes",
+		'memmytest' => "Tesku",
+		'memdotest' => "Kerjakan Tes",
+		'memtestresult' => "Hasil Tes",
+		'memcerti' => "Sertifikat",
+		'mycerti' => "Sertifikatku",
+		'prevcerti' => "Pratinjau Sertifikat",
+		'memsetacc' => "Pengaturan Akun"
+		
 	);
 
  

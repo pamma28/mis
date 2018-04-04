@@ -230,4 +230,10 @@ class Mtransfer extends CI_Model{
 		}
     return $return;
 	}
+
+	public function gettotaltransfernotconfirm(){
+		$this->db->select('idttrans');
+		$this->db->where('ttapprove',null);
+		return $this->db->count_all_results("ttransfer");
+	}
 }

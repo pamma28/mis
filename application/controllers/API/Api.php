@@ -15,45 +15,35 @@ class Api extends CI_Controller {
     }
 
 	public function index(){
-		$user = 'member17';
+		$user = 'org2';
 		$tags = array(
-			'user'=>$user,
-			'type'=>'schemem'
+			
+			'type'=>'backupdb'
 			);
 
 		$postdata = array(
-				'do'=>'schemem'
+				'do'=>'backupdb',
+				'user'=>'org'
 				);
 		
-        $startdate = "2018-03-29 18:15:20";
-		$this->cronjob->createcron($user,$tags,$startdate,$postdata);
+        $startdate = "2018-03-30 14:18:20";
+		//$this->cronjob->createcron($user,$tags,$startdate,$postdata,'-1','1month');
+		$this->cronjob->deletecron($user,$tags);
 
 	}
 
 	public function test(){
-		$userkey = 'org';
-		$passkey = md5('org');
-		$url = base_url('API/api/sendsms/'.urlencode($userkey).'/'.urlencode($passkey));
-		$myvars = 'do=schemem';
-
-		$ch = curl_init( $url );
-		curl_setopt( $ch, CURLOPT_POST, 1);
-		curl_setopt( $ch, CURLOPT_POSTFIELDS, $myvars);
-		curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, 1);
-		curl_setopt( $ch, CURLOPT_HEADER, 0);
-		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1); 
-		$response = curl_exec( $ch );
-
-		print $response;
+		
 	}
 
-	public function sendsms($userkey,$passkey){
+	public function doing($userkey,$passkey){
 		if(($userkey!=null) and ($passkey!=null)){
 			$user = urldecode(($userkey));
 			$pass = urldecode(($passkey));
 			if (md5($user)==$pass){
 				$do = $this->input->post('do');
-				$res = $this->switchsmsdo($do,'085728828648');
+
+				$res = $this->switchdo($do,'085728828648');
 				$return = array(
 					'status'=>$res,
 					'valid'=>1,
@@ -79,18 +69,18 @@ class Api extends CI_Controller {
 
 	}
 
-	public function switchsmsdo($do,$number){
+	public function switchdo($do,$user){
 		switch ($do) {
 			case 'schemem':
 				//send sms schedule reminder
-				//$this->Msetting->getset('smsreminderschedule');
 				$period = $this->Msetting->getset('period');
+				$title = $this->Msetting->getset('webtitle');
 				$smscontent =$this->Mtmp->gettmpdata($this->Msetting->getset('smsreminderschedule'))->tmpcontent;
 				
 				$to = 'pamma.cyber@gmail.com';//$email;
 				$ccmail=null;
 				$bcfrom = "API";
-				$sub = 'Regular Class '.$period.' - Test API';
+				$sub = $title.' '.$period." - Test Reminder\n";
 				$attfile = null;
 				
 				if ((null!=$to) and (null!=$sub)){
@@ -102,8 +92,9 @@ class Api extends CI_Controller {
 				}
 				return $ret;
 				break;
-			case 'regist':
-				//send sms registration success
+			case 'backupdb':
+				//backup db periodically
+				print('asd');
 				break;
 			default:
 				//send sms default

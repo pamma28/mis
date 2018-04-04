@@ -256,4 +256,16 @@ class Mtest extends CI_Model{
 		return $this->db->count_all_results("resulttest");
 
 	}
+
+	public function gettotalactivetest(){
+		$this->db->select('idjdwl');
+		$this->db->where('jactive','1');
+		return $this->db->count_all_results("jdwl_tes");
+	}
+
+	public function gettotresulttest(){
+		$this->db->select('idresult');
+		$this->db->where('q_score',null);
+		return $this->db->count_all_results("resulttest");
+	}
 }

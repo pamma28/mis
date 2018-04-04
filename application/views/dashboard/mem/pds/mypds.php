@@ -35,7 +35,7 @@
 					<div class="pull-right">
 						<div class="btn-group">
 							
-							<a href="#" data-href="<?=base_url('Member/Registration/printpds');?>" class="btn btn-info" data-toggle="modal" data-target="#confirm-print" title="Print Data"><i class="fa fa-print fa-lg"></i> Print Data</a>
+							<a href="#" data-href="<?=base_url('Member/Managepds/printpds');?>" class="btn btn-info" data-toggle="modal" data-target="#confirm-print" title="Print Data"><i class="fa fa-print fa-lg"></i> Print Data</a>
 						</div>
 					</div>
 					<h5></h5>

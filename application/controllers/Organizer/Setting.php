@@ -420,8 +420,8 @@ class Setting extends Org_Controller {
 		$this->table->set_template($tmpl);
 		$this->table->set_heading($header);
 
-		$columnpg=['tmpdashhome','tmpdashmem','tmpdashorg','tmpdashadm','tmppayproc'];
-		$labelpg = ['Homepage','Dashboard Member','Dashboard Organizer','Dashboard Admin','Payment Procedure (Member)'];
+		$columnpg=['tmpdashhome','tmpdashmem','tmpdashorg','tmpdashadm','tmppayproc','tmpaboutsef','tmpaboutrc'];
+		$labelpg = ['Homepage','Dashboard Member','Dashboard Organizer','Dashboard Admin','Payment Procedure (Member)','About SEF','About Program (RC)'];
 		foreach ($columnpg as $k => $v) {		
 			$temppg[$k] =array($labelpg[$k], 
 						form_dropdown(array(

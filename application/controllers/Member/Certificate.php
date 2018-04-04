@@ -27,7 +27,7 @@ class Certificate extends Mem_Controller {
 		$data['enddate'] = date('d-M-Y', $endcerti);
 		//===================== table handler =============
 		$data['thisperiod']=$this->Msetting->getset('period');
-		$column=['lvlname','nocerti','certidate','clisten','cgrammar','cread','cwrite','cspeak'];
+		$column=['lvlname','nocerti','certidate','clisten','cgrammar','cread','cwrite','cspeak','ctaken'];
 		$certi = $this->Mcerti->datamycerti($column,0,1)[0];
 		unset($column[0],$column[1],$column[2]);
 		$retcolumn = $this->returncolomn($column);
@@ -45,6 +45,7 @@ class Certificate extends Mem_Controller {
 		$data['nocerti'] = $certi['nocerti'];
 		$data['lvlname'] = $certi['lvlname'];
 		$data['certidate'] = date("d M Y", strtotime($certi['certidate']));
+		$data['cstatus'] = ($certi['ctaken']) ? 'Taken' : 'Available in HOS';
 		
 		//=============== Template ============
 		$data['jsFiles'] = array(

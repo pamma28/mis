@@ -35,7 +35,7 @@
 		  //check email availabelity
 		  $('#Email').bind('keyup change', function() {
 			var email = $('#Email').val();
-		    $.post('<?php echo base_url('Organizer/Memberaccount/checkemail'); ?>', {email: email}, function(d) {
+		    $.post('<?php echo base_url('Register/checkemail'); ?>', {email: email}, function(d) {
 		                        if (d == 1)
 		                        {
 		                            $('#valsuccess').css('display', 'none');
@@ -50,6 +50,23 @@
 									$('#submit').removeAttr('disabled');
 		                        }
 		                    });
+			});
+
+		  $('#nohp').bind('keyup change', function(e) {
+			var hp = $(this).val().replace('_','');
+			var eid = $(this).attr('id');
+			$.post('<?php echo base_url('Register/checkphone'); ?>', {nohp: hp}, function(d) {
+								if (d == 1)
+								{
+									$('#'+eid).parent().find('.text-danger').removeClass('hidden');
+									$('#submit').attr('disabled', 'disabled');
+								}
+								else
+								{
+									$('#'+eid).parent().find('.text-danger').addClass('hidden');
+									$('#submit').removeAttr('disabled');
+								}
+							});
 			});
 	</script>
 

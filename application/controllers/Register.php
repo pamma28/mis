@@ -26,6 +26,7 @@ class Register extends CI_Controller {
 						'id'=>'user',
 						'title'=>'Your Username',
 						'placeholder'=>'Username',
+						'autocomplete'=>'off',
 						'required'=>'required',
 						'value'=>set_value('fuser'),
 						'class'=>'form-control input-lg',
@@ -35,6 +36,7 @@ class Register extends CI_Controller {
 		$fnim = array('name'=>'fnim',
 						'id'=>'nim',
 						'title'=>'Your NIM',
+						'autocomplete'=>'off',
 						'placeholder'=>'NIM',
 						'required'=>'required',
 						'value'=>set_value('fnim'),
@@ -46,6 +48,7 @@ class Register extends CI_Controller {
 						'id'=>'nama',
 						'title'=>'Your Full Name',
 						'placeholder'=>'Full Name',
+						'autocomplete'=>'off',
 						'required'=>'required',
 						'value'=>set_value('fname'),
 						'class'=>'form-control',
@@ -58,6 +61,7 @@ class Register extends CI_Controller {
 						'id'=>'ktp',
 						'placeholder'=>'Facebook/twitter or both link',
 						'value'=>set_value('fsocmed'),
+						'autocomplete'=>'off',
 						'class'=>'form-control',
 						'maxlength'=>'50');
 		$data['insoc'] = form_input($fsoc);
@@ -119,6 +123,7 @@ class Register extends CI_Controller {
 						'value'=>set_value('femail'),
 						'required'=>'required',
 						'class'=>'form-control',
+						'autocomplete'=>'off',
 						'maxlength'=>'50',
 						'type'=>'email');
 		$data['inemail'] = form_input($femail);
@@ -167,6 +172,7 @@ class Register extends CI_Controller {
 						'value'=>null,
 						'required'=>'required',
 						'class'=>'form-control',
+						'autocomplete'=>'off',
 						'maxlength'=>'5',
 						'type'=>'text');
 
@@ -201,7 +207,7 @@ class Register extends CI_Controller {
 		
 
 		//=============== captcha ==============
-		if ($this->form_validation->run()==false) {
+		if ((null!=$this->session->flashdata('failedregist')) or ($this->form_validation->run()==false)) {
 		$this->load->library('captcha');
 		$captcha = $this->captcha->createcaptcha();
 		$this->session->set_userdata('imgcaptcha',$captcha->inline());
@@ -291,7 +297,7 @@ class Register extends CI_Controller {
 			}
 		} else{
 			$this->session->set_flashdata('failedregist','Your captcha is incorrect');
-			$this->index();
+			redirect("Register");
 		}
 		
 	}
@@ -309,7 +315,8 @@ class Register extends CI_Controller {
 		$to = $formdata['uemail'];
 		$ccmail=null;
 		$bcfrom = "SEF Membership";
-		$sub = 'Regular Class '.$period.' - Email Verification';
+		$progname = $this->Msetting->getset('webtitle');
+		$sub = $progname.' '.$period.' - Email Verification';
 		$attfile = null;
 		
 		if ((null!=$to) and (null!=$sub)){
@@ -339,7 +346,7 @@ class Register extends CI_Controller {
 			$iduser = $this->Mlogin->getuserformvalidcode($validcode);
 			if(!empty($iduser)){
 				$user = $iduser[0]->uuser;
-				$dtuser = $this->Mlogin->detailacc(array('unim','uemail','uvalidated'),$user)[0];
+				$dtuser = $this->Mlogin->detailacc(array('unim','uemail','uvalidated','uhp'),$user)[0];
 
 				if ($dtuser['uvalidated']<>'1'){
 					// email handler
@@ -347,10 +354,11 @@ class Register extends CI_Controller {
 					$idtmp = htmlspecialchars_decode($this->Msetting->getset('mailtemplate'));
 					$tmpcontent = htmlspecialchars_decode($this->Mtmp->gettmpdata($this->Msetting->getset('mailregistsuccess'))->tmpcontent);
 					$rawtext = str_replace("{content_email}", $tmpcontent, $idtmp);
-					$to = 'pamma.cyber@gmail.com';//$dtuser['uemail'];
+					$to = $dtuser['uemail'];
 					$ccmail=null;
 					$bcfrom = "SEF Membership";
-					$sub = 'Regular Class '.$period.' - Registration Success';
+					$progname = $this->Msetting->getset('webtitle');
+					$sub = $progname.' '.$period.' - Registration Success';
 					$attfile = null;
 				
 					if ((null!=$to) and (null!=$sub)){
@@ -360,11 +368,18 @@ class Register extends CI_Controller {
 						
 						//================= gmail send ===========
 						$ret = $this->gmail->sendmail($to,$ccmail,$sub,$bcfrom,$decode,$attfile);
-					}		
+					}
+					//sms handler
+					$smscontent = $this->Mtmp->gettmpdata($this->Msetting->getset('smsregistsuccess'))->tmpcontent;
+					$decodesms = $this->convertcode->decodesmsmsg($smscontent,$dtuser['uhp']);	
+					//================= send sms ===========
+						$this->load->library('sms');
+						$ret = $this->sms->sendsms($dtuser['uhp'],$progname."\n".$decodesms);
+
 
 					// data reset password
 					$rstcode = md5($this->encryption->encrypt($user.$dtuser['unim'].$dtuser['uemail'].date('Y-m-d H:i:s')));
-					$this->Mlogin->updateacc(array('uvalidated'=>'1','urstcode'=>$rstcode,'ursttime'=>date('Y-m-d H:i:s'),'upass'=>md5($dtuser['unim'])),$user);
+					$this->Mlogin->updateacc(array('uvalidated'=>'1','urstcode'=>$rstcode,'ursttime'=>date('Y-m-d H:i:s'),'upass'=>md5($dtuser['unim']),'ustatus'=>'Registered'),$user);
 					$data['rstcode']=$rstcode;
 					$data['nim'] = $dtuser['unim'];
 					$data['email'] = $dtuser['uemail'];

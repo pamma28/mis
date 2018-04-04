@@ -174,5 +174,23 @@ class Mresult extends CI_Model{
 		$this->db->where('uuser',$id);
 		return $this->db->update('user',$data);
 	}
+
+	public function determinefinalscore($id){
+		return $this->db->query("
+		UPDATE `resulttest`
+		SET q_score = (
+		   SELECT SUM(tot) as tmpscore from (
+		    SELECT ((SUM(rtrue)/count(*))*(select qpercent from quo_sbjct WHERE idsubject=subject.idsubject and idtest=resulttest.idtest)) as tot
+		    FROM resultqa
+		    LEFT JOIN `question` ON question.idq = resultqa.idq
+		    LEFT JOIN `qtype` ON qtype.idqtype = question.idqtype
+		    LEFT JOIN `subject` ON subject.idsubject = question.idsubject
+		    LEFT JOIN `resulttest` ON resultqa.idresult = resulttest.idresult
+		    WHERE resultqa.idresult = $id
+		    GROUP BY question.idsubject) as b
+		    )   
+		    WHERE resulttest.idresult = $id;
+		");
+	}
 	
 }

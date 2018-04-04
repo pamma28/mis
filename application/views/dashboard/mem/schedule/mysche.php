@@ -25,7 +25,7 @@
 			
 		</div>
 		<div class="box-body table-responsive">
-			<div class="panel panel-default">
+			<div class="panel panel-primary">
 				<div class="panel-heading panel-heading-sm">
 					<h5 class="panel-title text-center"><b>My Schedule</b></h5>
 				</div>
@@ -34,19 +34,37 @@
 				
 				</div>
 			</div>
+			<hr class="clearfix" />
+			<div class="panel panel-default">
+				<div class="panel-heading panel-heading-sm">
+					<h5 class="panel-title text-center"><b>Previous Schedule</b></h5>
+				</div>
+				<div class="panel-body">
+				<?=$myprevsche;?>
+				
+				</div>
+			</div>
 			<div class="box box-info">
 					<div class="box-body">
 						<h4><b>Setting Your Reminder</b></h4>
-						<?php echo form_open(base_url('Member/Scheduletest/myschedule'),array('class'=>'form-inline','method'=>'POST','id'=>'formreminder'));?>
+						<?php echo form_open(base_url('Member/Scheduletest/savereminder'),array('class'=>'form-inline','method'=>'POST','id'=>'formreminder'));?>
+						<div class="form-group">	
+							<label class="form-label">Your Reminder :</label>
+							<?=$btnreminder;?> <small><span class="bg-info"><i>*Please "Turn ON" if you want to have SMS reminder</i></span></small>
+						</div><h5></h5>
+						<div class="form-group">
 						<label class="form-label">
-							Test Reminder :
+							Test Reminder Date:
 						</label>
 						<div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
 							<?=$reminder;?>
 						</div>
+						</div>
+						<div class="form-group text-right">
 						<input type="submit" value="Update Reminder" class="btn btn-primary">
 						<?php echo form_close();?>
+						</div>
 
 						<h5><span class="bg-info text-primary"><i class="fa fa-info-circle"></i> <i>The reminder will send you SMS about the Test.</i></span></h5>
 					</div>
@@ -71,7 +89,18 @@
     </div>
 	</div>
 	
-	<script type="text/javascript">
+	<script>
+	$(document).ready(function() {
+	    $("#reminderonoff").bootstrapToggle({
+			size: "medium",
+			onstyle: "success",
+			offstyle: "danger",
+			on: "<b>Turn ON</b>",
+			off: "<b>Turn OFF</b>",
+			width: 150,
+			height: 30
+		});
+  	});
 		//delete modal confirmation
 	$('#confirm-delete').on('show.bs.modal', function(e) {
 		$(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
@@ -92,6 +121,7 @@
 	$('#inputreminder').on('apply.daterangepicker', function(ev, picker) {
       $(this).val(picker.startDate.format('DD-MM-YYYY HH:mm:ss'));
 	});
+
 	</script>
 
 </section>

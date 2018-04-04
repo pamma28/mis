@@ -33,3 +33,38 @@ if (!function_exists('linkAllNotif'))
     }
 }
 
+if (!function_exists('labeltottransfer'))
+{
+    function labeltottransfer(){
+        $CI =& get_instance();
+        $CI->load->model('Mtransfer');
+        $tot = $CI->Mtransfer->gettotaltransfernotconfirm();
+        if ($tot>0){
+            echo '<span class="label label-warning pull-right" title="Total Validation Payment (Not Processed)">'.$tot.'</span>';
+        }
+    }
+}
+
+if (!function_exists('labeltotalactivetest'))
+{
+    function labeltotalactivetest(){
+        $CI =& get_instance();
+        $CI->load->model('Mtest');
+        $tot = $CI->Mtest->gettotalactivetest();
+        if ($tot>0){
+            echo '<span class="label label-success pull-right" title="Total Active Test">'.$tot.'</span>';
+        }
+    }
+}
+
+if (!function_exists('labeltotresulttest'))
+{
+    function labeltotresulttest(){
+        $CI =& get_instance();
+        $CI->load->model('Mtest');
+        $tot = $CI->Mtest->gettotresulttest();
+        if ($tot>0){
+            echo '<span class="label label-info pull-right" title="Total Result Test (Not Assessed)">'.$tot.'</span>';
+        }
+    }
+}

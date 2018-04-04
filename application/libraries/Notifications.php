@@ -8,7 +8,7 @@ class Notifications {
         $this->CI =& get_instance();
 		$this->CI->load->database();
         $this->CI->load->library(array('session','converttime'));
-        $this->CI->load->model(array('Mnotif','Mlogin'));
+        $this->CI->load->model(array('Mnotif','Mlogin','Mtransfer'));
 
     }
     

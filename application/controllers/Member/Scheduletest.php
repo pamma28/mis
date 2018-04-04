@@ -101,6 +101,7 @@ class Scheduletest extends Mem_Controller {
 		
 		
 	public function choosesche(){
+		$this->load->model('Mpds');
 		if ($this->input->post('id')!=null){
 			//filter same test schedule
 			$allmytest = array_column($this->Msche->datamysche('jdwl_tes.idtest',0,1,array('jdwl_mem.uuser'=>$this->session->userdata('user'))),'idtest');
@@ -135,9 +136,13 @@ class Scheduletest extends Mem_Controller {
 								}
 							$r[] = '<h4><span class="text-primary">Choose Schedule on <b>'.$arrtest[0]['tname'].'</b> Success</span></h4>';
 							$r[] = $res.'</tr>';
+							//update status member
+							$this->Mpds->updatestatus('Choosen Schedule',$this->session->userdata('user'),true);
 							} else {
 								$r[] = false;
 								$r[] = $this->db->_error_message();
+								//update status member
+								$this->Mpds->updatestatus('Choosen Schedule',$this->session->userdata('user'),false);
 							}
 					}
 			} else {
@@ -155,11 +160,14 @@ class Scheduletest extends Mem_Controller {
 	}
 
 	public function deletesche(){
+		$this->load->model('Mpds');
 		$id = $this->input->post('id');
 		$r = $this->Msche->deletemysche($id);
 		$ret[] =$r;
 		if ($r){
 			$ret[] = '<h4><span class="text-primary">Delete Schedule Success</span></h4>';
+			//update status member
+			$this->Mpds->updatestatus('Choosen Schedule',$this->session->userdata('user'),false);
 			} else{
 			$ret[] = '<h4><span class="text-danger">Delete Schedule Failed</span></h4>';
 			}
@@ -222,12 +230,14 @@ class Scheduletest extends Mem_Controller {
 		$startsche = strtotime(str_replace('/', '-', $schephase[0]));
 		$endsche =  strtotime(str_replace('/', '-', $schephase[1]));
 		$today = strtotime(date("d-m-Y"));
+
+		//================ upcoming schedule ================
 		$column=['jdwl_tes.idjdwl','jmdate','tname','jdate','jsesi','jroom'];
 		$header = $this->returncolomn($column);
 		unset($header[0]);
-		($today<$endsche) ? $header[]='Menu' : null;
+		(($today<$endsche) and ($startsche<$today))? $header[]='Menu' : null;
 		$tmpl = array ( 'table_open'  => '<table class="table table-hover" id="mysche">',
-						'heading_cell_start'    => '<th class="col-md-2">');
+						'heading_cell_start'    => '<th width="18%">');
 		$this->table->set_template($tmpl);
 		$this->table->set_heading($header);
 		$choosen = $this->Msche->datamysche($column,0,1);
@@ -239,31 +249,59 @@ class Scheduletest extends Mem_Controller {
 				//manipulation menu
 				$enc = $value['idjdwl'];
 				unset($choosen[$key]['idjdwl']);
-				if ($today<$endsche) {
+				if (($today<$endsche) and ($startsche<$today)) {
 				$choosen[$key]['menu']= '<div class="btn-group"><a href="#" data-href="'.base_url('Member/Scheduletest/deletesche?id=').$enc.'" alt="Delete Data" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirm-delete" title="Delete"><i class="fa fa-trash"></i></a></div>';}
 				}
 		$data['mysche'] = $this->table->generate($choosen);
+
+		//============= previous schedule ======================
+		$columnp=['jdwl_tes.idjdwl','jmdate','tname','jdate','jsesi','jroom'];
+		$headerp = $this->returncolomn($columnp);
+		unset($headerp[0]);
+		$tmplp = array ( 'table_open'  => '<table class="table table-hover" id="mysche">',
+						'heading_cell_start'    => '<th width=20%>');
+		$this->table->set_template($tmplp);
+		$this->table->set_heading($headerp);
+		$choosenp = $this->Msche->datamyprevsche($column,0,1);
+				foreach($choosenp as $key=>$value){
+				//manipulation date data
+				$choosenp[$key]['jdate']=date("D, d-M-Y",strtotime($choosenp[$key]['jdate']));
+				$chosenp[$key]['jmdate']=date("d-M-Y H:i",strtotime($choosenp[$key]['jmdate']));
+				$choosenp[$key]['tname']='<span class="idname">'.$choosenp[$key]['tname'].'</span>';
+				unset($choosenp[$key]['idjdwl']);
+				}
+		$data['myprevsche'] = $this->table->generate($choosenp);
 		
 		//=========== reminder test =========
-		if($this->Msetting->checkexist('membersche_'.$this->session->userdata('user'))){
+		if($this->Msetting->checkexist('membersche_'.$this->session->userdata('user')) and ($this->Msetting->checkexist('memberscheactive_'.$this->session->userdata('user')))){
 			$reminder= $this->Msetting->getset('membersche_'.$this->session->userdata('user'));
+			$setactive= $this->Msetting->getset('memberscheactive_'.$this->session->userdata('user'));
 		} else {
 			$reminder = $this->Msetting->addsetting('membersche_'.$this->session->userdata('user'),'');
+			$setactive = $this->Msetting->addsetting('memberscheactive_'.$this->session->userdata('user'),'0');
 		}
-
+		
+		$data['btnreminder']=form_checkbox(array(
+							'name'=>'fsetreminder',
+							'id'=>'reminderonoff',
+							'checked'=>$setactive,
+							'value'=>'1')
+							);
 		$data['reminder'] = form_input(
 							array(
 								'id'=>'inputreminder',
 								'name'=>'freminder',
 								'class'=>'form-control',
 								'type' => 'text',
-								'value' => $reminder
+								'required'=>'required',
+								'value' => date("d-m-Y H:i:s",strtotime($reminder))
 							));
 
 		//=============== Template ============
-		$data['jsFiles'] = array('moment/moment.min','daterange/daterangepicker');
+		$data['jsFiles'] = array(
+							'moment/moment.min','daterange/daterangepicker','toggle/bootstrap2-toggle.min');
 		$data['cssFiles'] = array(
-							'loading/loadingcircle','daterange/daterangepicker',);  
+							'loading/loadingcircle','daterange/daterangepicker','toggle/bootstrap2-toggle.min');  
 		// =============== view handler ============
 		$data['title']="My Schedule";
 		$data['topbar'] = $this->load->view('dashboard/topbar', NULL, TRUE);
@@ -273,6 +311,44 @@ class Scheduletest extends Mem_Controller {
 		
 	}
 	
+	public function savereminder(){
+		$datereminder = $this->input->post("freminder");
+		if(isset($datereminder)){
+			$set = $this->input->post("fsetreminder");
+			$setactive = ($set!="") ? "1" : "0";
+			$startdate = date("Y-m-d H:i:s",strtotime($datereminder));
+			$dt = array(
+				"membersche_".$this->session->userdata('user')=>$startdate,
+				"memberscheactive_".$this->session->userdata("user") => $setactive
+				);
+			$this->Msetting->savesetting($dt,$this->session->userdata('user'));
+
+			//------------- create cronjob sms sender -------------
+			$this->load->library('cronjob');
+			$tags = array(
+				'type'=>'schemem',
+				"user" => $this->session->userdata('user')
+			);
+
+			if($setactive=='1'){
+
+				$postdata = array(
+						'do'=>'schemem',
+						'user'=>$this->session->userdata('user')
+						);
+				$this->cronjob->deletecron($this->session->userdata('user'),$tags);
+				$res = json_decode($this->cronjob->createcron($this->session->userdata('user'),$tags,$startdate,$postdata,'1','0minute'));
+				$msg = ($res->status=='1') ? 'Turn ON Test Reminder Success' : "Turn ON Test Reminder Failed";
+				$flash = ($res->status=='1') ? 'v' : 'x';
+			} else {
+				$res = json_decode($this->cronjob->deletecron($this->session->userdata('user'),$tags));
+				$msg = ($res->status=='1') ? 'Turn OFF Test Reminder Success' : "Turn OFF Test Reminder Failed";
+				$flash = ($res->status=='1') ? 'v' : 'x';
+			}
+				$this->session->set_flashdata($flash,$msg);
+			redirect("Member/Scheduletest/myschedule");
+		}
+	}
 
 	public function returncolomn($header) {
 	$find=['idjdwl','jmdate','jdate','jstart','tname','jdwl_tes.idtest','jsesi','jroom','jquota','jactive','uname'];

@@ -176,5 +176,10 @@ class Matcl extends CI_Model{
 		return ($r);
 	}
 	
+	public function incrementatcl($id){
+		$this->db->where('idarticle',$id);
+		$this->db->set('a_view', 'a_view+1', FALSE);
+		return $this->db->update('article');
+	}
 	
 }

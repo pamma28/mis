@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 $lang = array(
+	//============ home ==========
 		'Login' => "Login",
 		'Logout' => "Logout",
 		'Dash' => "Dashboard",
@@ -17,6 +18,7 @@ $lang = array(
 		'menu' => "Menu",
 		'close' => "Close",
 		'account' => "Account Setting",
+		'Home' => 'Home',
 
 
 

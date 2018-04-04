@@ -214,7 +214,36 @@ class Msche extends CI_Model{
 		$this->db->join('jdwl_tes','jdwl_tes.idjdwl=jdwl_mem.idjdwl','left');
 		$this->db->join('test','test.idtest=jdwl_tes.idtest','left');
 		$this->db->where('jdwl_mem.uuser',$this->session->userdata('user'));
-		//$this->db->where('jdate >= CURDATE()');
+		$this->db->where('jdate >= CURDATE()');
+		$this->db->order_by('jdwl_mem.idjdwl','desc');
+		$q = $this->db->get('jdwl_mem');
+		$qr = array();
+		if ($q->num_rows() > 0){	
+			$qr = $q->result_array();
+			}
+	return $qr;
+	}
+
+	public function datamyprevsche($column = null, $per_page = null, $page = null, $filter = null){
+	
+		$this->db->select($column);
+		$this->db->limit($per_page,(($page-1)*($per_page)));
+			if ($filter != null){
+			foreach($filter as $f=>$v){
+				if (($f=='period')){
+				$this->db->like('DATE_FORMAT(jdate,"%Y")',$v);
+				} else if(($f=='ulunas') and ($v!='')){
+					$this->db->like($f,$v);			
+				}else{
+					$this->db->like($f,$v);			
+				}
+				}
+			}
+		$this->db->join('user','user.uuser=jdwl_mem.uuser','left');
+		$this->db->join('jdwl_tes','jdwl_tes.idjdwl=jdwl_mem.idjdwl','left');
+		$this->db->join('test','test.idtest=jdwl_tes.idtest','left');
+		$this->db->where('jdwl_mem.uuser',$this->session->userdata('user'));
+		$this->db->where('jdate <= CURDATE()');
 		$this->db->order_by('jdwl_mem.idjdwl','desc');
 		$q = $this->db->get('jdwl_mem');
 		$qr = array();

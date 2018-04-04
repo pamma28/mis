@@ -4,6 +4,9 @@
             
             <li class="header"><span class="pull-right"><a class="sidebar-toggle" role="button" data-toggle="offcanvas" href="#"><i><sup><?=lang('close');?></sup></i><i class="fa fa-close pull-right"></i></a></span><?php echo lang('menu');?> </li>
 			<li>
+				<a href="<?=base_url('Home');?>"><i class="fa fa-home"></i><span><?php echo lang('Home');?></span></a>
+			</li>
+			<li>
 				<a href="<?=base_url('Register');?>"><i class="fa fa-edit"></i><span><?php echo lang('Register');?></span></a>
 			</li>
 			<li>
@@ -13,7 +16,7 @@
 				<a href="<?=base_url('Home/agendas');?>"><i class="fa fa-calendar"></i><span><?php echo lang('Agendas');?></span></a>
 			</li>
 			<li>
-				<a href="<?=base_url('Home/aboutus');?>"><i class="fa fa-info"></i><span><?php echo lang('About');?></span></a>
+				<a href="<?=base_url('Home/about');?>"><i class="fa fa-info"></i><span><?php echo lang('About');?></span></a>
 			</li>
             
           </ul>

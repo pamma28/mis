@@ -39,11 +39,11 @@
               <a href="#">
                 <i class="fa fa-money"></i>
                 <span><?php echo lang('payment');?></span>
-				<i class="fa fa-angle-left pull-right"></i>
+				<i class="fa fa-angle-left pull-right"></i><?=labeltottransfer();?>
               </a>
 			   <ul class="treeview-menu">
-                <li><span class="label label-warning pull-right">4</span><a href="<?=base_url('Organizer/Transfer');?>"><i class="fa fa-credit-card fa-fw"></i> <?php echo lang('tfvalid');?></a></li>
-                <li><span class="label label-info pull-right">10</span><a href="<?=base_url('Organizer/Payment');?>"><i class="fa fa-calculator fa-fw"></i> <?php echo lang('paydata');?></a></li>
+                <li><?=labeltottransfer();?><a href="<?=base_url('Organizer/Transfer');?>"><i class="fa fa-credit-card fa-fw"></i> <?php echo lang('tfvalid');?></a></li>
+                <li><a href="<?=base_url('Organizer/Payment');?>"><i class="fa fa-calculator fa-fw"></i> <?php echo lang('paydata');?></a></li>
                 <li><a href="<?=base_url('Organizer/Payment/addpay');?>"><i class="fa fa-plus fa-fw"></i> <?php echo lang('paycashier');?></a></li>
               </ul>
             </li>
@@ -51,7 +51,7 @@
               <a href="#">
                 <i class="fa fa-book"></i>
                 <span><?php echo lang('managetest');?></span>
-				<i class="fa fa-angle-left pull-right"></i>
+				<i class="fa fa-angle-left pull-right"></i><?=labeltotresulttest();?><?=labeltotalactivetest();?>
               </a>
 			  <ul class="treeview-menu">
                 <li><a href="<?=base_url("Organizer/Test");?>"><i class="fa fa-edit fa-fw"></i> <?php echo lang('tname');?></a></li>
@@ -73,11 +73,11 @@
                   </ul>
                 </li>
                 <li><a href="<?=base_url("Organizer/Schedule");?>"><i class="fa fa-calendar fa-fw"></i> <?php echo lang('tsche');?></a></li>
-                <li><span class="label label-info pull-right">12</span><a href="<?=base_url("Organizer/Schedule/active");?>"><i class="fa fa-check-square-o fa-fw"></i> <?php echo lang('tactive');?></a></li>
+                <li><?=labeltotalactivetest();?><a href="<?=base_url("Organizer/Schedule/active");?>"><i class="fa fa-check-square-o fa-fw"></i> <?php echo lang('tactive');?></a></li>
                 <li>
-                  <a href="#"><i class="fa fa-legal fa-fw"></i> <?php echo lang('tresult');?><i class="fa fa-angle-left pull-right"></i></a>
+                  <a href="#"><i class="fa fa-legal fa-fw"></i> <?php echo lang('tresult');?><i class="fa fa-angle-left pull-right"></i><?=labeltotresulttest();?></a>
                   <ul class="treeview-menu">
-                    <li><span class="label label-info pull-right">80</span><a href="<?=base_url("Organizer/Result");?>"><i class="fa fa-circle-o fa-fw"></i> <?php echo lang('tresult');?></a></li>
+                    <li><?=labeltotresulttest();?><a href="<?=base_url("Organizer/Result");?>"><i class="fa fa-circle-o fa-fw"></i> <?php echo lang('tresult');?></a></li>
                     <li><a href="<?=base_url("Organizer/Result/assessresult");?>"><i class="fa fa-circle-o fa-fw"></i> <?php echo lang('tassess');?></a></li>
                   </ul>
                 </li>
@@ -91,7 +91,7 @@
 				<i class="fa fa-angle-left pull-right"></i>
               </a>
 			  <ul class="treeview-menu">
-                <li><span class="label label-primary pull-right">4</span><a href="<?=base_url("Organizer/Certificate");?>"><i class="fa fa-certificate fa-fw"></i> <?php echo lang('certidata');?></a></li>
+                <li><a href="<?=base_url("Organizer/Certificate");?>"><i class="fa fa-certificate fa-fw"></i> <?php echo lang('certidata');?></a></li>
                 <li><a href="<?=base_url("Organizer/Design");?>"><i class="fa fa-image fa-fw"></i> <?php echo lang('certidesign');?></a></li>
                 <li><a href="<?=base_url("Organizer/Certificate/preview");?>"><i class="fa fa-file-image-o fa-fw"></i> <?php echo lang('certiprev');?></a></li>
                </ul>
