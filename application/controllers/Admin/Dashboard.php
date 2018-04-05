@@ -70,6 +70,12 @@ class Dashboard extends Admin_Controller {
 		$this->table->set_heading($header);
 		$data['donline']= $this->table->generate($donline);
 		
+		//=============== Template ============
+		$data['cssFiles'] = array(
+							);
+							
+		$data['jsFiles'] = array(
+							'amchart/amcharts','amchart/serial','amchart/pie','amchart/themes/light');
 		
 		$data['title']="Dashboard";
 		$data['topbar'] = $this->load->view('dashboard/topbar', NULL, TRUE);
@@ -78,5 +84,23 @@ class Dashboard extends Admin_Controller {
 		$this->load->view ('template/main', $data);				
 	}
 	
+	public function allnotification(){
+		//===================== table handler =============
+		$this->load->library("Notifications");
+		$data["listdata"]=$this->notifications->getallmynotif();
+
+
+		//=============== Template ============
+		$data['jsFiles'] = array('selectpicker/select.min'
+							);
+		$data['cssFiles'] = array('selectpicker/select.min'
+							);  
+		// =============== view handler ============
+		$data['title']="All Notification";
+		$data['topbar'] = $this->load->view('dashboard/topbar', NULL, TRUE);
+		$data['sidebar'] = $this->load->view('dashboard/admin/sidebar', NULL, TRUE);
+		$data['content'] = $this->load->view('dashboard/admin/mynotif', $data, TRUE);
+		$this->load->view ('template/main', $data);
+	}
 	
 }

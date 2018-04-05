@@ -72,16 +72,16 @@ class Home extends CI_Controller {
 	public function agendas(){
 		//============= populate agendas ========
 		$totagn = $this->Msetting->getset('renderagn');
-		$header=['<i class="fa fa-info-circle"></i> Agenda','<i class="fa fa-calendar"></i> Date','<i class="fa fa-clock-o"></i> Time','<i class="fa fa-building"></i> Place','<i class="fa fa-sticky-note"></i> Details'];
+		$header=['<i class="fa fa-info-circle"></i> Agenda','<i class="fa fa-calendar"></i> Date','<i class="fa fa-clock-o"></i> Time','<i class="fa fa-building"></i> Place','<i class="fa fa-list"></i> Details','<i class="fa fa-sticky-note"></i> Notes'];
 		$tmpl = array ( 
 				'table_open'  => '<table class="table table-hover table-striped table-responsive">',
-				'heading_cell_start'=> '<th style="width:20%;">'
+				'heading_cell_start'=> '<th style="width:17%;">'
 					);
 		$this->table->set_template($tmpl);
 		$this->table->set_heading($header);
 
 		$this->load->model('Magn');
-		$tmpagn = $this->Magn->showagn(array('agtitle','agdate','agtime','agplace','agdescript','idagenda'),$totagn,1);
+		$tmpagn = $this->Magn->showagn(array('agtitle','agdate','agtime','agplace','agdescript','idagenda','agnotes'),$totagn,1);
 		foreach ($tmpagn as $k => $v) {
 			$tmpagn[$k]['agdate'] =  date('d-M-Y',strtotime($v['agdate']));
 			unset($tmpagn[$k]['idagenda']);
@@ -93,7 +93,7 @@ class Home extends CI_Controller {
 		$this->table->set_heading($header);
 
 		$this->load->model('Magn');
-		$tmpprevagn = $this->Magn->showprevagn(array('agtitle','agdate','agtime','agplace','agdescript','idagenda'));
+		$tmpprevagn = $this->Magn->showprevagn(array('agtitle','agdate','agtime','agplace','agdescript','idagenda','agnotes'));
 		foreach ($tmpprevagn as $k => $v) {
 			$tmpprevagn[$k]['agdate'] =  date('d-M-Y',strtotime($v['agdate']));
 			unset($tmpprevagn[$k]['idagenda']);

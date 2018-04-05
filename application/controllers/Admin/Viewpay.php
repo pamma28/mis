@@ -21,7 +21,7 @@ class Viewpay extends Admin_Controller {
 	
 	public function paydata() {		
 		//===================== table handler =============
-		$column=['idtrans','tdate','tnotrans','uname','unim','transname','tpaid','use_uuser'];
+		$column=['idtrans','tdate','tnotrans','a.uname as mem','a.unim','transname','tpaid','b.uname'];
 		$header = $this->returncolomn($column);
 		unset($header[0]);
 		$header[]='Menu';
@@ -30,56 +30,66 @@ class Viewpay extends Admin_Controller {
 		$this->table->set_heading($header);
 			
 		
-		//================== catch all value ================
+	//================== catch all value ================
+		$durl= $_SERVER['QUERY_STRING'];
+		parse_str($durl, $filter);
+		$tempfilter=$filter;
 		$addrpage = '';
-		if ($this->input->get('search')!=null){
-			$filter = $this->input->get('search');
-			$addrpage= $addrpage.'&search='.$filter;
-		} else {
-			$filter = '';
-		}
-		if ($this->input->get('column')!=null){
-			$col = $this->input->get('column');
-			$addrpage= $addrpage.'&column='.$col;
-		} else {
-			$col = '';
-		}
-				//count rows of data (inlcude filter & search)
-				$rows = $this->Mpay->countpay($col,$filter);
-		if ($this->input->get('view')!=null){
-			$offset = $this->input->get('view');
-		} else {
-			$offset = 10;
-		}
-		if ($this->input->get('page')!=null){
-			$perpage = $this->input->get('page');
-		} else {
-			$perpage = 1;
-		}
+		$offset= isset($tempfilter['view']) ? $tempfilter['view'] : 10;
+		$perpage= isset($tempfilter['page']) ? $tempfilter['page'] : 1;
 		
-		
+		if ($durl!=null){
+			unset($filter['view']);
+			unset($filter['id']);
+			unset($filter['page']);
+			$filter= array_filter($filter, function($filter) 
+										{return ($filter !== null && $filter !== false && $filter !== '');
+							});
+			//implode query address
+			$addrpage= http_build_query($filter);
+			$addrpage = empty($addrpage)? null:$addrpage.'&';
+			if ((array_key_exists('column',$filter)) and  (array_key_exists('search',$filter))){
+				$vc = $filter['column'];
+				$vq = $filter['search'];
+				unset($filter['column']);
+				unset($filter['search']);
+				$filter[$vc]=$vq;
+				$data['d']='';
+				}
+			else if ((empty($filter['view'])) and (!empty($filter))){
+			$data['d']='d';
+			}
+			//count rows of data (with filter/search)
+			$rows = $this->Mpay->countpay($filter);
+			
+		} else {
+			//count rows of data (no filter/search)
+			$rows = $this->Mpay->countpay();	
+		}
 		//================ filter handler ================
-		
-		
 		$fq = array('name'=>'search',
 						'id'=>'search',
+						'required'=>'required',
 						'placeholder'=>'Search Here',
-						'value'=>$filter,
+						'value'=> isset($tempfilter['search']) ? $tempfilter['search'] : null ,
 						'class'=>'form-control');
 		$data['inq'] = form_input($fq);
 			$optf = array(
-						'ucreated' => 'Date Created',
-						'uuser' => 'Username',
+						'tdate' => 'Date Issued',
+						'tnotrans' => 'Invoice Number',
+						'tnomi' => 'Cash Given',
+						'tpaid' => 'Nominal Paid',
 						'uname' => 'Name',
 						'unim' => 'NIM',
-						'uhp' => 'Phone Number'
+						'pic' => 'PIC',
+						'valid_to' => 'Valid Date'
 						);
 		$fc = array('name'=>'column',
 						'id'=>'col',
 						'class'=>'form-control'
 					);
-		$data['inc'] = form_dropdown($fc,$optf,$col);
-		$data['inv'] = form_hidden('view',$offset);
+		$data['inc'] = form_dropdown($fc,$optf,isset($tempfilter['column']) ? $tempfilter['column'] : null);
+		$data['inv'] = form_hidden('view',isset($tempfilter['view']) ? $tempfilter['view'] : 10);
 		
 		$fbq = array(	'id'=>'bsearch',
 						'value'=>'search',
@@ -87,6 +97,94 @@ class Viewpay extends Admin_Controller {
 						'type'=>'submit');
 		$data['bq'] = form_submit($fbq);
 		
+		// ============= advanced filter ===============
+		$adv['Period'] = form_input(
+						array('name'=>'period',
+						'id'=>'period',
+						'placeholder'=>'Period',
+						'value'=>isset($tempfilter['period']) ? $tempfilter['period'] : null,
+						'class'=>'form-control'));
+		$adv['Date Issued '] = form_input(
+						array('name'=>'tdate',
+						'id'=>'sissuedon',
+						'placeholder'=>'Date Issued (YYYY-MM-DD)',
+						'value'=>isset($tempfilter['tdate']) ? $tempfilter['tdate'] : null,
+						'class'=>'form-control'));
+		
+		$adv['Invoice Number'] = form_input(
+						array('name'=>'tnotrans',
+						'id'=>'snotrans',
+						'placeholder'=>'Invoice Number',
+						'value'=>isset($tempfilter['tnotrans']) ? $tempfilter['tnotrans'] : null,
+						'class'=>'form-control'));
+		
+		$adv['Full Name'] = form_input(
+						array('name'=>'uname',
+						'id'=>'sfullname',
+						'placeholder'=>'Full Name',
+						'value'=>isset($tempfilter['uname']) ? $tempfilter['uname'] : null,
+						'class'=>'form-control'));
+		
+		$adv['NIM'] = form_input(
+						array('name'=>'unim',
+						'id'=>'sNIM',
+						'placeholder'=>'NIM',
+						'value'=>isset($tempfilter['unim']) ? $tempfilter['unim'] : null,
+						'class'=>'form-control'));
+		$adv['Nominal Paid'] = form_input(
+						array('name'=>'tpaid',
+						'id'=>'spaid',
+						'placeholder'=>'Nominal Paid',
+						'value'=>isset($tempfilter['tpaid']) ? $tempfilter['tpaid'] : null,
+						'class'=>'form-control'));
+		
+		$adv['Cash Given'] = form_input(
+						array('name'=>'tnomi',
+						'id'=>'scash',
+						'placeholder'=>'Cash Given',
+						'value'=>isset($tempfilter['tnomi']) ? $tempfilter['tnomi'] : null,
+						'class'=>'form-control'));
+		
+		$adv['Nominal Change'] = form_input(
+						array('name'=>'tchange',
+						'id'=>'schange',
+						'placeholder'=>'Nominal Change',
+						'value'=>isset($tempfilter['tchange']) ? $tempfilter['tchange'] : null,
+						'class'=>'form-control'));
+						
+			$opttrans = $this->Mpay->optjtrans();
+		$adv['Transaction Type'] = form_dropdown(
+						array('name'=>'idjnstrans',
+						'id'=>'sjnstrans',
+						'placeholder'=>'Transaction Type',
+						'value'=>'',
+						'class'=>'form-control'),$opttrans,isset($tempfilter['idjnstrans']) ? $tempfilter['idjnstrans'] : null);
+		
+		$adv['Fully Paid/Not'] = form_dropdown(array(
+							'name'=>'ulunas',
+							'id'=>'slunas',
+							'class'=>'form-control'),
+							array(''=>'No filter','1'=>'Fully Paid',
+							'0'=>'Not Yet'),isset($tempfilter['ulunas']) ? $tempfilter['ulunas'] : null);
+		$adv['PIC Name'] = form_input(
+						array('name'=>'pic',
+						'id'=>'spicname',
+						'placeholder'=>'PIC Name',
+						'value'=>isset($tempfilter['pic']) ? $tempfilter['pic'] : null,
+						'class'=>'form-control'));
+		$adv['Invoice Valid Until'] = form_input(
+						array('name'=>'valid_to',
+						'id'=>'svalid',
+						'placeholder'=>'Date Valid (YYYY-MM-DD)',
+						'value'=>isset($tempfilter['valid_to']) ? $tempfilter['valid_to'] : null,
+						'class'=>'form-control'));
+		
+		$dtfilter = '';
+		
+		foreach($adv as $a=>$v){
+			$dtfilter = $dtfilter.'<div class="input-group"><label>'.$a.': </label>'.$v.'</div>  ';
+		}
+		$data['advance'] = $dtfilter;
 		
 		//=============== paging handler ==========
 		$data["urlperpage"] = base_url().'Admin/Viewpay/paydata?view=';
@@ -109,14 +207,10 @@ class Viewpay extends Admin_Controller {
 		$data["links"] = explode('&nbsp;',$str_links );
 
 		//========== data manipulation =========
-		$temp = $this->Mpay->datapay($column,$config['per_page'],$perpage,$col,$filter);	
+		$temp = $this->Mpay->datapay($column,$config['per_page'],$perpage,$filter);	
 				foreach($temp as $key=>$value){
-				//manipulation allow data
-				if($value['tpaid']!=''){
-					$temp[$key]['tpaid']=$this->convertmoney->convert($value['tpaid']);
-				} else{
-					$temp[$key]['tpaid']=' - ';
-				}
+				$temp[$key]['tdate']=date('d-M-Y H:i:s',strtotime($temp[$key]['tdate']));
+				$temp[$key]['tpaid']=$this->convertmoney->convert($temp[$key]['tpaid']);
 				//manipulation menu
 				$enc = $value['idtrans'];
 				$temp[$key]['menu']='<small><a href="'.base_url('Admin/Viewpay/paydetail?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Full Data" class="btn-primary btn-sm"><i class="fa fa-list-alt"></i> Details</a></small>';
@@ -140,12 +234,16 @@ class Viewpay extends Admin_Controller {
 	
 	public function paydetail(){
 		//fecth data from db
-		$col = ['tnotrans','tdate','valid_to','transname','uname','unim','tnomi','tpaid','tchange','use_uuser'];
+		$col = ['tnotrans','tdate','valid_to','transname','a.uname as mem','a.unim','tnomi','tpaid','tchange','b.uname'];
 		$id = $this->input->get('id');
 		$dbres = $this->Mpay->detailpay($col,$id);
 		
 		//set row title
 		$row = $this->returncolomn($col);
+		$col[4]='mem';
+		$col[5]='unim';
+		$col[9]='uname';
+		
 		
 		//set table template
 		$tmpl = array ( 'table_open'  => '<table class="table table-striped">',
@@ -191,7 +289,7 @@ class Viewpay extends Admin_Controller {
 	}
 	
 	public function returncolomn($header) {
-	$find=['tdate','valid_to','use_uuser','uname','unim','tnotrans','tnomi','tpaid','tchange','transname'];
+	$find=['tdate','valid_to','b.uname','a.uname as mem','a.unim','tnotrans','tnomi','tpaid','tchange','transname'];
 	$replace = ['Payment Date','Valid To','PIC Payment','Full Name','NIM','No Transaction','Nominal Given','Nominal Paid','Nominal Change','Transaction Type'];
 		foreach ($header as $key => $value){
 		$header[$key]  = str_replace($find, $replace, $value);

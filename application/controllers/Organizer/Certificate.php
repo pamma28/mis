@@ -182,7 +182,7 @@ class Certificate extends Org_Controller {
 							));
 				array_unshift($temp[$key],$ctable);
 				$temp[$key]['uname']='<span class="idname">'.$temp[$key]['uname'].'</span>';
-				$temp[$key]['ctaken'] = ($value['ctaken']=='1') ? '<label class="label label-success">Taken</label>' : '<label class="label label-warning">Not Yet</label>';
+				$temp[$key]['ctaken'] = ($value['ctaken']=='1') ? '<label class="label label-success">Taken</label>' : '<label class="label label-warning">Available</label>';
 				$temp[$key]['certidate']=date('d-M-Y',strtotime($temp[$key]['certidate'])).'<br/>'.date('H:i:s',strtotime($temp[$key]['certidate']));
 				//manipulation menu
 				$enc = $value['idcerti'];

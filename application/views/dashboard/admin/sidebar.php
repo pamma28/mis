@@ -6,7 +6,7 @@
             <div class="pull-left info">
               <p><?php echo $this->session->userdata('name');?></p>
 
-              <a href="#"><i class="fa fa-gears text-info"> <?=lang('account');?></i></a>
+              <a href="<?=base_url('Admin/Setting');?>"><i class="fa fa-gears text-info"> <?=lang('account');?></i></a>
             </div>
           </div>
           <!-- sidebar menu: : style can be found in sidebar.less -->
@@ -40,8 +40,14 @@
                 <i class="fa fa-database"></i>
                 <span><?php echo lang('database');?></span>
               </a>
-            </li>
-          </ul>
+      </li>
+      <li class="treeview">
+              <a href="<?=base_url('Admin/Setting');?>">
+                <i class="fa fa-database"></i>
+                <span><?php echo lang('setting');?></span>
+              </a>
+      </li>
+    </ul>
 <div id="histats_counter"></div>
 <?php /*<!-- Histats.com  START  (aync)-->
 <script type="text/javascript">var _Hasync= _Hasync|| [];

@@ -76,25 +76,67 @@ class Api extends CI_Controller {
 				$period = $this->Msetting->getset('period');
 				$title = $this->Msetting->getset('webtitle');
 				$smscontent =$this->Mtmp->gettmpdata($this->Msetting->getset('smsreminderschedule'))->tmpcontent;
-				
-				$to = 'pamma.cyber@gmail.com';//$email;
-				$ccmail=null;
-				$bcfrom = "API";
+					$this->load->model('Mpds');
+					$number = $this->Mpds->detailpds(array('uhp'),$user)[0]['uhp'];
+				$to = $number;
 				$sub = $title.' '.$period." - Test Reminder\n";
-				$attfile = null;
-				
 				if ((null!=$to) and (null!=$sub)){
 					//====== decode message ============
-					$decode = $this->convertcode->decodemailmsg($smscontent,$to);	
+					$decode = $this->convertcode->decodesmsmsg($to,$smscontent);	
+						
+					//================= gmail send ===========
+					$ret = $this->sms->sendsms();		
+				}
+				return $ret;
+				break;
+			//-------------------------------------------------------------------
+			case 'backupdb':
+				//backup db periodically
+				$dtcol = ['agenda','answer','article','broadcast','cat_artcle','certidesign','certificate','fac','jdwl_mem','jdwl_tes','jk','jns_trans','level','logstatus','notif','nread','question','ques_attach','qtype','quo_sbjct','resultqa','resulttest','role','setting','subject','template','test','transaksi','ttransfer','user'];
+				$this->load->dbutil();
+				$this->load->model('Msetting');
+				$appname = $this->Msetting->getset('webtitle');
+				$period = $this->Msetting->getset('period');
+				// Backup your entire database and assign it to a variable
+					$prefs = array(
+							'tables'        => $dtcol,   												// Array of tables to backup.
+							'ignore'        => array(),                     							// List of tables to omit from the backup
+							'format'        => 'zip',                       							// gzip, zip, txt
+							'filename'      => $appname.'.sql',     // File name - NEEDED ONLY WITH ZIP FILES
+							'add_drop'      => TRUE,
+							'add_insert'    => TRUE,
+							'newline'       => "\n",
+							'foreign_key_checks' => false 	
+						);
+				$backupdb = $this->dbutil->backup($prefs);
+
+				// Load the file helper and write the file to your server
+				$this->load->helper('file');
+				$nowtime = date("d-m-Y_H:i:s");
+				write_file(FCPATH.'temp_upload/backupdb_'.$nowtime.'.zip', $backupdb);
+				$attfile = ['backupdb_'.$nowtime.'.zip'];
+
+
+				//email handler 
+				$to = $this->input->post('maildb');
+				$ccmail=null;
+				$bcfrom = $appname;
+				$sub = $appname.' '.$period." - Database Backup";
+				$idtmp = htmlspecialchars_decode($this->Msetting->getset('mailtemplate'));
+				$mailcontent = '<h3 align="center">This is automated backup database sent to your email by our system</h3>' ;
+				$rawtext = str_replace("{content_email}", $mailcontent, $idtmp);
+				if ((null!=$to) and (null!=$sub)){
+					//====== decode message ============
+					$this->load->library('convertcode');
+					$decode = $this->convertcode->decodemailmsg($rawtext,$to);	
 						
 					//================= gmail send ===========
 					$ret = $this->gmail->sendmail($to,$ccmail,$sub,$bcfrom,$decode,$attfile);		
 				}
+				delete_files(FCPATH.'temp_upload/',true);
 				return $ret;
 				break;
-			case 'backupdb':
-				//backup db periodically
-				print('asd');
+
 				break;
 			default:
 				//send sms default

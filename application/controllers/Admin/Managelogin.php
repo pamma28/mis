@@ -21,7 +21,7 @@ class Managelogin extends Admin_Controller {
 	
 	public function logindata() {		
 		//===================== table handler =============
-		$column=['ucreated','uuser','uname','uemail','rolename','ulastlog','uallow'];
+		$column=['ucreated','uuser','uname','uemail','uhp','rolename','ulastlog','uallow'];
 		$header = $this->returncolomn($column);
 		// checkbox checkalldata
 				$checkall = form_checkbox(array(
@@ -38,40 +38,48 @@ class Managelogin extends Admin_Controller {
 			
 		
 		//================== catch all value ================
+		$durl= $_SERVER['QUERY_STRING'];
+		parse_str($durl, $filter);
+		$tempfilter=$filter;
 		$addrpage = '';
-		if ($this->input->get('search')!=null){
-			$filter = $this->input->get('search');
-			$addrpage= $addrpage.'&search='.$filter;
+		$offset= isset($tempfilter['view']) ? $tempfilter['view'] : 10;
+		$perpage= isset($tempfilter['page']) ? $tempfilter['page'] : 1;
+		
+		if ($durl!=null){
+			unset($filter['view']);
+			unset($filter['page']);
+			$filter= array_filter($filter, function($filter) 
+										{return ($filter !== null && $filter !== false && $filter !== '');
+							});
+			//implode query address
+			$addrpage= http_build_query($filter);
+			$addrpage = empty($addrpage)? null:$addrpage.'&';
+			if ((array_key_exists('column',$filter)) and  (array_key_exists('search',$filter))){
+				$vc = $filter['column'];
+				$vq = $filter['search'];
+				unset($filter['column']);
+				unset($filter['search']);
+				$filter[$vc]=$vq;
+				$data['d']='';
+				}
+			else if ((empty($filter['view'])) and (!empty($filter))){
+			$data['d']='d';
+			}
+			//count rows of data (with filter/search)
+			$rows = $this->Mlogin->countlogin($filter);
+			
 		} else {
-			$filter = '';
-		}
-		if ($this->input->get('column')!=null){
-			$col = $this->input->get('column');
-			$addrpage= $addrpage.'&column='.$col;
-		} else {
-			$col = '';
-		}
-				//count rows of data (inlcude filter & search)
-				$rows = $this->Mlogin->countlogin($col,$filter);
-		if ($this->input->get('view')!=null){
-			$offset = $this->input->get('view');
-		} else {
-			$offset = 10;
-		}
-		if ($this->input->get('page')!=null){
-			$perpage = $this->input->get('page');
-		} else {
-			$perpage = 1;
+			//count rows of data (no filter/search)
+			$rows = $this->Mlogin->countlogin();	
 		}
 		
-		
+	
 		//================ filter handler ================
-		
-		
 		$fq = array('name'=>'search',
 						'id'=>'search',
+						'required'=>'required',
 						'placeholder'=>'Search Here',
-						'value'=>$filter,
+						'value'=> isset($tempfilter['search']) ? $tempfilter['search'] : null ,
 						'class'=>'form-control');
 		$data['inq'] = form_input($fq);
 			$optf = array(
@@ -84,8 +92,8 @@ class Managelogin extends Admin_Controller {
 						'id'=>'col',
 						'class'=>'form-control'
 					);
-		$data['inc'] = form_dropdown($fc,$optf,$col);
-		$data['inv'] = form_hidden('view',$offset);
+		$data['inc'] = form_dropdown($fc,$optf,isset($tempfilter['column']) ? $tempfilter['column'] : null);
+		$data['inv'] = form_hidden('view',isset($tempfilter['view']) ? $tempfilter['view'] : 10);
 		
 		$fbq = array(	'id'=>'bsearch',
 						'value'=>'search',
@@ -93,7 +101,65 @@ class Managelogin extends Admin_Controller {
 						'type'=>'submit');
 		$data['bq'] = form_submit($fbq);
 		
+		// ============= advanced filter ===============
+		$adv['Period'] = form_input(
+						array('name'=>'period',
+						'id'=>'createdon',
+						'placeholder'=>'Period',
+						'value'=>isset($tempfilter['period']) ? $tempfilter['period'] : null,
+						'class'=>'form-control'));
+		$adv['Created'] = form_input(
+						array('name'=>'ucreated',
+						'id'=>'createdon',
+						'placeholder'=>'Date Created',
+						'value'=>isset($tempfilter['ucreated']) ? $tempfilter['ucreated'] : null,
+						'class'=>'form-control'));
 		
+		$adv['Username'] = form_input(
+						array('name'=>'uuser',
+						'id'=>'username',
+						'placeholder'=>'Username',
+						'value'=>isset($tempfilter['uuser']) ? $tempfilter['uuser'] : null,
+						'class'=>'form-control'));
+		
+		$adv['Full Name'] = form_input(
+						array('name'=>'uname',
+						'id'=>'fullname',
+						'placeholder'=>'Full Name',
+						'value'=>isset($tempfilter['uname']) ? $tempfilter['uname'] : null,
+						'class'=>'form-control'));
+		
+		$adv['Email'] = form_input(
+						array('name'=>'uemail',
+						'id'=>'email',
+						'placeholder'=>'Email',
+						'value'=>isset($tempfilter['uemail']) ? $tempfilter['uemail'] : null,
+						'class'=>'form-control'));
+						
+		$adv['Phone Number'] = form_input(
+						array('name'=>'uhp',
+						'id'=>'hp',
+						'placeholder'=>'Phone Number',
+						'value'=>isset($tempfilter['uhp']) ? $tempfilter['uhp'] : null,
+						'class'=>'form-control'));
+		$adv['Role'] = form_dropdown(array(
+							'name'=>'rolename',
+							'id'=>'role',
+							'class'=>'form-control'),
+							array(''=>'No filter','Admin'=>'Admin',
+							'Organizer'=>'Organizer','Member'=>'Member'),isset($tempfilter['rolename']) ? $tempfilter['rolename'] : null);
+		$adv['Allow/Deny'] = form_dropdown(array(
+							'name'=>'uallow',
+							'id'=>'allow',
+							'class'=>'form-control'),
+							array(''=>'No filter','1'=>'Allow',
+							'0'=>'Deny'),isset($tempfilter['uallow']) ? $tempfilter['uallow'] : null);
+		$dtfilter = '';
+		foreach($adv as $a=>$v){
+			$dtfilter = $dtfilter.'<div class="input-group"><label>'.$a.': </label>'.$v.'</div>  ';
+		}
+		$data['advance'] = $dtfilter;
+
 		//=============== paging handler ==========
 		$config = array(
 				'base_url' => base_url().'/admin/Managelogin/?view='.$offset.$addrpage,
@@ -115,7 +181,7 @@ class Managelogin extends Admin_Controller {
 		$data["links"] = explode('&nbsp;',$str_links );
 
 		//========== data manipulation =========
-		$temp = $this->Mlogin->datalogin($column,$config['per_page'],$perpage,$col,$filter);	
+		$temp = $this->Mlogin->datalogin($column,$config['per_page'],$perpage,$filter);	
 				foreach($temp as $key=>$value){
 				//manipulation allow data
 				if($value['uallow']){
@@ -131,6 +197,7 @@ class Managelogin extends Admin_Controller {
 							));
 				array_unshift($temp[$key],$ctable);
 				$temp[$key]['uuser']='<span class="idname">'.$temp[$key]['uuser'].'</span>';
+				$temp[$key]['ucreated'] = date('d-M-Y H:i:s',strtotime($value['ucreated']));
 				//manipulation last login
 				$temp[$key]['ulastlog']=$this->converttime->time_elapsed_string($temp[$key]['ulastlog']);
 				//manipulation menu

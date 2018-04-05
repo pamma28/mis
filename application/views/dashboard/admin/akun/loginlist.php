@@ -24,13 +24,13 @@
 			</div>		
 			<?php } ?>
 		<div class="row">
-			<div class="col-md-7"> 
+			<div class="col-md-6"> 
 				<a href="<?=base_url('Admin/Managelogin/addlogin');?>" data-target="#DetailModal" data-toggle="modal" role="button" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add </a> 
 				<a href="#" class="btn btn-sm btn-primary" data-toggle="modal" data-target=".bs-import-data"><i class="fa fa-cloud-upload"></i> Import </a>
 				<a href="#" class="btn btn-sm btn-primary" data-toggle="modal" data-target=".bs-export-data"><i class="fa fa-cloud-download"></i> Export </a>
 				<a href="#" class="btn btn-sm btn-primary" data-toggle="modal" data-target=".bs-print-data"><i class="fa fa-print"></i> Print </a>
 			</div>
-			<div class="col-md-5">
+			<div class="col-md-6 text-right">
 					<?php 
 						echo form_open(current_full_url(),array('name'=>'fq', 'method'=>'GET','class'=>'form-inline'));
 					?>		
@@ -42,9 +42,26 @@
 						echo $bq.$inv.'</span></div>';
 						echo form_close();
 					?>
-				
+					<div class="text-right"><a href="<?=current_url();?>" class="label label-danger">Clear Search</a> <a class="label label-info" role="button" data-toggle="collapse" href="#collapseAdvanced" aria-expanded="<?php echo(empty($d)? 'false': 'true');?>" aria-controls="collapseExample">Advanced search</a></div>
 			</div>
-		</div>	
+		</div>
+		<div class="row">
+			<div class="<?php echo(empty($d)? 'collapse': 'collapse in');?> col-md-12" id="collapseAdvanced" aria-expanded="<?php echo(empty($d)? 'false': 'true');?>">
+			  <div class="well">
+				<?php 
+						echo form_open(current_full_url(),array('name'=>'fadvq', 'method'=>'GET','class'=>'form-inline'));
+				?>	
+					
+						<?=$advance;?>
+					<div class="text-right">
+					<?=$bq;?>
+					</div>
+				<?php 
+				echo form_close();
+				?>
+			  </div>
+			</div>
+		</div>		
 	</div>
 	<div class="box-body table-responsive">
 		<div class="btn-group">

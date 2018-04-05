@@ -24,7 +24,7 @@
 			</div>		
 			<?php } ?>
 		<div class="row">
-			<div class="col-md-12"> 
+			<div class="col-md-12 text-right">
 					<?php 
 						echo form_open(current_full_url(),array('name'=>'fq', 'method'=>'GET','class'=>'form-inline'));
 					?>		
@@ -36,7 +36,24 @@
 						echo $bq.$inv.'</span></div>';
 						echo form_close();
 					?>
-				
+					<div class="text-right"><a href="<?=current_url();?>" class="label label-danger">Clear Search</a> <a class="label label-info" role="button" data-toggle="collapse" href="#collapseAdvanced" aria-expanded="<?php echo(empty($d)? 'false': 'true');?>" aria-controls="collapseExample">Advanced search</a></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="<?php echo(empty($d)? 'collapse': 'collapse in');?> col-md-12" id="collapseAdvanced" aria-expanded="<?php echo(empty($d)? 'false': 'true');?>">
+			  <div class="well">
+				<?php 
+						echo form_open(current_full_url(),array('name'=>'fadvq', 'method'=>'GET','class'=>'form-inline'));
+				?>	
+					
+						<?=$advance;?>
+					<div class="text-right">
+					<?=$bq;?>
+					</div>
+				<?php 
+				echo form_close();
+				?>
+			  </div>
 			</div>
 		</div>	
 	</div>

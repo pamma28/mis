@@ -30,55 +30,63 @@ class Viewpds extends Admin_Controller {
 			
 		
 		//================== catch all value ================
+		$durl= $_SERVER['QUERY_STRING'];
+		parse_str($durl, $filter);
+		$tempfilter=$filter;
 		$addrpage = '';
-		if ($this->input->get('search')!=null){
-			$filter = $this->input->get('search');
-			$addrpage= $addrpage.'&search='.$filter;
+		$offset= isset($tempfilter['view']) ? $tempfilter['view'] : 10;
+		$perpage= isset($tempfilter['page']) ? $tempfilter['page'] : 1;
+		
+		if ($durl!=null){
+			unset($filter['view']);
+			unset($filter['page']);
+			$filter= array_filter($filter, function($filter) 
+										{return ($filter !== null && $filter !== false && $filter !== '');
+							});
+			//implode query address
+			$addrpage= http_build_query($filter);
+			$addrpage = empty($addrpage)? null:$addrpage.'&';
+			if ((array_key_exists('column',$filter)) and  (array_key_exists('search',$filter))){
+				$vc = $filter['column'];
+				$vq = $filter['search'];
+				unset($filter['column']);
+				unset($filter['search']);
+				$filter[$vc]=$vq;
+				$data['d']='';
+				}
+			else if ((empty($filter['view'])) and (!empty($filter))){
+			$data['d']='d';
+			}
+			//count rows of data (with filter/search)
+			$rows = $this->Mpds->countpds($filter);
+			
 		} else {
-			$filter = '';
-		}
-		if ($this->input->get('column')!=null){
-			$col = $this->input->get('column');
-			$addrpage= $addrpage.'&column='.$col;
-		} else {
-			$col = '';
-		}
-				//count rows of data (inlcude filter & search)
-				$rows = $this->Mpds->countpds($col,$filter);
-		if ($this->input->get('view')!=null){
-			$offset = $this->input->get('view');
-		} else {
-			$offset = 10;
-		}
-		if ($this->input->get('page')!=null){
-			$perpage = $this->input->get('page');
-		} else {
-			$perpage = 1;
+			//count rows of data (no filter/search)
+			$rows = $this->Mpds->countpds();	
 		}
 		
 		
 		//================ filter handler ================
-		
-		
 		$fq = array('name'=>'search',
 						'id'=>'search',
+						'required'=>'required',
 						'placeholder'=>'Search Here',
-						'value'=>$filter,
+						'value'=> isset($tempfilter['search']) ? $tempfilter['search'] : null ,
 						'class'=>'form-control');
 		$data['inq'] = form_input($fq);
 			$optf = array(
-						'ucreated' => 'Date Created',
-						'uuser' => 'Username',
-						'uname' => 'Name',
+						'ucreated' => 'Date Registered',
+						'uname' => 'Full Name',
 						'unim' => 'NIM',
-						'uhp' => 'Phone Number'
+						'uhp' => 'Email',
+						'ustatus' => 'Status'
 						);
 		$fc = array('name'=>'column',
 						'id'=>'col',
 						'class'=>'form-control'
 					);
-		$data['inc'] = form_dropdown($fc,$optf,$col);
-		$data['inv'] = form_hidden('view',$offset);
+		$data['inc'] = form_dropdown($fc,$optf,isset($tempfilter['column']) ? $tempfilter['column'] : null);
+		$data['inv'] = form_hidden('view',isset($tempfilter['view']) ? $tempfilter['view'] : 10);
 		
 		$fbq = array(	'id'=>'bsearch',
 						'value'=>'search',
@@ -86,6 +94,58 @@ class Viewpds extends Admin_Controller {
 						'type'=>'submit');
 		$data['bq'] = form_submit($fbq);
 		
+		// ============= advanced filter ===============
+		$adv['Period'] = form_input(
+						array('name'=>'period',
+						'id'=>'period',
+						'placeholder'=>'Period',
+						'value'=>isset($tempfilter['period']) ? $tempfilter['period'] : null,
+						'class'=>'form-control'));
+		$adv['Registered'] = form_input(
+						array('name'=>'ucreated',
+						'id'=>'createdon',
+						'placeholder'=>'Date Created',
+						'value'=>isset($tempfilter['ucreated']) ? $tempfilter['ucreated'] : null,
+						'class'=>'form-control'));
+		
+		$adv['Full Name'] = form_input(
+						array('name'=>'uname',
+						'id'=>'fullname',
+						'placeholder'=>'Full Name',
+						'value'=>isset($tempfilter['uname']) ? $tempfilter['uname'] : null,
+						'class'=>'form-control'));
+		
+		$adv['NIM'] = form_input(
+						array('name'=>'unim',
+						'placeholder'=>'NIM',
+						'value'=>isset($tempfilter['unim']) ? $tempfilter['unim'] : null,
+						'class'=>'form-control'));
+						
+		$adv['Phone Number'] = form_input(
+						array('name'=>'uhp',
+						'id'=>'hp',
+						'placeholder'=>'Phone Number',
+						'value'=>isset($tempfilter['uhp']) ? $tempfilter['uhp'] : null,
+						'class'=>'form-control'));
+		
+		$adv['Status'] = form_input(
+						array('name'=>'ustatus',
+						'id'=>'status',
+						'placeholder'=>'Status',
+						'value'=>isset($tempfilter['ustatus']) ? $tempfilter['ustatus'] : null,
+						'class'=>'form-control'));
+		
+		$adv['Fully Paid/Not'] = form_dropdown(array(
+							'name'=>'ulunas',
+							'id'=>'lunas',
+							'class'=>'form-control'),
+							array(''=>'No filter','1'=>'Fully Paid',
+							'0'=>'Not Yet'),isset($tempfilter['ulunas']) ? $tempfilter['ulunas'] : null);
+		$dtfilter = '';
+		foreach($adv as $a=>$v){
+			$dtfilter = $dtfilter.'<div class="input-group"><label>'.$a.': </label>'.$v.'</div>  ';
+		}
+		$data['advance'] = $dtfilter;
 		
 		//=============== paging handler ==========
 		$data["urlperpage"] = base_url().'Admin/Viewpds/pdsdata?view=';
@@ -108,14 +168,16 @@ class Viewpds extends Admin_Controller {
 		$data["links"] = explode('&nbsp;',$str_links );
 
 		//========== data manipulation =========
-		$temp = $this->Mpds->datapds($column,$config['per_page'],$perpage,$col,$filter);	
+		$temp = $this->Mpds->datapds($column,$config['per_page'],$perpage,$filter);	
 				foreach($temp as $key=>$value){
+					$temp[$key]['ucreated'] = date('d-M-Y H:i:s',strtotime($value['ucreated']));
 				//manipulation allow data
 				if($value['ulunas']){
 					$temp[$key]['ulunas']='<span class="label label-success">Fully Paid</span>';
 				} else{
 					$temp[$key]['ulunas']='<span class="label label-warning">Not yet</span>';
 				}
+				$temp[$key]['ustatus']= str_replace(',', '<br/>', $value['ustatus']);
 				//manipulation menu
 				$enc = $value['uuser'];
 				$temp[$key]['menu']='<small><a href="'.base_url('Admin/Viewpds/pdsdetail?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Full Data" class="btn-primary btn-sm"><i class="fa fa-list-alt"></i> Details</a></small>';

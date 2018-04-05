@@ -128,7 +128,7 @@ class Dashboard extends Mem_Controller {
 							'h-timeline/h-timeline');
 							
 		$data['jsFiles'] = array(
-							'');
+							'amchart/amcharts','amchart/serial','amchart/themes/light');
 		
 		$data['title']="Dashboard";
 		$data['topbar'] = $this->load->view('dashboard/topbar', NULL, TRUE);

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Setting extends Adm_Controller {
+class Setting extends Admin_Controller {
 
 	function __construct()
     {
@@ -16,29 +16,7 @@ class Setting extends Adm_Controller {
     }
 
 	public function index(){
-		// export database
-		$this->load->dbutil();
-		$prefs = array(
-		        'tables'        => array('table1', 'table2'),   // Array of tables to backup.
-		        'ignore'        => array(),                     // List of tables to omit from the backup
-		        'format'        => 'gzip',                       // gzip, zip, txt
-		        'filename'      => 'mybackup.sql',              // File name - NEEDED ONLY WITH ZIP FILES
-		        'add_drop'      => TRUE,                        // Whether to add DROP TABLE statements to backup file
-		        'add_insert'    => TRUE,                        // Whether to add INSERT data to backup file
-		        'newline'       => "\n"                         // Newline character used in backup file
-		);
-
-		$this->dbutil->backup($prefs);
-		// Load the file helper and write the file to your server
-		$this->load->helper('file');
-		write_file(FCPATH.'/tmp_upload/', $backup);
-
-		// Load the download helper and send the file to your desktop
-		$this->load->helper('download');
-		force_download('mybackup.gz', $backup);
-	}
-
-	public function account(){
+	
 	//============== save handler ========================
 		//====================================================
 		if($this->input->post('finputs')<>''){
@@ -141,8 +119,9 @@ class Setting extends Adm_Controller {
 				$tempacc[$k][1] .= '<p class="text-danger hidden">Email Is Taken</p><span id="emailnow" class="hidden">'.$arracc[$v].'</span>';
 			} 
 			else if($columnacc[$k]=="ufoto"){
+				($arracc[$v]=='') ? $foto = "avatar.png" : $foto = $arracc[$v];	
 				$tempacc[$k][1] = '<div class="thumbnail text-center">
-							        <img src="'.base_url("upload/foto/".$arracc[$v]).'" alt="" class="img-responsive imgava" alt="user photo">
+							        <img src="'.base_url("upload/foto/".$foto).'" alt="" class="img-responsive imgava" alt="user photo">
 							        <div class="caption">
 							        	<button type="button" class="btn" data-toggle="modal" data-target="#fotoModal">
 							            <i class="fa fa-cloud-upload fa-2x"></i> <br/>
@@ -172,7 +151,7 @@ class Setting extends Adm_Controller {
 		$columnpho=['ufoto'];
 		$arrpho = $this->Mlogin->detaillogin($columnpho,$this->session->userdata('user'))[0];
 		foreach ($columnpho as $k => $v) {
-			($arrpho[$v]=='') ? $foto = "avatar.png" : $foto = $arrpho[$v];		
+					
 			$temppho[$k] =array( 
 							'<div class="text-center">
 							<div class="well">
@@ -232,8 +211,8 @@ class Setting extends Adm_Controller {
 		// =============== view handler ============
 		$data['title']="Setting Account";
 		$data['topbar'] = $this->load->view('dashboard/topbar', NULL, TRUE);
-		$data['sidebar'] = $this->load->view('dashboard/mem/sidebar', NULL, TRUE);
-		$data['content'] = $this->load->view('dashboard/mem/setting/account', $data, TRUE);
+		$data['sidebar'] = $this->load->view('dashboard/admin/sidebar', NULL, TRUE);
+		$data['content'] = $this->load->view('dashboard/admin/setting/account', $data, TRUE);
 		$this->load->view ('template/main', $data);
 	}
 }

@@ -33,6 +33,7 @@ class Notifications {
             
         }
             $list='';
+            (empty($arrnotif)) ? print("<li>No Notification yet.</li>") : "";
             foreach ($arrnotif as $k => $v) {
             if (!$v['nread']){ 
                 $nread='notread';
@@ -68,6 +69,7 @@ class Notifications {
             );
         
             $list='';
+            (empty($arrnotif)) ? $list="<tr><td>No Notification yet.</td></tr>" : "";
             foreach ($arrnotif as $k => $v) {
             if (!$v['nread']){ 
                 $nread='notread';

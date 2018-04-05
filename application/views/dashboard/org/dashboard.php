@@ -157,10 +157,7 @@
 </section>
 
 
-		<!-- amCharts javascript sources -->
-		<script src="<?=base_url('assets/js/armchart/armcharts.js');?>" type="text/javascript"></script>
-		<script src="<?=base_url('assets/js/armchart/serial.js');?>" type="text/javascript"></script>
-		<script src="<?=base_url('assets/js/armchart/light.js');?>" type="text/javascript"></script>
+		
 		
 		<!-- amCharts javascript code -->
 		<script type="text/javascript">			

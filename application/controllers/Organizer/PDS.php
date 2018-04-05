@@ -191,6 +191,8 @@ class PDS extends Org_Controller {
 				array_unshift($temp[$key],$ctable);
 				$temp[$key]['uuser']='<span class="idname">'.$temp[$key]['uuser'].'</span>';
 				$temp[$key]['ucreated']=date('d-M-Y', strtotime($value['ucreated'])).'<br/>'.date('H:i:s', strtotime($value['ucreated']));
+					$txtstatus = str_replace(',', '<br/>', $value['ustatus']);
+				$temp[$key]['ustatus'] = $txtstatus; 
 				//manipulation menu
 				$enc = $value['uuser'];
 				unset($temp[$key]['uuser']);

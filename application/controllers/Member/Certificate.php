@@ -27,9 +27,9 @@ class Certificate extends Mem_Controller {
 		$data['enddate'] = date('d-M-Y', $endcerti);
 		//===================== table handler =============
 		$data['thisperiod']=$this->Msetting->getset('period');
-		$column=['lvlname','nocerti','certidate','clisten','cgrammar','cread','cwrite','cspeak','ctaken'];
+		$column=['lvlname','nocerti','certidate','ctaken','clisten','cgrammar','cread','cwrite','cspeak'];
 		$certi = $this->Mcerti->datamycerti($column,0,1)[0];
-		unset($column[0],$column[1],$column[2]);
+		unset($column[0],$column[1],$column[2],$column[3]);
 		$retcolumn = $this->returncolomn($column);
 		$header = ['<i class="fa fa-book"></i> Subject','<i class="fa fa-check"></i> Mark'];
 		$tmpl = array ( 'table_open'  => '<table class="table table-striped table-hover" id="certilist">'

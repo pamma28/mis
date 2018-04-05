@@ -118,8 +118,9 @@ class Setting extends Mem_Controller {
 				$tempacc[$k][1] .= '<p class="text-danger hidden">Email Is Taken</p><span id="emailnow" class="hidden">'.$arracc[$v].'</span>';
 			} 
 			else if($columnacc[$k]=="ufoto"){
+				($arracc[$v]=='') ? $foto = "avatar.png" : $foto = $arracc[$v];	
 				$tempacc[$k][1] = '<div class="thumbnail text-center">
-							        <img src="'.base_url("upload/foto/".$arracc[$v]).'" alt="" class="img-responsive imgava" alt="user photo">
+							        <img src="'.base_url("upload/foto/".$foto).'" alt="" class="img-responsive imgava" alt="user photo">
 							        <div class="caption">
 							        	<button type="button" class="btn" data-toggle="modal" data-target="#fotoModal">
 							            <i class="fa fa-cloud-upload fa-2x"></i> <br/>
@@ -149,7 +150,7 @@ class Setting extends Mem_Controller {
 		$columnpho=['ufoto'];
 		$arrpho = $this->Mlogin->detaillogin($columnpho,$this->session->userdata('user'))[0];
 		foreach ($columnpho as $k => $v) {
-			($arrpho[$v]=='') ? $foto = "avatar.png" : $foto = $arrpho[$v];		
+				
 			$temppho[$k] =array( 
 							'<div class="text-center">
 							<div class="well">

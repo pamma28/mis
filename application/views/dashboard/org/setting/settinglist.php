@@ -717,7 +717,7 @@ $(document).ready(function(){
 	});
 
 	$("#btnupdatetxtmail").click(function(){
-		$('input[name="mailheader"]').val($("#txtmailheader").summernote('code'));
+		$('input[name="mailtemplate"]').val($("#txtmailtemplate").summernote('code'));
 		$('input[name="mailfooter"]').val($("#txtmailfooter").summernote('code'));
 	});
 

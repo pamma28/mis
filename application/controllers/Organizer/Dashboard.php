@@ -79,10 +79,10 @@ class Dashboard extends Org_Controller {
 		
 		//=============== Template ============
 		$data['cssFiles'] = array(
-							'wysi/wysi.min');
+							);
 							
 		$data['jsFiles'] = array(
-							'wysi/wysi.min','inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions');
+							'amchart/amcharts','amchart/serial','amchart/themes/light');
 		
 		
 		$data['title']="Dashboard";

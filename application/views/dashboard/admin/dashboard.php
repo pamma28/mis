@@ -125,13 +125,6 @@
 		
 </section>
 
-
-		<!-- amCharts javascript sources -->
-		<script src="http://www.amcharts.com/lib/3/amcharts.js" type="text/javascript"></script>
-		<script src="http://www.amcharts.com/lib/3/serial.js" type="text/javascript"></script>
-		<script src="http://www.amcharts.com/lib/3/pie.js" type="text/javascript"></script>
-		<script src="http://www.amcharts.com/lib/3/themes/light.js" type="text/javascript"></script>
-
 		<!-- amCharts javascript code -->
 		<script type="text/javascript">
 			AmCharts.makeChart("onlinediv",

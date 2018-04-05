@@ -63,6 +63,50 @@
 			} ?>
 			</ul>
 			</div>
+			<br class="clearfix"/>
+			<hr/>
+
+			<div class="box box-info">
+					<div class="box-body">
+						<h4><b>Setting Database Backup (Automated)</b></h4>
+						<?php echo form_open(base_url('Admin/Impexp/saveschedulebackup'),array('class'=>'form-inline','method'=>'POST','id'=>'formreminder'));?>
+						<div class="form-group">	
+							<label class="form-label">Backup Setting :</label>
+							<?=$btnset;?> <small><span class="bg-info"><i>*Please "Turn ON" if you want to get new backup database via Email</i></span></small>
+						</div><h5></h5>
+						<div class="form-group">	
+							<label class="form-label">Backup Period :</label>
+							<div class="input-group">
+							<?=$period;?>
+							<span class="input-group-addon">Day(s)</span>
+							</div>
+							<small><span class="bg-info"><i>*on certain day(s), newest backup will send to you</i></span></small>
+						</div><h5></h5>
+						<div class="form-group">	
+							<label class="form-label">Email Backup :</label>
+							<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+							<?=$inputemailbackup;?>
+							</div>
+							<small><span class="bg-info"><i>*Target email of backup database</i></span></small>
+						</div><h5></h5>
+						<div class="form-group">
+						<label class="form-label">
+							Start Backup (Date):
+						</label>
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+							<?=$datestart;?>
+						</div>
+						</div>
+						<div class="form-group text-right">
+						<input type="submit" value="Update Reminder" class="btn btn-primary">
+						<?php echo form_close();?>
+						</div>
+
+						<h5><span class="bg-info text-primary"><i class="fa fa-info-circle"></i> <i>This will send email with newest database backup attachment.</i></span></h5>
+					</div>
+				</div>
 		</div>
 	</div>
 	
@@ -207,6 +251,34 @@
              $("#selectedcol").attr('class','bg-info visible');
         }
     });
+	});
+
+	$(document).ready(function() {
+	    $("#setdbbackup").bootstrapToggle({
+			size: "medium",
+			onstyle: "success",
+			offstyle: "danger",
+			on: "<b>Turn ON</b>",
+			off: "<b>Turn OFF</b>",
+			width: 150,
+			height: 30
+		});
+
+		$("#inputdbperiod").numeric();
+  	});
+
+  	$(function() {
+	    $('#inputbackupdate').daterangepicker({
+	    	singleDatePicker: true,
+	    	timePicker: true,
+	    	autoUpdateInput: false,
+	    	timePickerIncrement: 5,
+	    	locale: {format: 'DD-MM-YYYY HH:mm:ss',
+	    			cancelLabel: 'Clear'}
+	    });
+	});
+	$('#inputbackupdate').on('apply.daterangepicker', function(ev, picker) {
+      $(this).val(picker.startDate.format('DD-MM-YYYY HH:mm:ss'));
 	});
 	
 	
