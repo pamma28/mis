@@ -23,11 +23,11 @@
 	
 	  <div class="mynavbar-wrapper">
 		<ul class="nav nav-tabs mynavbar-list" id="myTab">
-		  <li><a href="#"><i class="fa fa-laptop"></i> Dashboard</a></li>
-		  <li><a href="#"><i class="fa fa-newspaper-o"></i> Articles</a></li>
-		  <li><a href="#"><i class="fa fa-calendar-o"></i> Agendas</a></li>
-		  <li><a href="#"><i class="fa fa-info"></i>  About</a></li>
-		  <li><a href="<?php echo base_url('Login/logout'); ?>"><i class="fa fa-power-off"></i> <?php echo lang('Logout');?></a></li>
+		  <li><a href="<?=base_url('Accesscontrol');?>"><i class="fa fa-laptop"></i> <span><?php echo lang('Dash');?></span></a></li>
+		  <li><a href="<?=base_url('Home/articles');?>"><i class="fa fa-newspaper-o"></i><span> <?php echo lang('Articles');?></span></a></li>
+		  <li><a href="<?=base_url('Home/agendas');?>"><i class="fa fa-calendar"></i><span> <?php echo lang('Agendas');?></span></a></li>
+		  <li><a href="<?=base_url('Home/about');?>"><i class="fa fa-info"></i><span> <?php echo lang('About');?></span></a></li>
+		  <li><a href="#" data-toggle="modal" data-target="#LogoutModal" ><i class="fa fa-power-off"></i> <?php echo lang('Logout');?></a></li>
 	  </ul>
 	  </div>
 
@@ -44,6 +44,17 @@
 		</div>
 	
 
+		<!-- Modal Details Data-->
+		<div class="modal fade" id="LogoutModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="modal-dialog modal-sm">
+	        <div class="modal-content">
+				<div class="modal-header text-center text-aqua"><h4><b> <span class="fa fa-info-circle"></span>  Do you really want to log out?</b></h4></div>
+				<div class="modal-footer text-right">
+					<button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Cancel</button>
+					<a href="<?php echo base_url('Login/logout'); ?>" class="btn btn-sm btn-danger"><i class="fa fa-power-off"></i> <?php echo lang('Logout');?></a></div>
+	        </div>
+	    </div>
+		</div>
 	  <script>
 	  $(document).ready(function () {
 	  	

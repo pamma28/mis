@@ -133,7 +133,7 @@ class Api extends CI_Controller {
 					//================= gmail send ===========
 					$ret = $this->gmail->sendmail($to,$ccmail,$sub,$bcfrom,$decode,$attfile);		
 				}
-				delete_files(FCPATH.'temp_upload/',true);
+				delete_files(FCPATH.'temp_upload/',true,true);
 				return $ret;
 				break;
 

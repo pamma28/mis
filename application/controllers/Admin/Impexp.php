@@ -207,22 +207,24 @@ class Impexp extends Admin_Controller {
             } else {
               // if upload success, take file data
 			  $dt = $this->upload->data();
-			  $schema = htmlspecialchars(file_get_contents($dt['file_path'].$dt['file_name']));
+			  $schema = file_get_contents($dt['file_path'].$dt['file_name']);
 			  $query = rtrim(trim($schema), "\n;");
-			  $query_list = explode(";", $query);
+			  $query_list = explode(";\n", $query);
 			  $hsl = $this->Mdb->restoredb($query_list);
               
             //set flashdata
 			$this->session->set_flashdata('v','Database is successfully restored.<br/>'.$hsl);
 			//redirect ke halaman awal
-			redirect(base_url('Admin/Impexp'));
 			}
 		//delete file
         $upload_data = $this->upload->data();
 		$file = $upload_data['file_name'];
         $path = FCPATH.'temp_upload/' . $file;
         unlink($path);
-        
+        $this->load->helper('file');
+        delete_files(FCPATH.'temp_upload/',true,true);
+		redirect(base_url('Admin/Impexp'));
+     
     }
 	
 	public function exportdb(){

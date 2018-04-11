@@ -14,9 +14,15 @@ class Mresult extends CI_Model{
 			if ($filter != null){
 			foreach($filter as $f=>$v){
 				if (($f=='period')){
-				$this->db->like('DATE_FORMAT(ucreated,"%Y")',$v);
-				} else if(($f=='ulunas') and ($v!='')){
-					$this->db->like($f,$v);			
+				$this->db->like('DATE_FORMAT(q_submitted,"%Y")',$v);
+				} else if(($f=='uname') and ($v!='')){
+					$this->db->like('a.uname',$v);			
+				} else if(($f=='unim') and ($v!='')){
+					$this->db->like('a.unim',$v);			
+				}else if(($f=='idlevel') and ($v!='')){
+					$this->db->like('a.idlevel',$v);			
+				}else if(($f=='pic') and ($v!='')){
+					$this->db->like('b.uname',$v);
 				}else{
 					$this->db->like($f,$v);			
 				}
@@ -28,9 +34,8 @@ class Mresult extends CI_Model{
 		$this->db->join('jdwl_tes','resulttest.idjdwl=jdwl_tes.idjdwl','left');
 		$this->db->join('level','a.idlevel=level.idlevel','left');
 		$this->db->where('a.uallow','1');
+		$this->db->order_by('q_submitted','desc');
 		$this->db->order_by('tcreated','desc');
-		$this->db->order_by('mem','desc');
-		$this->db->order_by('q_score','desc');
 		$q = $this->db->get('resulttest');
 		$qr = array();
 		if ($q->num_rows() > 0){	
@@ -56,9 +61,15 @@ class Mresult extends CI_Model{
 		if ($filter != null){
 			foreach($filter as $f=>$v){
 				if (($f=='period')){
-				$this->db->like('DATE_FORMAT(ucreated,"%Y")',$v);
-				} else if(($f=='ulunas') and ($v!='')){
-					$this->db->like($f,$v);			
+				$this->db->like('DATE_FORMAT(q_submitted,"%Y")',$v);
+				} else if(($f=='uname') and ($v!='')){
+					$this->db->like('a.uname',$v);			
+				} else if(($f=='unim') and ($v!='')){
+					$this->db->like('a.unim',$v);			
+				}else if(($f=='idlevel') and ($v!='')){
+					$this->db->like('a.idlevel',$v);			
+				}else if(($f=='pic') and ($v!='')){
+					$this->db->like('b.uname',$v);
 				}else{
 					$this->db->like($f,$v);			
 				}
@@ -93,39 +104,21 @@ class Mresult extends CI_Model{
     return $return;
 	}
 	
-	public function importdata($dtxl){
-		$this->load->model('Mlogin');//load model
-		$tot = 0;
-		$faileduser = '';
-		foreach ($dtxl as $key=>$val) {
-            $val['ucreated'] = DATE('Y-m-d H:i:s');
-            //check duplication row (username)
-			$cuser = $this->Mlogin->checkuser($val['uuser']);           
-			$cmail = $this->Mlogin->checkmail($val['uemail']);                      
-            if (($cuser==0) and ($cmail==0)) {
-                $this->db->insert('user', $val);
-				$tot ++;
-            } else {
-				$faileduser[]=($key+1).'. '.$val['uuser'].' - '.$val['uemail'];
-			}
-		}
-		return array('success'=>$tot,'failed'=>(count($dtxl)-$tot),'faillist'=>implode("<br/> ",$faileduser));
-	}
 	
-	public function exportlogin($dtstart = null,$dtend = null, $dcolumn = null){
+	public function exportresult($dtstart = null,$dtend = null, $dcolumn = null){
 		$this->db->select($dcolumn);
-		$this->db->where('user.idrole','3');
-		$this->db->where('user.idjk<>','');
-		$this->db->where('user.idfac<>','');
-		$this->db->where('ustatus<>','');
 			if (($dtstart <> null) and ($dtend)<>null){
-			$this->db->where('DATE_FORMAT(ucreated,"%Y-%m-%d") >=',$dtstart);
-			$this->db->where('DATE_FORMAT(ucreated,"%Y-%m-%d") <=',$dtend);
+			$this->db->where('DATE_FORMAT(q_submitted,"%Y-%m-%d") >=',$dtstart);
+			$this->db->where('DATE_FORMAT(q_submitted,"%Y-%m-%d") <=',$dtend);
 			}
-		$this->db->join('fac','user.idfac=fac.idfac','left');
-		$this->db->join('jk','user.idjk=jk.idjk','left');
-		$this->db->order_by('ucreated','desc');
-		return $this->db->get('user')->result_array();
+		$this->db->join('test','resulttest.idtest=test.idtest','left');
+		$this->db->join('user as a','a.uuser=resulttest.uuser','left');
+		$this->db->join('user as b','b.uuser=resulttest.use_uuser','left');
+		$this->db->join('jdwl_tes','resulttest.idjdwl=jdwl_tes.idjdwl','left');
+		$this->db->join('level','a.idlevel=level.idlevel','left');
+		$this->db->where('a.uallow','1');
+		$this->db->order_by('q_submitted','desc');
+		return $this->db->get('resulttest')->result_array();
 	}
 	
 	

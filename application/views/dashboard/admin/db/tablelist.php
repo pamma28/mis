@@ -126,6 +126,7 @@
 					<?=$finfile;?>
 					<p class="help-block">Please choose only (.sql) file. (Max 10Mb)</p>
 					</div>
+				<span class="label label-info"><i class="fa fa-info-circle"></i> Please unzip first, then select .sql file to restore database</span>
 				<span class="label label-warning"><i class="fa fa-exclamation-triangle"></i> Be careful import data can ruin database, if it is not well-synchronized</span>
 				
 			</div>

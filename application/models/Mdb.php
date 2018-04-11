@@ -31,27 +31,54 @@ class Mdb extends CI_Model{
 		$tot = 0;
 		$fail = 0;
 		$this->db->query('SET foreign_key_checks = 0');
-		foreach ($dtdb as $query) {
+		foreach ($dtdb as $k=>$query) {
            $res = $this->db->query($query);
 		   if ($res){
 		   $tot++;} else {
 		   $fail++;}
 		}
+		//restore trigger
+		if ($tot>1){
+			$arrtrigger = ["CREATE TRIGGER `Update_tmp_Score` AFTER UPDATE ON `resultqa` FOR EACH ROW BEGIN
+							UPDATE `resulttest`
+							SET q_tmpscore = (
+							   SELECT SUM(tot) as tmpscore from (
+							    SELECT ((SUM(rtrue)/count(*))*(select qpercent from quo_sbjct WHERE idsubject=subject.idsubject and idtest=resulttest.idtest)) as tot
+							    FROM resultqa
+							    LEFT JOIN `question` ON question.idq = resultqa.idq
+							    LEFT JOIN `qtype` ON qtype.idqtype = question.idqtype
+							    LEFT JOIN `subject` ON subject.idsubject = question.idsubject
+							    LEFT JOIN `resulttest` ON resultqa.idresult = resulttest.idresult
+							    WHERE resultqa.idresult = new.idresult AND qmanual=0
+							    GROUP BY question.idsubject) as b
+							    )   
+							    WHERE resulttest.idresult = new.idresult;
+								END",
+							"CREATE TRIGGER `minquotajdwl` BEFORE INSERT ON `jdwl_mem` FOR EACH ROW BEGIN
+							UPDATE
+							  jdwl_tes
+							SET
+							  jdwl_tes.jquota = (jdwl_tes.jquota - 1)
+							WHERE
+							  jdwl_tes.idjdwl = NEW.idjdwl;
+							END",
+							"CREATE TRIGGER `restorequotajdwl` AFTER DELETE ON `jdwl_mem` FOR EACH ROW BEGIN
+							UPDATE
+							  jdwl_tes
+							SET
+							  jquota = (jquota + 1)
+							WHERE
+							  idjdwl = OLD.idjdwl;
+							END"];
+			foreach ($arrtrigger as $v) {
+				$this->db->query(rtrim(trim($v), "\n;"));
+			}
+		}
 		$this->db->query('SET foreign_key_checks = 1');
-		return ($tot.' Query(s) excuted successfully with '.$fail.' Query(s) failed.');
+		return ($tot.' Query(s) successfully excuted with '.$fail.' Query(s) failed.');
 	}
 	
-	public function exportlogin($dtstart = null,$dtend = null, $dcolumn = null){
-		$this->db->select($dcolumn);
-			if (($dtstart <> null) and ($dtend)<>null){
-			$this->db->where('ucreated >=',$dtstart);
-			$this->db->where('ucreated <=',$dtend);
-			}
-		$this->db->join('role','user.idrole=role.idrole','left');
-		$this->db->order_by('ucreated','asc');
-		return $this->db->get('user')->result_array();
-	}
-
+	
 	public function deletedb($id){
 	$this->db->query('SET FOREIGN_KEY_CHECKS = 0');
 	$this->db->query('TRUNCATE '.$id);
@@ -63,52 +90,4 @@ class Mdb extends CI_Model{
 	return $this->db->get($id)->result_array();
 	}
 	
-	public function updateacc($data=null,$id){
-		$this->db->where('uuser',$id);
-		return $this->db->update('user',$data);
-	}
-	
-	public function addacc($data){
-		return $this->db->insert('user',$data);
-	}
-	
-	public function getrole(){
-	$this->db->select('idrole,rolename');
-	$q = $this->db->get('role');
-	$return = array();
-	$return[''] = 'Please select';
-		if($q->num_rows() > 0){
-        foreach($q->result_array() as $row){
-            $return[$row['idrole']] = $row['rolename'];
-			}
-		}
-	return $return;
-	}
-	
-	public function getallrole(){
-	$this->db->select('idrole,rolename');
-	return $this->db->get('role')->result_array();
-	}
-	
-	public function checkmail($mail){
-		$this->db->select('uemail');
-		$this->db->where('uemail',$mail);
-		$rt = $this->db->get('user')->num_rows();
-		if ($rt>0){
-		return 1;
-		} else{
-		return 0;
-		}
-	}
-	
-	public function checkuser($us){
-		$this->db->select('uuser');
-		$this->db->where('uuser',$us);
-		$rt = $this->db->get('user')->num_rows();
-		if ($rt>0){
-		return 1;
-		} else{
-		return 0;
-		}
-	}
 }

@@ -191,7 +191,7 @@ class Memberaccount extends Org_Controller {
 				array_unshift($temp[$key],$ctable);
 				$temp[$key]['uuser']='<span class="idname">'.$temp[$key]['uuser'].'</span>';
 				$temp[$key]['ucreated']=date('d-M-Y', strtotime($value['ucreated'])).'<br/>'.date('H:i:s', strtotime($value['ucreated']));
-				$temp[$key]['ulastlog']=$this->converttime->time_elapsed_string($temp[$key]['uuser']);
+				$temp[$key]['ulastlog']=$this->converttime->time_elapsed_string($temp[$key]['ulastlog']);
 				//manipulation menu
 				$enc = $value['uuser'];
 				$temp[$key]['menu']='<div class="btn-group"><a href="'.base_url('Organizer/Memberaccount/detailaccount?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Full Data" class="btn btn-primary btn-sm" title="Details"><i class="fa fa-list-alt"></i></a>'.
@@ -858,6 +858,7 @@ class Memberaccount extends Org_Controller {
 					'uemail' => $this->input->post('femail'),
 					'uhp' => $this->input->post('fhp'),
 					'idrole' => '3',
+					'uvalidated'=>'1',
 					'uallow' => $allow
 					);
 		$r = $this->Mlogin->addacc($fdata);

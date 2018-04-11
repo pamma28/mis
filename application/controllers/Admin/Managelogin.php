@@ -665,13 +665,13 @@ class Managelogin extends Admin_Controller {
 		$r[] = form_input($femail).'<span id="valsuccess" style="display:none;" class="text-primary"><i class="fa fa-check"></i> Email Available</span><span id="valfailed" class="text-danger" style="display:none;"><i class="fa fa-ban"></i> Email Not Available</span>';
 		
 		$fhp = array('name'=>'fhp',
-						'id'=>'return',
+						'id'=>'nohp',
 						'required'=>'required',
 						'placeholder'=>'Phone Number',
 						'value'=>set_value('fhp'),
 						'class'=>'form-control',
 						'size'=>'50');
-		$r[] = form_input($fhp);
+		$r[] = form_input($fhp).'<span class="text-danger hidden"><i class="fa fa-ban"></i> Phone Number Not Available</span>';
 		
 			$optrole = $this->Mlogin->getrole();
 		$frole = array('name'=>'frole',
@@ -692,7 +692,7 @@ class Managelogin extends Admin_Controller {
 							'value'=>'1')
 							);
 		
-		$fsend = array(	'id'=>'submit',
+		$fsend = array(	'id'=>'btnsubmit',
 						'value'=>'Create',
 						'class'=>'btn btn-primary',
 						'type'=>'submit');
@@ -873,6 +873,7 @@ class Managelogin extends Admin_Controller {
 					'uemail' => $this->input->post('femail'),
 					'uhp' => $this->input->post('fhp'),
 					'idrole' => $this->input->post('frole'),
+					'uvalidated'=>'1',
 					'uallow' => $allow
 					);
 		$r = $this->Mlogin->addacc($fdata);

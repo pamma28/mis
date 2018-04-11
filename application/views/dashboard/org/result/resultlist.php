@@ -24,8 +24,6 @@
 			<?php } ?>
 		<div class="row">
 			<div class="col-md-6"> 
-				<a href="<?=base_url('Organizer/PDS/addpds');?>" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add </a> 
-				<a href="#" class="btn btn-sm btn-primary" data-toggle="modal" data-target=".bs-import-data"><i class="fa fa-cloud-upload"></i> Import </a>
 				<a href="#" class="btn btn-sm btn-primary" data-toggle="modal" data-target=".bs-export-data"><i class="fa fa-cloud-download"></i> Export </a>
 				<a href="#" class="btn btn-sm btn-primary" data-toggle="modal" data-target=".bs-print-data"><i class="fa fa-print"></i> Print </a>
 			</div>
@@ -200,7 +198,7 @@
 			<div class="modal-body">
 				<div class="form-group">
 					<label>Choose Column(s)</label>
-					<span class="label label-danger"><i class="fa fa-exclamation-triangle"></i> Do not choose all columns, it will not fit into 1 page (too wide).</span>
+					
 					<div class="input-group">
                     <?=$fcol;?>
 					</div>

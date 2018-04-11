@@ -292,7 +292,7 @@
         	</div>
         			
         <div class="modal-footer ">
-        	 <button class="btn btn-default text-center"><i class="fa fa-print fa-3x"></i>Print</button>
+        	 <a href="#" id="btnpreviewprint" class="btn btn-primary text-center"><i class="fa fa-print fa-3x"></i> Print</a>
         </div>
         </div>
     </div>
@@ -397,6 +397,7 @@
 	//preview certi
 		$('#previewprint').on("show.bs.modal", function (e) {
 			$(this).find("#imgpreview").append('<img src="'+$(e.relatedTarget).data('href')+'" class="img img-thumbnail" width="80%"/>');
+			$(this).find("#btnpreviewprint").prop('href','<?=base_url('Organizer/Certificate/printpreviewcerti')?>/'+$(e.relatedTarget).data('idcerti'));
 		});
 
 		$('#previewprint').on("hidden.bs.modal", function (e) {

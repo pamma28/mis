@@ -660,10 +660,10 @@ class Confirmpay extends Mem_Controller {
 				}
 		$data['listdata'] = $this->table->generate($temp);
 		
-		$arrtot = $this->Mpay->mydetailpay(array("(select sum(tpaid) from transaksi where uuser=a.uuser) as 'totpaid',a.ulunas"),$enc,$this->session->userdata('user'));
-		$data['totpaid'] = $this->convertmoney->convert($arrtot[0]['totpaid']);
+		$data['totpaid'] =$this->Mpay->totalmypay();
 		$data['tottrans'] = $this->Mpay->countmypay();
-		$data['lunas'] = ($arrtot[0]['ulunas']) ? 'Fully Paid' : "Not Fully Paid Yet";
+		$statlunas = ($this->Mpay->checkmelunas()) ? 'Fully Paid' : "Not Fully Paid Yet" ; 
+		$data['lunas'] = $statlunas;
 
 		//=============== Template ============
 		$data['jsFiles'] = array(
@@ -711,7 +711,7 @@ class Confirmpay extends Mem_Controller {
 		//set table data
 		array_unshift($row,'QR Code'); //set qr label 
 		array_unshift($col,'QR Code'); //set qr label
-		if (is_array($dbres[0])){
+		if (!empty($dbres)){
 				$notrans = $dbres[0]['tnotrans'];
 				$dbres[0]['QR Code']= '<img src="'.base_url('upload/qr/'.$notrans).'.png" class="img-thumbnail" style="height:100px;"/>'; //set qr data 		
 				

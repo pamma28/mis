@@ -19,7 +19,7 @@ class Result extends Org_Controller {
 	
 		//===================== table handler =============
 		$data['thisperiod']=$this->Msetting->getset('period');
-		$column=['idresult','jdate','tname','a.uname as mem','a.unim','q_tmpscore','lvlabre','q_score','b.uname as org'];
+		$column=['idresult','q_submitted','tname','a.uname as mem','a.unim','q_tmpscore','lvlabre','q_score','b.uname as org'];
 		$header = $this->returncolomn($column);
 		unset($header[0]);
 		// checkbox checkalldata
@@ -79,9 +79,10 @@ class Result extends Org_Controller {
 						'class'=>'form-control');
 		$data['inq'] = form_input($fq);
 			$optf = array(
+						'q_submitted' => 'Date Submitted',
 						'jdate' => 'Test Date',
 						'tname' => 'Test Name',
-						'a.uname' => 'Member Name',
+						'a.uname as mem' => 'Member Name',
 						'a.unim' => 'Member NIM',
 						'b.uname' => 'Assessor'
 						);
@@ -99,6 +100,13 @@ class Result extends Org_Controller {
 		$data['bq'] = form_submit($fbq);
 		
 		// ============= advanced filter ==============
+		$adv['Date Submitted'] = form_input(
+						array('name'=>'q_submitted',
+						'id'=>'ressubmitted',
+						'placeholder'=>'Date Result Submitted',
+						'value'=>isset($tempfilter['q_submitted']) ? $tempfilter['q_submitted'] : null,
+						'class'=>'form-control'));
+
 		$adv['Test Date'] = form_input(
 						array('name'=>'jdate',
 						'id'=>'testcreated',
@@ -114,16 +122,16 @@ class Result extends Org_Controller {
 						'class'=>'form-control'));
 		
 		$adv['Member Name'] = form_input(
-						array('name'=>'a.uname',
+						array('name'=>'uname',
 						'id'=>'memname',
 						'placeholder'=>'Member Name',
-						'value'=>isset($tempfilter['a.uname']) ? $tempfilter['a.uname'] : null,
+						'value'=>isset($tempfilter['uname']) ? $tempfilter['uname'] : null,
 						'class'=>'form-control'));
 		
 		$adv['Member NIM'] = form_input(
-						array('name'=>'a.unim',
+						array('name'=>'unim',
 						'placeholder'=>'Member NIM',
-						'value'=>isset($tempfilter['a.unim']) ? $tempfilter['a.unim'] : null,
+						'value'=>isset($tempfilter['unim']) ? $tempfilter['unim'] : null,
 						'class'=>'form-control'));
 			
 			$this->load->model('Mlvl');
@@ -134,10 +142,10 @@ class Result extends Org_Controller {
 						'class'=>'form-control'),$optlevel,isset($tempfilter['idlevel']) ? $tempfilter['idlevel'] : null);
 						
 		$adv['Assessor'] = form_input(
-						array('name'=>'b.uname',
+						array('name'=>'pic',
 						'id'=>'assesor',
 						'placeholder'=>'Assessor Name',
-						'value'=>isset($tempfilter['b.uname']) ? $tempfilter['b.uname'] : null,
+						'value'=>isset($tempfilter['pic']) ? $tempfilter['pic'] : null,
 						'class'=>'form-control'));
 		
 		
@@ -199,7 +207,7 @@ class Result extends Org_Controller {
 				array_unshift($temp[$key],$ctable);
 				$temp[$key]['mem']='<span class="idname hidden">'.$temp[$key]['tname'].', '.$temp[$key]['mem'].'</span>'.$temp[$key]['mem'];
 				
-				$temp[$key]['jdate']=date('d-M-Y', strtotime($value['jdate']));
+				$temp[$key]['q_submitted']=date('d-M-Y H:i:s', strtotime($value['q_submitted']));
 				//manipulation menu
 				$enc = $value['idresult'];
 				unset($temp[$key]['idresult']);
@@ -235,21 +243,15 @@ class Result extends Org_Controller {
 		
 		// ============= export form ==============
 			$optcol = array(
-						'ucreated'=>'Date Created',
-						'uname' => 'Name',
-						'jkname' => 'Gender',
-						'ubplace' => 'Birthplace',
-						'ubdate' => 'Birthdate',
-						'unim' => 'NIM',
-						'fname' => 'Faculty',
-						'uemail' => 'Email',
-						'uhp' => 'Phone Number',
-						'ubbm' => 'Social Media',
-						'uaddrnow' => 'Recent Address',
-						'uaddhome' => 'Home Address',
-						'umin' => 'Member Index Number',
-						'ustatus' => 'Status',
-						'ulunas' => 'Fully Paid/Not'
+						'q_submitted'=>'Result Submitted',
+						'jdate'=>'Test Date',
+						'jdate' => 'Test Date',
+						'tname' => 'Test Name',
+						'a.uname as mem' => 'Member Name',
+						'a.unim' => 'Member NIM',
+						'q_score' => 'Final Score',
+						'lvlname' => 'Result (Level)',
+						'b.uname as org' => 'Assessor'
 						);
 			$data['fcol']= form_dropdown(array('name'=>'fcolomn[]',
 							'class'=>'form-control selectcol',
@@ -304,298 +306,6 @@ class Result extends Org_Controller {
 		$this->load->view ('template/main', $data);
 	}
 	
-	 public function importxls(){
-            // config upload
-            $config['upload_path'] = FCPATH.'temp_upload/';
-            $config['allowed_types'] = 'xls';
-            $config['max_size'] = '100000';
-            $this->load->library('upload', $config);
- 
-            if ( (! $this->upload->do_upload('fimport')) or ($this->upload->data()['orig_name']!='ImportFormatRegistrationData.xls')) {
-                // if file validation failed, send error to view
-                $error = ['file choosen is not match with pre-defined file',$this->upload->display_errors()];
-				array_filter($error);
-				$this->session->set_flashdata('x','Import Data Failed, details: '.implode(' ',$error));
-            } else {
-              // if upload success, take file data
-              $upload_data = $this->upload->data();
-			
-			 // load library Excell_Reader
-              $this->load->library('Excel');
-			  $objPHPExcel = PHPExcel_IOFactory::load($upload_data['full_path']);
-			  $objWorksheet = $objPHPExcel->setActiveSheetIndex(0);
- 
-              // array data
-			  $highestRow = $objWorksheet->getHighestRow();
-			  $highestColumn = $objWorksheet->getHighestColumn();
-              $dtxl = Array();
-              for ($i = 1; $i <=$highestRow; $i++) {
-				if ($objWorksheet->getCell('A'.($i+1))->getValue()!=''){
-					$dtdate = \DateTime::createFromFormat('dmY',$objWorksheet->getCell('G'.($i+1)))->format('Y-m-d');
-                   $dtxl[$i-1]['uname'] = $objWorksheet->getCell('A'.($i+1))->getValue();
-                   $dtxl[$i-1]['uuser'] = $objWorksheet->getCell('B'.($i+1))->getValue();
-                   $dtxl[$i-1]['unim'] = $objWorksheet->getCell('B'.($i+1))->getValue();
-                   $dtxl[$i-1]['uemail'] = $objWorksheet->getCell('C'.($i+1))->getValue();
-                   $dtxl[$i-1]['idjk'] = $objWorksheet->getCell('D'.($i+1))->getValue();
-                   $dtxl[$i-1]['idfac'] = $objWorksheet->getCell('E'.($i+1))->getValue();
-                   $dtxl[$i-1]['ubplace'] = $objWorksheet->getCell('F'.($i+1))->getValue();
-                   $dtxl[$i-1]['upass'] = md5(date('dmY',strtotime($dtdate)));
-                   $dtxl[$i-1]['ubdate'] = date('Y-m-d',strtotime($dtdate));
-                   $dtxl[$i-1]['uhp'] = $objWorksheet->getCell('H'.($i+1))->getValue();
-                   $dtxl[$i-1]['ubbm'] = $objWorksheet->getCell('I'.($i+1))->getValue();
-                   $dtxl[$i-1]['uaddrnow'] = $objWorksheet->getCell('J'.($i+1))->getValue();
-                   $dtxl[$i-1]['uaddhome'] = $objWorksheet->getCell('K'.($i+1))->getValue();
-                   $dtxl[$i-1]['uallow'] = '1';
-                   $dtxl[$i-1]['ustatus'] = 'Registered';
-                   $dtxl[$i-1]['idrole'] = '3';
-				 }
-              }
-			  
-			  //save data through model
-			  $report = $this->Mpds->importdata($dtxl);
- 
-              
-			  //set flashdata
-				$flashdata = 'Import '.$report['success'].' Data Success, with '.$report['failed'].' unsuccessful import.';
-				if ($report['faillist']<>''){
-				$flashdata = $flashdata."<br/>Data error: <br/>".$report['faillist'];
-				}
-				$this->session->set_flashdata('v',$flashdata);
-            } 
-			//delete file
-        	$file = $this->upload->data()['file_name'];
-        	$path = FCPATH.'temp_upload/' . $file;
-        	unlink($path);			
-			//redirect to data list
-			redirect(base_url('Organizer/PDS'));
-        
-    }
-	
-	public function exportxls(){
-		//catch column value
-		if ($this->input->post('fcolomn')!=null){
-		foreach($this->input->post('fcolomn') as $selected)
-		{$dtcol[] = $selected;}
-		} else {
-		$dtcol = ['ucreated','uname','jkname','ubplace','ubdate','unim','fname','uemail','uhp','ubbm','uaddrnow','uaddhome','umin','ustatus','ulunas'];
-		}
-		
-		//check use date range
-		$dexp = array();
-		if (null!=$this->input->post('fusedate')){
-			$dtrange = $this->input->post('fdtrange');
-			$dtstart = mb_substr($dtrange,0,10,'utf-8');
-			$dtend = substr($dtrange,13);
-			$dexp = $this->Mpds->exportlogin($dtstart,$dtend,$dtcol);
-			$title=$dtrange;
-		}else {
-			$dexp = $this->Mpds->exportlogin(null,null,$dtcol);
-			$title = Date('d-m-Y');
-		}
-		
-		//change header data
-		$dtcol = $this->returncolomn($dtcol);
-		
-		//Create a new Object
-		$this->load->library('Excel');
-		$objPHPExcel = new PHPExcel();
-		$objPHPExcel->getActiveSheet()->setTitle('Login Data');
-	
-		//Create Heading
-		$Hcol = 'A';
-		$Hrow = 2;
-		foreach($dtcol as $h){
-				$objPHPExcel->getActiveSheet()->setCellValue($Hcol.$Hrow,$h);
-				$objPHPExcel->getActiveSheet()->getStyle($Hcol.$Hrow)->getFont()->setSize(12);
-				$objPHPExcel->getActiveSheet()->getStyle($Hcol.$Hrow)->getFont()->setBold(true);
-				$Hcol++;    
-		}
-		
-		//Insert Data
-		$Drow = 3;
-		$Dcol = "A";
-		$ctot = count($dexp);
-		if ((is_array($dexp) || is_object($dexp)) and($ctot<>0)){
-			foreach($dexp as $key=>$val){
-					$Dcol = "A";
-				//manipulate data
-				if(array_key_exists('ulunas',$val)){
-							if ($val['ulunas']==1){
-							$val['ulunas']='Fully Paid';
-							}else{
-							$val['ulunas']='Not Yet';
-							}
-				}
-					foreach ($val as $k){
-						$objPHPExcel->getActiveSheet()->setCellValue($Dcol.$Drow,$k);
-						$Dcol++;
-					}
-				$Drow++;
-			}
-		} else {
-		$objPHPExcel->getActiveSheet()->setCellValue($Dcol.$Drow,'No Data');
-		$Drow=$Drow+1;
-		}
-		
-		//set limit col and row
-		$Dnewcol = chr(ord($Hcol)-1);
-		$Dnewrow = $Drow-1;
-		
-		//Freeze pane
-		$objPHPExcel->getActiveSheet()->freezePane('A3');
-		
-		
-		//Create big Title
-		$period = $this->Msetting->getset('period');
-		$objPHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setSize(18);
-		$objPHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
-		$objPHPExcel->getActiveSheet()->setCellValue('A1', 'REGISTRATION DATA ('.$title.')');
-		$objPHPExcel->getActiveSheet()->mergeCells('A1:'.$Dnewcol.'1');
-		$objPHPExcel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);		
-		
-		//setting autowidth
-		foreach(range('A',$Dnewcol) as $columnID) {
-			$objPHPExcel->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
-		}
-		
-		//setting border
-		$styleArray = array(
-		'borders' => array(
-          'allborders' => array(
-              'style' => PHPExcel_Style_Border::BORDER_THIN
-			))
-		);
-		$objPHPExcel->getActiveSheet()->getStyle('A2:'.$Dnewcol.$Dnewrow)->applyFromArray($styleArray);
-		
-		//setting footprint date
-		$objPHPExcel->getActiveSheet()->setCellValue('A'.$Drow, 'Generated on '.Date("d-m-Y H:i:s"));
-		$objPHPExcel->getActiveSheet()->getStyle('A'.$Drow)->getFont()->setSize(8);
-		$objPHPExcel->getActiveSheet()->getStyle('A'.$Drow)->getFont()->setItalic(true);
-		
-		//Save as an Excel BIFF (xls) file
-		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel5');
-
-		header('Content-Type: application/vnd.ms-excel');
-		header('Content-Disposition: attachment;filename="Registration Data ('.$title.').xls');
-		header('Cache-Control: max-age=0');
-		$objWriter->save('php://output');
-		
-	}
-	
-	public function predefinedimport(){
-		$dtcol = ['Fullname','NIM','Email','Gender','Faculty','Birthplace','Birthdate(ddmmyyyy)','Phone Number','Social Media','Current Address','Home Address']; 
-		
-		//Create a new Object
-		$this->load->library('Excel');
-		$objPHPExcel = new PHPExcel();
-		$objPHPExcel->getActiveSheet()->setTitle('ImportRegistrationData');
-		
-		//Create Heading
-		$Hcol = 'A';
-		$Hrow = 1;
-		foreach($dtcol as $h){
-				$objPHPExcel->getActiveSheet()->setCellValue($Hcol.$Hrow,$h);
-				$objPHPExcel->getActiveSheet()->getStyle($Hcol.$Hrow)->getFont()->setSize(12);
-				$objPHPExcel->getActiveSheet()->getStyle($Hcol.$Hrow)->getFont()->setBold(true);
-			//create format column as text
-			$objPHPExcel->getActiveSheet()->getStyle($Hcol.'1:'.$Hcol.'100')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-		$Hcol++;    
-		}
-		
-		//=== Create hint
-		//set new colomn
-			$Dcol = chr(ord($Hcol)+1);
-			$Dnewcol = chr(ord($Hcol)+3);
-		$objPHPExcel->getActiveSheet()->getStyle($Dcol.'1')->getFont()->setSize(18);
-		$objPHPExcel->getActiveSheet()->getStyle($Dcol.'1')->getFont()->setBold(true);
-		$objPHPExcel->getActiveSheet()->getStyle($Dcol.'1')->getFont()->setItalic(true);
-		$objPHPExcel->getActiveSheet()->setCellValue($Dcol.'1', 'Hint (Please pay attention)');
-		$objPHPExcel->getActiveSheet()->mergeCells($Dcol.'1:'.$Dnewcol.'1');
-		$objPHPExcel->getActiveSheet()->getStyle($Dcol.'1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);		
-		
-		$Hrow= 2;
-		$tempcol = $Dcol;
-		$rowrole=$Hrow;
-		
-		//set colomn header Faculty Data
-		$objPHPExcel->getActiveSheet()->setCellValue($tempcol.($Hrow),"Faculty Data");			
-		$objPHPExcel->getActiveSheet()->mergeCells($tempcol.($Hrow).':'.chr(ord($Dcol)+1).$Hrow);
-		$objPHPExcel->getActiveSheet()->getStyle($tempcol.$Hrow)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);		
-		$objPHPExcel->getActiveSheet()->setCellValue($tempcol.($Hrow+1),"IDFaculty");			
-		$objPHPExcel->getActiveSheet()->setCellValue(chr(ord($tempcol)+1).($Hrow+1),"Value");			
-			$dtfac= $this->Mpds->getallfac();
-		$Facrow=$Hrow+2;
-		foreach ($dtfac as $k=>$v){
-			$Dcol=$tempcol;
-				$objPHPExcel->getActiveSheet()->setCellValue($Dcol.$Facrow,$v['idfac']);
-				$objPHPExcel->getActiveSheet()->setCellValue(chr(ord($Dcol)+1).$Facrow,$v['fname']);
-			$Facrow++;
-		}
-		$lastcol = chr(ord($Dcol)+2);
-		$Bordercol = chr(ord($lastcol)-2);
-		$objPHPExcel->getActiveSheet()->setCellValue($lastcol.($Facrow-1),"Remember: Always Put 'IDFaculty' instead of 'Value' in Colomn 'Faculty'");			
-		
-		//set colomn header Gender Data
-		$Grow = $Facrow+1;
-		$Gcol = $tempcol;
-		$objPHPExcel->getActiveSheet()->setCellValue($Gcol.($Grow),"Gender Data");			
-		$objPHPExcel->getActiveSheet()->getStyle($Gcol.$Grow)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);		
-		$objPHPExcel->getActiveSheet()->mergeCells($Gcol.($Grow).':'.chr(ord($Gcol)+1).$Grow);
-		$objPHPExcel->getActiveSheet()->setCellValue($Gcol.($Grow+1),"IDGender");			
-		$objPHPExcel->getActiveSheet()->setCellValue(chr(ord($Gcol)+1).($Grow+1),"Value");			
-			$dtjk= $this->Mpds->getalljk();
-		$Grow = $Grow+2;
-		foreach ($dtjk as $k=>$v){
-			$Gcol=$tempcol;
-				$objPHPExcel->getActiveSheet()->setCellValue($Gcol.$Grow,$v['idjk']);
-				$objPHPExcel->getActiveSheet()->setCellValue(chr(ord($Gcol)+1).$Grow,$v['jkname']);
-			$Grow++;
-		}
-		$lastcol = chr(ord($Gcol)+2);
-		$Bordercol = chr(ord($lastcol)-2);
-		$objPHPExcel->getActiveSheet()->setCellValue($lastcol.($Grow-1),"Remember: Always Put 'IDGender' instead of 'Value' in Colomn 'Gender'");			
-		
-		
-		//set autowidth
-		foreach(range('A',$lastcol) as $columnID) {
-			$objPHPExcel->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
-		}
-		
-		//setting border
-		$styleArray = array(
-		'borders' => array(
-          'allborders' => array(
-              'style' => PHPExcel_Style_Border::BORDER_THIN
-			))
-		);
-		$objPHPExcel->getActiveSheet()->getStyle('A1:'.chr(ord($Hcol)-1).'11')->applyFromArray($styleArray);
-		$objPHPExcel->getActiveSheet()->getStyle($Bordercol.($Hrow).':'.chr(ord($lastcol)-1).($Facrow-1))->applyFromArray($styleArray);
-		$objPHPExcel->getActiveSheet()->getStyle($Bordercol.($Facrow+1).':'.chr(ord($lastcol)-1).($Grow-1))->applyFromArray($styleArray);
-		
-		
-		//set background color of HINT 
-		$fillArray = array(
-			'fill' => array(
-				'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                'color' => array('rgb'=>'E6FF00')
-			),
-			'font' => array(
-				'color' => array('rgb' => '003333')
-			) 
-		);
-		$objPHPExcel->getActiveSheet()->getStyle($Bordercol.'1:'.chr(ord($lastcol)).($Grow-1))->applyFromArray($fillArray);
-		
-		//Freeze pane
-		//$objPHPExcel->getActiveSheet()->freezePane(chr(ord($Bordercol)-1).($Grow));
-		
-		//create output file
-		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel5');
-
-		header('Content-Type: application/vnd.ms-excel');
-		header('Content-Disposition: attachment;filename="ImportFormatRegistrationData.xls');
-		header('Cache-Control: max-age=0');
-		$objWriter->save('php://output');
-	}
 	
 	public function detailresult(){
 		$this->load->model('Mq');
@@ -787,79 +497,244 @@ class Result extends Org_Controller {
 		redirect(base_url('Organizer/Result'));
 	}
 		
-	public function savepds(){
-	
-	// separation save method
-	if ($this->input->post('fpilusername')!=null){
-		$us = $this->input->post('fpilusername');
-		$fdata = array (
-					'uname' => $this->input->post('ffullname'),					
-					'uupdate' => date("Y-m-d H:i:s"),
-					'idjk' => $this->input->post('fjk'),
-					'unim' => $this->input->post('fnim'),
-					'idfac' => $this->input->post('ffaculty'),
-					'ubplace' => $this->input->post('fbplace'),
-					'ubdate' => $this->input->post('fbdate'),
-					'uemail' => $this->input->post('femail'),
-					'uhp' => $this->input->post('fhp'),
-					'ubbm' => $this->input->post('fsocmed'),
-					'uaddrnow' => $this->input->post('faddrnow'),
-					'uaddhome' => $this->input->post('faddrhome'),
-					'ustatus' => 'Registered',
-					'ulunas' => '0'
-					);
-		$r = $this->Mpds->updatepds($fdata,$us);
-	} else if ($this->input->post('fusername')!=null){
-		$fdata = array (
-					'ucreated' => date("Y-m-d H:i:s"),
-					'uupdate' => date("Y-m-d H:i:s"),
-					'uuser' => $this->input->post('fusername'),
-					'upass' => md5(date("dmY",strtotime($this->input->post('fbdate')))),
-					'uname' => $this->input->post('ffullname'),
-					'idjk' => $this->input->post('fjk'),
-					'unim' => $this->input->post('fusername'),
-					'idfac' => $this->input->post('ffaculty'),
-					'ubplace' => $this->input->post('fbplace'),
-					'ubdate' => $this->input->post('fbdate'),
-					'uemail' => $this->input->post('femail'),
-					'uhp' => $this->input->post('fhp'),
-					'ubbm' => $this->input->post('fsocmed'),
-					'uaddrnow' => $this->input->post('faddrnow'),
-					'uaddhome' => $this->input->post('faddrhome'),
-					'ustatus' => 'Registered',
-					'ulunas' => '0',
-					'idrole' => '3',
-					'uallow' => '1'
-					);
-		$r = $this->Mpds->addpds($fdata);
-	}
-		if ($r){
-		$this->session->set_flashdata('v','Add Registration Data Success');
-		} else {		
-		$this->session->set_flashdata('x','Add Registration Data Failed');
-		}
-		redirect(base_url('Organizer/PDS'));
-	
-	}
-
-	public function deletepds(){
-		$id = $this->input->get('id');
-		$r = $this->Mpds->deletepds($id);
-	if ($r){
-		$this->session->set_flashdata('v','Delete Success');
-		} else{
-		$this->session->set_flashdata('x','Delete Failed');
-		} 
-		redirect(base_url('Organizer/PDS'));
-	}
-
-	public function printpds(){
+	public function exportxls(){
 		//catch column value
 		if ($this->input->post('fcolomn')!=null){
 		foreach($this->input->post('fcolomn') as $selected)
 		{$dtcol[] = $selected;}
 		} else {
-		$dtcol = ['ucreated','uname','jkname','ubplace','ubdate','unim','fname','uemail','uhp','ubbm','uaddrnow','uaddhome','ulunas'];
+		$dtcol = ['q_submitted','jdate', 'tname', 'a.uname as mem', 'a.unim', 'q_score', 'lvlname', 'b.uname as org' ];
+		}
+		
+		//check use date range
+		$dexp = array();
+		if (null!=$this->input->post('fusedate')){
+			$dtrange = $this->input->post('fdtrange');
+			$dtstart = mb_substr($dtrange,0,10,'utf-8');
+			$dtend = substr($dtrange,13);
+			$dexp = $this->Mresult->exportresult($dtstart,$dtend,$dtcol);
+			$title=$dtrange;
+		}else {
+			$dexp = $this->Mresult->exportresult(null,null,$dtcol);
+			$title = Date('d-m-Y');
+		}
+		
+		//change header data
+		$dtnewcol = $this->returncolomn($dtcol);
+		
+		//Create a new Object
+		$this->load->library('Excel');
+		$objPHPExcel = new PHPExcel();
+		$objPHPExcel->getActiveSheet()->setTitle('Result Test Data');
+	
+		//Create Heading
+		$Hcol = 'A';
+		$Hrow = 2;
+		foreach($dtnewcol as $h){
+				$objPHPExcel->getActiveSheet()->setCellValue($Hcol.$Hrow,$h);
+				$objPHPExcel->getActiveSheet()->getStyle($Hcol.$Hrow)->getFont()->setSize(12);
+				$objPHPExcel->getActiveSheet()->getStyle($Hcol.$Hrow)->getFont()->setBold(true);
+				$Hcol++;    
+		}
+		
+		//Insert Data
+		$Drow = 3;
+		$Dcol = "A";
+		$ctot = count($dexp);
+		if ((is_array($dexp) || is_object($dexp)) and($ctot<>0)){
+			foreach($dexp as $key=>$val){
+					$Dcol = "A";
+				//manipulate data
+				
+					foreach ($val as $k){
+						$objPHPExcel->getActiveSheet()->setCellValue($Dcol.$Drow,$k);
+						$Dcol++;
+					}
+				$Drow++;
+			}
+		} else {
+		$objPHPExcel->getActiveSheet()->setCellValue($Dcol.$Drow,'No Data');
+		$Drow=$Drow+1;
+		}
+		
+		//set limit col and row
+		$Dnewcol = chr(ord($Hcol)-1);
+		$Dnewrow = $Drow-1;
+		
+		//Freeze pane
+		$objPHPExcel->getActiveSheet()->freezePane('A3');
+		
+		
+		//Create big Title
+		$period = $this->Msetting->getset('period');
+		$objPHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setSize(18);
+		$objPHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
+		$objPHPExcel->getActiveSheet()->setCellValue('A1', 'RESULT TEST DATA ('.$title.')');
+		$objPHPExcel->getActiveSheet()->mergeCells('A1:'.$Dnewcol.'1');
+		$objPHPExcel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);		
+		
+		//setting autowidth
+		foreach(range('A',$Dnewcol) as $columnID) {
+			$objPHPExcel->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
+		}
+		
+		//setting border
+		$styleArray = array(
+		'borders' => array(
+          'allborders' => array(
+              'style' => PHPExcel_Style_Border::BORDER_THIN
+			))
+		);
+		$objPHPExcel->getActiveSheet()->getStyle('A2:'.$Dnewcol.$Dnewrow)->applyFromArray($styleArray);
+		
+		//setting footprint date
+		$objPHPExcel->getActiveSheet()->setCellValue('A'.$Drow, 'Generated on '.Date("d-m-Y H:i:s"));
+		$objPHPExcel->getActiveSheet()->getStyle('A'.$Drow)->getFont()->setSize(8);
+		$objPHPExcel->getActiveSheet()->getStyle('A'.$Drow)->getFont()->setItalic(true);
+		
+		//Save as an Excel BIFF (xls) file
+		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel5');
+		header('Content-Type: application/vnd.ms-excel');
+		header('Content-Disposition: attachment;filename="Registration Data ('.$title.').xls');
+		header('Cache-Control: max-age=0');
+		$objWriter->save('php://output');
+		/*
+		*/
+	}
+	
+	public function predefinedimport(){
+		$dtcol = ['Fullname','NIM','Email','Gender','Faculty','Birthplace','Birthdate(ddmmyyyy)','Phone Number','Social Media','Current Address','Home Address']; 
+		
+		//Create a new Object
+		$this->load->library('Excel');
+		$objPHPExcel = new PHPExcel();
+		$objPHPExcel->getActiveSheet()->setTitle('ImportRegistrationData');
+		
+		//Create Heading
+		$Hcol = 'A';
+		$Hrow = 1;
+		foreach($dtcol as $h){
+				$objPHPExcel->getActiveSheet()->setCellValue($Hcol.$Hrow,$h);
+				$objPHPExcel->getActiveSheet()->getStyle($Hcol.$Hrow)->getFont()->setSize(12);
+				$objPHPExcel->getActiveSheet()->getStyle($Hcol.$Hrow)->getFont()->setBold(true);
+			//create format column as text
+			$objPHPExcel->getActiveSheet()->getStyle($Hcol.'1:'.$Hcol.'100')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+		$Hcol++;    
+		}
+		
+		//=== Create hint
+		//set new colomn
+			$Dcol = chr(ord($Hcol)+1);
+			$Dnewcol = chr(ord($Hcol)+3);
+		$objPHPExcel->getActiveSheet()->getStyle($Dcol.'1')->getFont()->setSize(18);
+		$objPHPExcel->getActiveSheet()->getStyle($Dcol.'1')->getFont()->setBold(true);
+		$objPHPExcel->getActiveSheet()->getStyle($Dcol.'1')->getFont()->setItalic(true);
+		$objPHPExcel->getActiveSheet()->setCellValue($Dcol.'1', 'Hint (Please pay attention)');
+		$objPHPExcel->getActiveSheet()->mergeCells($Dcol.'1:'.$Dnewcol.'1');
+		$objPHPExcel->getActiveSheet()->getStyle($Dcol.'1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);		
+		
+		$Hrow= 2;
+		$tempcol = $Dcol;
+		$rowrole=$Hrow;
+		
+		//set colomn header Faculty Data
+		$objPHPExcel->getActiveSheet()->setCellValue($tempcol.($Hrow),"Faculty Data");			
+		$objPHPExcel->getActiveSheet()->mergeCells($tempcol.($Hrow).':'.chr(ord($Dcol)+1).$Hrow);
+		$objPHPExcel->getActiveSheet()->getStyle($tempcol.$Hrow)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);		
+		$objPHPExcel->getActiveSheet()->setCellValue($tempcol.($Hrow+1),"IDFaculty");			
+		$objPHPExcel->getActiveSheet()->setCellValue(chr(ord($tempcol)+1).($Hrow+1),"Value");			
+			$dtfac= $this->Mpds->getallfac();
+		$Facrow=$Hrow+2;
+		foreach ($dtfac as $k=>$v){
+			$Dcol=$tempcol;
+				$objPHPExcel->getActiveSheet()->setCellValue($Dcol.$Facrow,$v['idfac']);
+				$objPHPExcel->getActiveSheet()->setCellValue(chr(ord($Dcol)+1).$Facrow,$v['fname']);
+			$Facrow++;
+		}
+		$lastcol = chr(ord($Dcol)+2);
+		$Bordercol = chr(ord($lastcol)-2);
+		$objPHPExcel->getActiveSheet()->setCellValue($lastcol.($Facrow-1),"Remember: Always Put 'IDFaculty' instead of 'Value' in Colomn 'Faculty'");			
+		
+		//set colomn header Gender Data
+		$Grow = $Facrow+1;
+		$Gcol = $tempcol;
+		$objPHPExcel->getActiveSheet()->setCellValue($Gcol.($Grow),"Gender Data");			
+		$objPHPExcel->getActiveSheet()->getStyle($Gcol.$Grow)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);		
+		$objPHPExcel->getActiveSheet()->mergeCells($Gcol.($Grow).':'.chr(ord($Gcol)+1).$Grow);
+		$objPHPExcel->getActiveSheet()->setCellValue($Gcol.($Grow+1),"IDGender");			
+		$objPHPExcel->getActiveSheet()->setCellValue(chr(ord($Gcol)+1).($Grow+1),"Value");			
+			$dtjk= $this->Mpds->getalljk();
+		$Grow = $Grow+2;
+		foreach ($dtjk as $k=>$v){
+			$Gcol=$tempcol;
+				$objPHPExcel->getActiveSheet()->setCellValue($Gcol.$Grow,$v['idjk']);
+				$objPHPExcel->getActiveSheet()->setCellValue(chr(ord($Gcol)+1).$Grow,$v['jkname']);
+			$Grow++;
+		}
+		$lastcol = chr(ord($Gcol)+2);
+		$Bordercol = chr(ord($lastcol)-2);
+		$objPHPExcel->getActiveSheet()->setCellValue($lastcol.($Grow-1),"Remember: Always Put 'IDGender' instead of 'Value' in Colomn 'Gender'");			
+		
+		
+		//set autowidth
+		foreach(range('A',$lastcol) as $columnID) {
+			$objPHPExcel->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(true);
+		}
+		
+		//setting border
+		$styleArray = array(
+		'borders' => array(
+          'allborders' => array(
+              'style' => PHPExcel_Style_Border::BORDER_THIN
+			))
+		);
+		$objPHPExcel->getActiveSheet()->getStyle('A1:'.chr(ord($Hcol)-1).'11')->applyFromArray($styleArray);
+		$objPHPExcel->getActiveSheet()->getStyle($Bordercol.($Hrow).':'.chr(ord($lastcol)-1).($Facrow-1))->applyFromArray($styleArray);
+		$objPHPExcel->getActiveSheet()->getStyle($Bordercol.($Facrow+1).':'.chr(ord($lastcol)-1).($Grow-1))->applyFromArray($styleArray);
+		
+		
+		//set background color of HINT 
+		$fillArray = array(
+			'fill' => array(
+				'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                'color' => array('rgb'=>'E6FF00')
+			),
+			'font' => array(
+				'color' => array('rgb' => '003333')
+			) 
+		);
+		$objPHPExcel->getActiveSheet()->getStyle($Bordercol.'1:'.chr(ord($lastcol)).($Grow-1))->applyFromArray($fillArray);
+		
+		//Freeze pane
+		//$objPHPExcel->getActiveSheet()->freezePane(chr(ord($Bordercol)-1).($Grow));
+		
+		//create output file
+		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel5');
+
+		header('Content-Type: application/vnd.ms-excel');
+		header('Content-Disposition: attachment;filename="ImportFormatRegistrationData.xls');
+		header('Cache-Control: max-age=0');
+		$objWriter->save('php://output');
+	}
+
+	public function deleteresult(){
+		$id = $this->input->get('id');
+		$r = $this->Mresult->deleteresult($id);
+	if ($r){
+		$this->session->set_flashdata('v','Delete Success');
+		} else{
+		$this->session->set_flashdata('x','Delete Failed');
+		} 
+		redirect(base_url('Organizer/Result'));
+	}
+
+	public function printresult(){
+		//catch column value
+		if ($this->input->post('fcolomn')!=null){
+		foreach($this->input->post('fcolomn') as $selected)
+		{$dtcol[] = $selected;}
+		} else {
+		$dtcol = ['q_submitted','jdate', 'tname', 'a.uname as mem', 'a.unim', 'q_score', 'a.lvlname', 'b.uname as org' ];
 		}
 		
 		//check use date range
@@ -867,10 +742,10 @@ class Result extends Org_Controller {
 			$dtrange = $this->input->post('fdtrange');
 			$dtstart = mb_substr($dtrange,0,10,'utf-8');
 			$dtend = substr($dtrange,13);
-			$dexp = $this->Mpds->exportlogin($dtstart,$dtend,$dtcol);
+			$dexp = $this->Mresult->exportresult($dtstart,$dtend,$dtcol);
 			$title=$dtrange;
 		}else {
-			$dexp = $this->Mpds->exportlogin(null,null,$dtcol);
+			$dexp = $this->Mresult->exportresult(null,null,$dtcol);
 			$title = Date('d-m-Y');
 		}
 		
@@ -879,17 +754,6 @@ class Result extends Org_Controller {
 		$tmpl = array ( 'table_open'  => '<table class="table table-bordered">' );
 		$this->table->set_template($tmpl);
 		$this->table->set_heading($header);
-		//fetch data	
-				foreach($dexp as $key=>$val){
-					//manipulation allow data
-					if(array_key_exists('uallow',$val)){
-						if ($val['uallow']==1){
-						$dexp[$key]['uallow']='Allowed';
-						}else{
-						$dexp[$key]['uallow']='Denied';
-						}
-					}
-				}
 		$data['printlistlogin'] = $this->table->generate($dexp);
 		$this->session->set_flashdata('v',"Print success");
 		$this->index();
@@ -898,7 +762,7 @@ class Result extends Org_Controller {
 		//create title
 		$period = $this->Msetting->getset('period');
 		$data['title']="Member Account Data ".$period." Period<br/><small>".$title."</small>";
-		$this->load->view('dashboard/org/akun/printacc', $data);
+		$this->load->view('dashboard/org/result/printresult', $data);
 		
 	}
 	
@@ -910,8 +774,8 @@ class Result extends Org_Controller {
 	
 	
 	public function returncolomn($header) {
-	$find=['jdate','tname','a.uname as mem','a.unim','lvlabre','q_tmpscore','q_score','b.uname as org'];
-	$replace = ['Test Date','Test Name','Member Name','NIM','Level','Temporary Score','Final Score','Assessor'];
+	$find=['jdate','tname','a.uname as mem','a.unim','lvlabre','q_tmpscore','q_score','b.uname as org','lvlname','q_submitted'];
+	$replace = ['Test Date','Test Name','Member Name','NIM','Level','Temporary Score','Final Score','Assessor','Level','Date Submitted'];
 		foreach ($header as $key => $value){
 		$header[$key]  = str_replace($find, $replace, $value);
 		}

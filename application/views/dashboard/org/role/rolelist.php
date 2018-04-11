@@ -24,7 +24,7 @@
 			<?php } ?>
 		<div class="row">
 			<div class="col-md-6"> 
-				<a href="<?=base_url('Organizer/Role/addrole');?>" data-target="#DetailModal" data-toggle="modal" role="button" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add </a> 
+				
 			</div>
 			<div class="col-md-6 text-right">
 					<?php 

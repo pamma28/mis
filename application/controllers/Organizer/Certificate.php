@@ -187,9 +187,9 @@ class Certificate extends Org_Controller {
 				//manipulation menu
 				$enc = $value['idcerti'];
 				unset($temp[$key]['idcerti']);
-				$temp[$key]['menu']='<div class="btn-group-vertical">
-				<a href="#" data-href="'.base_url('Organizer/Certificate/takencerti?id=').$enc.'" data-target="#confirm-take" data-toggle="modal" alt="Take Certificate" title="Take Certificate" class="btn btn-info btn-sm"><i class="fa fa-check"></i> </a>'.
-				'<a href="#" data-href="'.base_url('Organizer/Certificate/previewcerti/'.$enc).'" data-target="#previewprint" data-toggle="modal" role="button" alt="Print Data" class="btn btn-primary btn-sm"><i class="fa fa-print"></i> </a>'.
+				$btntaken = ($value['ctaken']<>'1') ? '<a href="#" data-href="'.base_url('Organizer/Certificate/takencerti?id=').$enc.'" data-target="#confirm-take" data-toggle="modal" alt="Take Certificate" title="Take Certificate" class="btn btn-info btn-sm"><i class="fa fa-check"></i> </a>' : null;
+				$temp[$key]['menu']='<div class="btn-group-vertical">'.$btntaken.
+				'<a href="#" data-href="'.base_url('Organizer/Certificate/previewcerti/'.$enc).'" data-idcerti="'.$enc.'" data-target="#previewprint" data-toggle="modal" role="button" alt="Print Data" class="btn btn-primary btn-sm"><i class="fa fa-print"></i> </a>'.
 				'<a href="'.base_url('Organizer/Certificate/editcerti?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Edit Data" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></a>'.
 				'<a href="#" data-href="'.base_url('Organizer/Certificate/deletecerti?id=').$enc.'" alt="Delete Data" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash"></i></a></div>';
 				}
@@ -939,6 +939,23 @@ class Certificate extends Org_Controller {
 		$data['title']="Certificate Data ".$period." Period<br/><small>".$title."</small>";
 		$this->load->view('dashboard/org/certi/printcerti', $data);
 		
+	}
+
+	public function printpreviewcerti($id){
+		//catch id certi
+		if ($id!=null){
+			$data['printlistlogin'] = '<img src="'.base_url('Organizer/Certificate/previewcerti/'.$id.'/100').'" width="100%"/>';
+			$this->session->set_flashdata('v',"Print Preview Certificate Success");
+			$this->index();
+			$this->session->set_flashdata('v',null);
+			
+			//create title
+			$data['title']=null;
+			$this->load->view('dashboard/org/certi/printpreviewcerti', $data);
+		} else {
+			$this->session->set_flashdata('x',"Print Failed");
+			redirect('Organizer/Certificate');
+		}
 	}
 
 	public function preview(){

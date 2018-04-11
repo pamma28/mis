@@ -60,21 +60,7 @@
 		</div>		
 	</div>
 	<div class="box-body table-responsive">
-		<div class="btn-toolbar">
-			<div class="btn-group">
-					<button class="btn btn-default btn-sm" type="button">Action:</button>
-					<button data-toggle="dropdown" class="btn btn-default dropdown-toggle btn-sm" type="button">
-					<span class="caret"></span>
-					<span class="sr-only">Toggle Dropdown</span>
-					</button>
-					<ul role="menu" class="dropdown-menu">
-					<a href="#" class="btn btn-sm text-danger" data-finput="0" data-btn="btn btn-sm btn-danger" data-icon="fa fa-trash" data-title="Delete All" data-toggle="modal" data-target=".bs-selecteddata"><i class="fa fa-trash"></i> Delete All</a>
-					</ul>
-			</div>
-		</div>
-		<div class="btn-group pull-right">
 		
-		</div>
 	<?=$listlogin;?>
 		
 	</div>

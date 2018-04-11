@@ -59,7 +59,7 @@
 	</div>
 	<div class="box-body table-responsive">
 		
-			<div class="col-md-3 col-sm-4" style="max-height: 650px;">
+			<div class="col-md-4 col-sm-4" style="max-height: 650px;">
 				
 				<small>
 				<?=$listlogin;?>
@@ -68,7 +68,7 @@
 						<a role="button" class="btn btn-lg btn-info" data-toggle="collapse" href="#collapseSetting" aria-expanded="false" aria-controls="collapseSetting" id="focussetting"><span class="fa fa-gear"> Setting Certificate Texts</span></a>
 				</div>
 			</div>
-			<div class="col-md-9 col-sm-8 text-center">
+			<div class="col-md-8 col-sm-8 text-center">
 					
 					<div id="loading" class="hidden">
 						<div class="circle"></div>

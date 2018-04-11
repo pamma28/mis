@@ -52,7 +52,6 @@ class Login extends CI_Controller {
 		$tempcoo = stripslashes($tempcoo);
 		$tempcoo = json_decode($tempcoo,true);
 		
-		
 			if ($tempcoo["logged"])
 			{
 				$rdr = $_SERVER['REQUEST_URI'];

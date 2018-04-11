@@ -353,4 +353,16 @@ class Mpay extends CI_Model{
 	return $this->db->get('transaksi')->result_array();
 	}
 
+	public function totalmypay(){
+		$this->db->select('sum(tpaid) as totpaid');
+		$this->db->where('uuser',$this->session->userdata('user'));
+		return $this->db->get('transaksi')->row()->totpaid;
+	}
+
+	public function checkmelunas(){
+		$this->db->select('ulunas');
+		$this->db->where('uuser',$this->session->userdata('user'));
+		return $this->db->get('user')->row()->ulunas;
+	}
+
 }

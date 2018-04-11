@@ -49,14 +49,31 @@
                         {
                             $('#usuccess').css('display', 'none');
                             $('#ufailed').css('display', 'block');
-							$('#submit').attr('disabled', 'disabled');
+							$('#btnsubmit').attr('disabled', 'disabled');
                         }
                         else
                         {
                             $('#ufailed').css('display', 'none');
                             $('#usuccess').css('display', 'block');
-							$('#submit').removeAttr('disabled');
+							$('#btnsubmit').removeAttr('disabled');
                         }
                     });
 	});
+
+    $('#nohp').bind('keyup change', function() {
+    var hp = $(this).val().replace("_","");
+    var eid = $(this).attr('id');
+    $.post('<?php echo base_url('Register/checkphone'); ?>', {nohp: hp}, function(d) {
+        if (d == 1)
+            {
+                $('#'+eid).parent().find('.text-danger').removeClass('hidden');
+                $('#btnsubmit').attr('disabled', 'disabled');
+            }
+            else
+            {
+                $('#'+eid).parent().find('.text-danger').addClass('hidden');
+                $('#btnsubmit').removeAttr('disabled');
+            }
+        });
+    });
 </script>
