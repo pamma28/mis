@@ -137,12 +137,12 @@ class Scheduletest extends Mem_Controller {
 							$r[] = '<h4><span class="text-primary">Choose Schedule on <b>'.$arrtest[0]['tname'].'</b> Success</span></h4>';
 							$r[] = $res.'</tr>';
 							//update status member
-							$this->Mpds->updatestatus('Choosen Schedule',$this->session->userdata('user'),true);
+							$this->Mpds->updatepds(array('ustatus'=>'Choosen Schedule'),$this->session->userdata('user'));
 							} else {
 								$r[] = false;
 								$r[] = $this->db->_error_message();
 								//update status member
-								$this->Mpds->updatestatus('Choosen Schedule',$this->session->userdata('user'),false);
+								$this->Mpds->updatepds(array('ustatus'=>'Completed Payment'),$this->session->userdata('user'));
 							}
 					}
 			} else {

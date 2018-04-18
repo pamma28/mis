@@ -272,6 +272,7 @@
 	    $('#inputbackupdate').daterangepicker({
 	    	singleDatePicker: true,
 	    	timePicker: true,
+	    	timePicker24Hour: true,
 	    	autoUpdateInput: false,
 	    	timePickerIncrement: 5,
 	    	locale: {format: 'DD-MM-YYYY HH:mm:ss',

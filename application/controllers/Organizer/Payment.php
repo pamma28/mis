@@ -1212,10 +1212,10 @@ class Payment extends Org_Controller {
 		$r = $this->Mpay->checkfullpaid($user);
 			if ($r>=$price){
 			$h = $this->Mpay->updatefullpaid($user,1);
-			$this->Mpds->updatestatus('Completed Payment',$user,true);
+			$this->Mpds->updatepds(array('ustatus'=>'Completed Payment'),$user);
 			} else {
 			$h = $this->Mpay->updatefullpaid($user,0);
-			$this->Mpds->updatestatus('Completed Payment',$user,false);
+			$this->Mpds->updatepds(array('ustatus'=>'Completed Data'),$user);
 			}
 		} else{
 			$alluser = $this->Mpay->getalluser();
@@ -1224,10 +1224,10 @@ class Payment extends Org_Controller {
 				$r = $this->Mpay->checkfullpaid($val['uuser']);
 				if ($r>=$price){
 				$h = $this->Mpay->updatefullpaid($val['uuser'],1);
-				$this->Mpds->updatestatus('Completed Payment',$val['uuser'],true);
+				$this->Mpds->updatepds(array('ustatus'=>'Completed Payment'),$val['uuser']);
 				} else {
 				$h = $this->Mpay->updatefullpaid($val['uuser'],0);
-				$this->Mpds->updatestatus('Completed Payment',$val['uuser'],false);
+				$this->Mpds->updatepds(array('ustatus'=>'Completed Data'),$val['uuser']);
 				}
 			}
 			$this->session->set_flashdata('v',"Update Full Paid status of ".$tot." User(s) success");

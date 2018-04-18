@@ -103,9 +103,9 @@
 				</div>
             	<div class="tab-pane table-responsive" id="systemlist">
                     
-						<?php foreach ($settinglist as $k => $v) { ?>
+						<?php $wcol = ['5','7'];foreach ($settinglist as $k => $v) { ?>
 						<?php echo form_open(base_url('Organizer/setting#systemlist'),array('name'=>'fsetting'.$k,'class'=>'form-horizontal','method'=>'POST'));?>
-						<div class="col-md-6">
+						<div class="col-md-<?=$wcol[$k]?>">
 							<div class="panel panel-primary">
 								<div class="panel-heading panel-heading-sm">
 									<h3 class="panel-title text-center"><span class="fa fa-wrench"></span> <b><?=$v['title'];?></b></h3>
@@ -655,7 +655,9 @@
 	//range date registration
 	$(function() {
     $('#fregistphase,#fpaymentphase,#fschedulephase,#fcertiphase').daterangepicker({
-    	locale: {format: 'DD/MM/YYYY'}
+    	locale: {format: 'DD/MM/YYYY'},
+    	minDate : "01/01/<?=$period;?>",
+    	maxDate : "31/12/<?=$period;?>"
     });
 	});
 		

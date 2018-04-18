@@ -99,8 +99,7 @@ class Impexp extends Admin_Controller {
 				//manipulation menu
 				$enc = $temp2[$key]['table_name'];
 				$temp[$key]['table_name']='<span class="tblname">'.$temp[$key]['table_name'].'</span>';
-				$temp[$key]['menu']='<small><a href="'.base_url('Admin/Impexp/detaildb?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Full Data" class="btn-primary btn-sm"><i class="fa fa-list-alt"></i> Details Data</a> | '.
-				'<a href="#" data-href="'.base_url('Admin/Impexp/deletedb?id=').$enc.'" alt="Delete Data" class="btn-danger btn-sm" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash"></i> Delete (Empty Data)</a></small>';
+				$temp[$key]['menu']='<small><a href="'.base_url('Admin/Impexp/detaildb?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Full Data" class="btn-primary btn-sm"><i class="fa fa-list-alt"></i> Details Data</a> </small>';
 				}
 				
 		$data['listlogin'] = $this->table->generate($temp);

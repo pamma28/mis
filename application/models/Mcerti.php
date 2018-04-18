@@ -141,6 +141,20 @@ class Mcerti extends CI_Model{
 		return ($r);
 	}
 	
+	public function updateselected($dt,$val){
+		$v=0;$x=0;
+		foreach($dt as $t){
+		$this->db->where('idcerti',$t);
+		$r = $this->db->update('certificate',array('ctaken'=>$val));
+			if ($r){$v++;} else{$x++;}
+		}
+		$hsl=array(
+			"v"=>$v,
+			"x"=>$x
+			);
+		return $hsl;
+	}
+
 	public function getoptlevel(){
 		
 		$this->db->select('idlevel,lvlname');

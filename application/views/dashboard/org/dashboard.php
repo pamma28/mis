@@ -134,9 +134,15 @@
 		<div class="col-md-8">
 			<div class="panel panel-primary">
 				<div class="panel-heading text-center">
-					Faculty of Registrant Comparison Last 3 Years
+					Faculty of Registrant Comparison
 				</div>
 				<div class="panel-body">
+					<div class="col-md-3 col-md-offset-9 form-inline bg-info">
+						<div class="form-group text-right">
+						<label class="label-form">Select Year (Data) :</label>		
+							<?=$selectoptyear;?>
+						</div>
+					</div>
 					<div id="facdiv" style="width: 100%; height: 400px; background-color: #FFFFFF;" ></div>
 				</div>
 			</div>
@@ -160,7 +166,40 @@
 		
 		
 		<!-- amCharts javascript code -->
-		<script type="text/javascript">			
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$('#yearchart').change(function(){
+					$.post('<?=base_url('Organizer/Dashboard/get_chart_year');?>',{y : $('#yearchart').val()},function(d){
+						AmCharts.makeChart("facdiv",
+								{
+									"type": "serial",
+									"categoryField": "faculty",
+									"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> ([[percents]]%)</span>",
+									"titleField": "faculty",
+									"startDuration": 1,
+									"theme": "light",
+									"chartCursor": {"enabled": true},
+									"chartScrollbar": {"enabled": true},
+									"trendLines": [],
+									"graphs": [
+											{"balloonText": "[[title]], [[category]] Registrant:[[value]]","fillAlphas": 1,"id": "AmGraph-1","labelText": "[[value]]","title": $('#yearchart').val(),"type": "column","valueField": "total"}
+											],
+									"guides": [],
+									"valueAxes": [{"id": "ValueAxis-1","title": "Total Registrant"}],
+									"allLabels": [],
+									"balloon": {},
+									"export": {
+										"enabled": true
+									},
+									"legend": {"enabled": true,	"useGraphSettings": true},
+									"dataProvider": $.parseJSON(d)
+								}
+								
+							);
+					});
+				});
+			});	
+
 			AmCharts.makeChart("facdiv",
 				
 				{

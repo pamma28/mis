@@ -1025,7 +1025,7 @@ class Article extends Org_Controller {
 								'id'=>'selectedtype',
 								'name'=>'ftype'
 								));
-			$data['factselected'] = site_url('Organizer/Article/updateselected');
+			$data['factselected'] = site_url('Organizer/Article/updateselectedcat');
 			
 		//=============== Template ============
 		$data['jsFiles'] = array('selectpicker/select.min'
@@ -1261,7 +1261,6 @@ class Article extends Org_Controller {
 	public function updateselected(){
 		if($this->input->post('fusers')!=''){
 				$users = $this->input->post('fusers');
-				$type = $this->input->post('ftype');
 				$dtuser= explode(',',$users);
 				$totuser = count($dtuser);
 		foreach($dtuser as $k=>$v){
@@ -1269,13 +1268,29 @@ class Article extends Org_Controller {
 					
 				($r) ? $tot++ : $failed[]=$v;
 			}
-			$this->session->set_flashdata('v','Delete '.$totuser.' Selected Article success.<br/>Details: '.$tot.' success and '.count($failed).' error(s)');
+			$this->session->set_flashdata('v','Delete '.$totuser.' Selected Article Success.<br/>Details: '.$tot.' success and '.count($failed).' error(s)');
 		} else{
 		$this->session->set_flashdata('x','No data selected, delete Selected Article Failed.');
 		}
 		redirect(base_url('Organizer/Article'));
 	}
-		
+	public function updateselectedcat(){
+		if($this->input->post('fusers')!=''){
+				$users = $this->input->post('fusers');
+				$dtuser= explode(',',$users);
+				$totuser = count($dtuser);
+		foreach($dtuser as $k=>$v){
+					$r = $this->Matcl->deletecat($v);
+					
+				($r) ? $tot++ : $failed[]=$v;
+			}
+			$this->session->set_flashdata('v','Delete '.$totuser.' Selected Article Category Success.<br/>Details: '.$tot.' success and '.count($failed).' error(s)');
+		} else{
+		$this->session->set_flashdata('x','No data selected, delete Selected Article Category Failed.');
+		}
+		redirect(base_url('Organizer/Article'));
+	}
+
 	public function savesetting(){
 		if(null!= $this->input->post('fregistphase')){
 			$dtrange = $this->input->post('fregistphase');

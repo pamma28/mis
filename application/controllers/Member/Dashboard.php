@@ -19,10 +19,10 @@ class Dashboard extends Mem_Controller {
 		//============= data progress =========
 		$arrprog = ['Registered','Completed Data','Completed Payment','Choosen Schedule','Done Test','Test Result','Received Certificate','Graduated'];
 
-		$stat = explode(',', $this->Mlogin->getuserstatus($this->session->userdata('user')));
+		$stat = $this->Mlogin->getuserstatus($this->session->userdata('user'));
 		$tmpprog=''; $style = 'primary'; $badge = 'fa-check'; $details ='Completed'; $bgpanel='';
 		foreach($arrprog as $k=>$v){
-			if (!in_array($v, $stat)) {
+			if ($v == $stat) {
 				$badge = 'fa-times'; 
 				$style = 'danger';
 				$details = 'Incomplete';

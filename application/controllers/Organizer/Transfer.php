@@ -413,7 +413,7 @@ class Transfer extends Org_Controller {
 	public function updatetransfer(){
 		if ($this->input->post('fid')!=null){
 		$id = $this->input->post('fid');
-		$cnf = (null!=$this->input->post('fapprove'))? $this->input->post('fapprove'): 0;
+		$cnf = (null!=$this->input->post('fapprove'))? 1: 0;
 			//====== invoice variable ========
 			$idpay = $this->Mtransfer->getidtransbyid($id);
 			$muser = $this->Mtransfer->getmemuser($id);
@@ -480,10 +480,10 @@ class Transfer extends Org_Controller {
 						}
 					// update lunas status
 					$us = $this->Mpay->getusertrans($idpay);
-					$this->checklunas($us);
+					//$this->checklunas($us);
 					$fdata = array (
 								'ttket' => $this->input->post('fket'),					
-								'ttapprove' => $cnf,				
+								'ttapprove' => '0',				
 								'idtrans' => null,					
 								'use_uuser' => $this->session->userdata('user'),				
 								'ttdateapp' => date("Y-m-d H:i:s")
@@ -665,7 +665,7 @@ class Transfer extends Org_Controller {
 	
 	public function returncolomn($header) {
 	$find=['idttrans','ttdaterequest','ttdateapp','tnotrans','ttdate','a.uname as mname','a.uuser','a.unim','ttbank','ttname','ttnorek','ttamount','a.upaycode','ttapprove','b.uname as rname','ttket'];
-	$replace = ['Transfer ID','Date Requested','Date Processed','Invoice No','Date Transfered','Full Name','Username','NIM','Bank Account','Account Name','Account Number','Amount','Payment Code','Status','PIC','Notes'];
+	$replace = ['Transfer ID','Date Requested','Date Processed','Invoice No','Date Transfered','Full Name','Username','NIM','Bank Account','Account Name','Account Number','Amount','Payment Code','Transfer Status','PIC','Notes'];
 		foreach ($header as $key => $value){
 		$header[$key]  = str_replace($find, $replace, $value);
 		}

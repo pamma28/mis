@@ -243,7 +243,21 @@ class Confirmpay extends Mem_Controller {
 			//update to database
 			$this->load->model('Mtransfer');
 			$hsl = $this->Mtransfer->savetransfer($fdata);
-			($hsl) ? $this->session->set_flashdata('v','Send Request Succes.') : $this->session->set_flashdata('x','Send Request Failed.');
+			if ($hsl) {
+				$this->session->set_flashdata('v','Send Request Succes.');
+				
+				//send notif org
+				$this->notifications->pushNotifToOrg(
+					array(
+						'idnotif'=>$this->Msetting->getset('notifpayproofuploaded'),
+						'uuser' => $this->session->userdata('user'),
+						'nlink' => base_url('Organizer/Transfer')
+						)
+				); 
+			} else { 
+				$this->session->set_flashdata('x','Send Request Failed.');
+			}
+			
 			
 		redirect(base_url('Member/Confirmpay/validationresult'));
 	}

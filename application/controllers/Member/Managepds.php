@@ -295,6 +295,15 @@ class Managepds extends Mem_Controller {
 			$a++;
 		}
 		$data['rdata']=$this->table->generate($dtable);
+
+		//========== filter regist date ==============
+		$registphase = explode(" - ",$this->Msetting->getset('registphase'));
+		$startregist = strtotime(str_replace('/', '-', $registphase[0]));
+		$endregist =  strtotime(str_replace('/', '-', $registphase[1]));
+		$today = strtotime(date("d-m-Y"));
+		$data['registperiod'] = (($today >= $startregist) and ($today <= $endregist)) ? true : false;
+		$data['startpay'] = date('d-M-Y',$startregist);
+		$data['endpay'] = date('d-M-Y', $endregist);
 		//=============== Template ============
 		$data['jsFiles'] = array('selectpicker/select.min','inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions','inputmask/inputmask.numeric.extensions');
 		$data['cssFiles'] = array('selectpicker/select.min');  
@@ -325,9 +334,10 @@ class Managepds extends Mem_Controller {
 					'uaddhome' => $this->input->post('faddrhome')
 					);
 		//update completed data
-		if (count(array_filter($fdata))==11) {$this->Mpds->updatestatus('Completed Data',$this->session->userdata('user'),1); 
+		if (count(array_filter($fdata))==11) {
+			$fdata['ustatus'] = 'Completed Data';
 			} else {
-			$this->Mpds->updatestatus('Completed Data',$this->session->userdata('user'),0);
+			$fdata['ustatus'] = 'Registered';
 			}
 
 		$r = $this->Mpds->updatepds($fdata,$this->session->userdata('user'));

@@ -102,8 +102,8 @@ class Setting extends Mem_Controller {
 		$this->table->set_template($tmpl);
 		$this->table->set_heading($header);
 
-		$columnacc=['ufoto','uname','uemail','uhp','ubbm'];
-		$labelacc = ['Photo','Full Name','Email','Phone Number','Social Media'];
+		$columnacc=['ufoto','uemail','uhp','ubbm'];
+		$labelacc = ['Photo','Email','Phone Number','Social Media'];
 		$arracc = $this->Mlogin->detaillogin($columnacc,$this->session->userdata('user'))[0];
 		foreach ($columnacc as $k => $v) {
 

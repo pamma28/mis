@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Role extends Org_Controller {
+class Role extends Admin_Controller {
 
 	function __construct()
     {
@@ -97,7 +97,7 @@ class Role extends Org_Controller {
 		
 		//=============== paging handler ==========
 		$config = array(
-				'base_url' => base_url().'Organizer/Role?'.$addrpage.'view='.$offset,
+				'base_url' => base_url().'Admin/Role?'.$addrpage.'view='.$offset,
 				'total_rows' => $rows,
 				'per_page' => $offset,
 				'use_page_numbers' => true,
@@ -109,7 +109,7 @@ class Role extends Org_Controller {
 				'next_link' => 'Next',
 				'prev_link' => 'Prev'
 				);
-		$data["urlperpage"] = base_url().'Organizer/Role?'.$addrpage.'view=';
+		$data["urlperpage"] = base_url().'Admin/Role?'.$addrpage.'view=';
 		$data["perpage"] = ['10','25','all'];
 		$this->pagination->initialize($config);
 		$str_links = $this->pagination->create_links();
@@ -130,8 +130,8 @@ class Role extends Org_Controller {
 				//manipulation menu
 				$enc = $value['idrole'];
 				unset($temp[$key]['idrole']);
-				$temp[$key]['menu']='<div class="btn-group"><a href="'.base_url('Organizer/Role/editrole?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Edit Data" class="btn btn-info btn-sm"><i class="fa fa-edit"></i> Edit</a>'.
-				'<a href="#" data-href="'.base_url('Organizer/Role/delrole?id=').$enc.'" alt="Delete Data" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash"></i> Delete</a></div>';
+				$temp[$key]['menu']='<div class="btn-group"><a href="'.base_url('Admin/Role/editrole?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Edit Data" class="btn btn-info btn-sm"><i class="fa fa-edit"></i> Edit</a>'.
+				'<a href="#" data-href="'.base_url('Admin/Role/delrole?id=').$enc.'" alt="Delete Data" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash"></i> Delete</a></div>';
 				}
 		$data['listdata'] = $this->table->generate($temp);
 		
@@ -146,7 +146,7 @@ class Role extends Org_Controller {
 								'id'=>'selectedtype',
 								'name'=>'ftype'
 								));
-			$data['factselected'] = site_url('Organizer/Role/updateselected');
+			$data['factselected'] = site_url('Admin/Role/updateselected');
 			
 		//=============== Template ============
 		$data['jsFiles'] = array(
@@ -156,8 +156,8 @@ class Role extends Org_Controller {
 		// =============== view handler ============
 		$data['title']="Role";
 		$data['topbar'] = $this->load->view('dashboard/topbar', NULL, TRUE);
-		$data['sidebar'] = $this->load->view('dashboard/org/sidebar', NULL, TRUE);
-		$data['content'] = $this->load->view('dashboard/org/role/rolelist', $data, TRUE);
+		$data['sidebar'] = $this->load->view('dashboard/admin/sidebar', NULL, TRUE);
+		$data['content'] = $this->load->view('dashboard/admin/role/rolelist', $data, TRUE);
 		$this->load->view ('template/main', $data);
 	}
 	
@@ -217,7 +217,7 @@ class Role extends Org_Controller {
 		}
 		$data['rdata']=$this->table->generate($dtable);
 		
-		$this->load->view('dashboard/org/role/addrole', $data);
+		$this->load->view('dashboard/admin/role/addrole', $data);
 	}
 	
 	public function editrole(){
@@ -279,7 +279,7 @@ class Role extends Org_Controller {
 		}
 		$data['rdata']=$this->table->generate($dtable);
 		
-		$this->load->view('dashboard/org/role/editrole', $data);
+		$this->load->view('dashboard/admin/role/editrole', $data);
 	}
 	
 	public function saverole(){
@@ -292,7 +292,7 @@ class Role extends Org_Controller {
 			$hsl = $this->Mrole->saverole($fdata);
 			($hsl) ? $this->session->set_flashdata('v','Add Role Succes.') : $this->session->set_flashdata('x','Add Role Failed.');
 			
-		redirect(base_url('Organizer/Role'));
+		redirect(base_url('Admin/Role'));
 		
 	}
 	
@@ -304,7 +304,7 @@ class Role extends Org_Controller {
 		} else{
 		$this->session->set_flashdata('x','Delete Role Failed');
 		} 
-		redirect(base_url('Organizer/Role'));
+		redirect(base_url('Admin/Role'));
 	}
 	
 	public function updaterole(){
@@ -318,7 +318,7 @@ class Role extends Org_Controller {
 			$hsl = $this->Mrole->updaterole($fdata,$id);
 			($hsl) ? $this->session->set_flashdata('v','Update Role Succes.') : $this->session->set_flashdata('x','Update Role Failed.');
 			
-		redirect(base_url('Organizer/Role'));
+		redirect(base_url('Admin/Role'));
 		
 	}
 	
@@ -337,7 +337,7 @@ class Role extends Org_Controller {
 		} else{
 		$this->session->set_flashdata('x','No data selected, delete Selected Article Failed.');
 		}
-		redirect(base_url('Organizer/Role'));
+		redirect(base_url('Admin/Role'));
 	}
 		
 	public function savesetting(){
@@ -354,7 +354,7 @@ class Role extends Org_Controller {
 		} else{
 		$this->session->set_flashdata('x',"Update Setting Range Date Registration Phase Failed.");
 		}
-		redirect(base_url('Organizer/Subject'));
+		redirect(base_url('Admin/Role'));
 	}
 	
 	public function returncolomn($header) {

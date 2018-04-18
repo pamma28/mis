@@ -247,8 +247,8 @@ class Login extends CI_Controller {
 					$rawtext = str_replace("{content_email}", $tmpcontent, $idtmp);
 					$to = $email;
 					$ccmail=null;
-					$bcfrom = "SEF Membership";
-					$sub = 'Regular Class '.$period.' - Recovery Account';
+					$bcfrom = $this->Msetting->getset('webtitle').' '.$period;
+					$sub = 'Reset Password - ';
 					$attfile = null;
 				
 					if ((null!=$to) and (null!=$sub)){

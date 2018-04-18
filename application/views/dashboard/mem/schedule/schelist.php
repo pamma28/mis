@@ -55,7 +55,7 @@
 			<h3 class="text-center text-primary">Out of Choose Schedule Phase</h3> <hr class="divider"/>
 			<div class="panel panel-default">
 				<div class="panel-body">
-					<h3 class="text-center"><span class="label label-warning"><i class="fa fa-exclamation-triangle"></i> Please choose schedule on <b><?=$startdate;?></b> until <b><?=$enddate;?></b>.</span></h3>
+					<h3 class="text-center"><span class="label label-info"><i class="fa fa-info-circle"></i> Please check your schedule on "My Schedule" menu</b></span></h3>
 				</div>
 			</div>
 			</div>

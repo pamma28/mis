@@ -17,19 +17,30 @@
 <script>
 	$(document).ready(function(){
 		$("#return").inputmask('08[99999999999]');
+    $("#password").click(function(){
+      $.post("<?=base_url('Organizer/Memberaccount/resetpassword');?>",{femail:$("#Email").val()}, function(d){
+        if(d){
+          alert("Reset Password Success");
+          $("#DetailModal").modal('hide');
+        } else {
+          alert("Reset Password Failed");
+        }
+      });
+    });
+ 
 	});
   // toogle chechkbox allow data
   $(function() {
-    $('#idallow').bootstrapToggle({
-		on: "Allow",
-		off: "Deny",
-		size: "large",
-		onstyle: "primary",
-		offstyle: "danger",
-		width: 80,
-		height: 35
-	});
-  })
+      $('#idallow').bootstrapToggle({
+  		on: "Allow",
+  		off: "Deny",
+  		size: "large",
+  		onstyle: "primary",
+  		offstyle: "danger",
+  		width: 80,
+  		height: 35
+  	});
+  });
   
   //check email availabelity
   $('#Email').bind('keyup change', function() {

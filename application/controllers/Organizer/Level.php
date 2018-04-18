@@ -128,7 +128,8 @@ class Level extends Org_Controller {
 							'value'=>$temp[$key]['idlevel']
 							));
 				array_unshift($temp[$key],$ctable);
-					
+				$temp[$key]['lvlname']='<span class="idname hidden">'.$value['lvlname'].'</span>'.$value['lvlname'];
+
 				//manipulation menu
 				$enc = $value['idlevel'];
 				unset($temp[$key]['idlevel']);

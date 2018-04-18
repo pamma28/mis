@@ -146,7 +146,6 @@
                 <li><a href="<?=base_url("Organizer/Faculty");?>"><i class="fa fa-building-o fa-fw"></i> <?php echo lang('masterfac');?></a></li>
                 <li><a href="<?=base_url("Organizer/Level");?>"><i class="fa fa-line-chart fa-fw"></i> <?php echo lang('masterlvl');?></a></li>
                 <li><a href="<?=base_url("Organizer/Gender");?>"><i class="fa fa-intersex fa-fw"></i> <?php echo lang('mastergen');?></a></li>
-                <li><a href="<?=base_url("Organizer/Role");?>"><i class="fa fa-sitemap fa-fw"></i> <?php echo lang('masterrole');?></a></li>
                </ul>
             </li>
 			<li class="treeview">

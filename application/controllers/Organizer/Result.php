@@ -441,7 +441,7 @@ class Result extends Org_Controller {
 			//update user status
 			$this->load->model('Mpds');
 			$member = $this->Mresult->detailresult(array('a.uuser'),$idresult)[0]['uuser'];
-			$this->Mpds->updatestatus('Test Result',$member,true);
+			$this->Mpds->updatepds(array('ustatus'=>'Test Result'),$member);
 		$fpic= $this->session->userdata('user');
 		$arrdetail = $this->Mresult->getScoreMember($idresult,$fpic);
 		$qscore = $arrdetail->q_score;

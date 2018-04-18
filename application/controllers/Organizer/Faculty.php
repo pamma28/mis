@@ -125,7 +125,7 @@ class Faculty extends Org_Controller {
 							'value'=>$temp[$key]['idfac']
 							));
 				array_unshift($temp[$key],$ctable);
-	
+				$temp[$key]['fname']='<span class="idname hidden">'.$value['fname'].'</span>'.$value['fname'];
 				//manipulation menu
 				$enc = $value['idfac'];
 				unset($temp[$key]['idfac']);
@@ -311,13 +311,13 @@ class Faculty extends Org_Controller {
 				$dtuser= explode(',',$users);
 				$totuser = count($dtuser);
 		foreach($dtuser as $k=>$v){
-					$r = $this->Mfac->deletetmp($v);
+					$r = $this->Mfac->deletefac($v);
 					
 				($r) ? $tot++ : $failed[]=$v;
 			}
-			$this->session->set_flashdata('v','Delete '.$totuser.' Selected Article success.<br/>Details: '.$tot.' success and '.count($failed).' error(s)');
+			$this->session->set_flashdata('v','Delete '.$totuser.' Selected Faculty success.<br/>Details: '.$tot.' success and '.count($failed).' error(s)');
 		} else{
-		$this->session->set_flashdata('x','No data selected, delete Selected Article Failed.');
+		$this->session->set_flashdata('x','No data selected, delete Selected Faculty Failed.');
 		}
 		redirect(base_url('Organizer/Faculty'));
 	}

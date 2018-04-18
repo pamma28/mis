@@ -249,8 +249,10 @@ class Setting extends Org_Controller {
 		
 
 		//=============== setting phase ============
+		$headerphase = $header;
+		$headerphase['heading_cell_start'] = '<th width=30%>'; 
 		$this->table->set_template($tmpl);
-		$this->table->set_heading($header);
+		$this->table->set_heading($headerphase);
 		$columnphase=['registphase','paymentphase','schedulephase','certiphase'];
 		$label = ['Registration<br/>Phase','Payment<br/>Phase','Schedule Confirmatin<br/>Phase','Certificate<br/>Phase'];
 		foreach ($columnphase as $k => $v) {		
@@ -732,7 +734,7 @@ class Setting extends Org_Controller {
 									); 
 
 
-
+		$data['period'] = $this->Msetting->getset('period');
 		//=============== Template ============
 		$data['jsFiles'] = array(
 							'selectpicker/select.min','moment/moment.min','daterange/daterangepicker','print/printThis','inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions','summernote/summernote','toggle/bootstrap2-toggle.min');
@@ -855,8 +857,8 @@ class Setting extends Org_Controller {
 		$this->table->set_template($tmpl);
 		$this->table->set_heading($header);
 
-		$columnacc=['ufoto','uname','uemail','uhp','ubbm'];
-		$labelacc = ['Photo','Full Name','Email','Phone Number','Social Media'];
+		$columnacc=['ufoto','uemail','uhp','ubbm'];
+		$labelacc = ['Photo','Email','Phone Number','Social Media'];
 		$arracc = $this->Mlogin->detaillogin($columnacc,$this->session->userdata('user'))[0];
 		foreach ($columnacc as $k => $v) {
 

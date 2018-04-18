@@ -125,6 +125,7 @@ class Gender extends Org_Controller {
 							'value'=>$temp[$key]['idjk']
 							));
 				array_unshift($temp[$key],$ctable);
+				$temp[$key]['jkname']='<span class="idname hidden">'.$value['jkname'].'</span>'.$value['jkname'];
 	
 				//manipulation menu
 				$enc = $value['idjk'];

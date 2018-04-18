@@ -11,6 +11,9 @@
 <section class="content">
 	<div class="box box-primary">
 	<div class="box-body">
+
+		<?php if($registperiod) { ?>
+
 		<div class="panel panel-default">
 		<div class="panel-body">
 		<h3 class="text-center text-primary">Edit Personal Data Sheet</h3> <hr class="divider"/>
@@ -69,5 +72,21 @@
 							});
 			});
 	</script>
+
+	<?php } else {?>
+		<div class="panel panel-default">
+				<div class="panel-body">
+					<div class="col-md-12 col-sm-12 col-xs-12">
+						<h3 class="text-center text-primary">Registration Data Is Locked.</h3>
+						<hr/>	
+						<div class="panel panel-warning">
+							<div class="panel-body">
+								<h4 class="text-center"><span class="label label-danger"><i class="fa fa-exclamation-triangle"></i> Edit Registration Data Is Not Available Now. Please Contact Organizer To Change Your Data</span></h4>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+	<?php } ?>
 
 </section>

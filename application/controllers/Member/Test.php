@@ -166,7 +166,16 @@ class Test extends Mem_Controller {
 					
 					//update status member
 					$this->load->model('Mpds');
-					$this->Mpds->updatestatus('Done Test',$this->session->userdata('user'),true);						
+					$this->Mpds->updatepds(array('ustatus'=>'Done Test',$this->session->userdata('user'));
+
+					//send notif org
+					$this->notifications->pushNotifToOrg(
+						array(
+							'idnotif'=>$this->Msetting->getset('notiftestsubmitted'),
+							'uuser' => $this->session->userdata('user'),
+							'nlink' => base_url('Organizer/Result')
+							)
+					); 						
 				} else {
 					$data['active'] = '1';
 				}

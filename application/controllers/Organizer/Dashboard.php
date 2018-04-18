@@ -27,6 +27,13 @@ class Dashboard extends Org_Controller {
 		$data['quota'] = $quota;
 		
 		//catch chart data
+		$this->load->model('Mbc');
+		$optyear = array_diff($this->Mbc->getoptyear(),array('All Year'));
+		$data['selectoptyear'] = form_dropdown(
+								array('class'=> 'form-control',
+								'id'=> 'yearchart'),
+								$optyear
+								);
 		$data['regfac'] = json_encode($this->Mchart->getregfac_yearly());
 		$data['yearbyyear'] = json_encode($this->Mchart->getregyear());
 		
@@ -92,8 +99,19 @@ class Dashboard extends Org_Controller {
 		$this->load->view ('template/main', $data);
 	}
 
+	public function get_chart_year(){
+		$y = $this->input->post('y');
+		$this->load->model('Mchart');
+		if ($y<>null){
+			$r = $this->Mchart->getregfac_by_year($y);
+		} else{
+			$r = array();
+		}
 
+		echo json_encode($r);
+	}
 	
+
 	public function allnotification(){
 		//===================== table handler =============
 		$this->load->library("Notifications");

@@ -51,8 +51,7 @@
 					<span class="sr-only">Toggle Dropdown</span>
 					</button>
 					<ul role="menu" class="dropdown-menu">
-					<a href="#" class="btn btn-sm text-success" data-finput="1" data-btn="btn btn-sm btn-success" data-icon="fa fa-check" data-title="Allow All" data-toggle="modal" data-target=".bs-selecteddata"><i class="fa fa-check"></i> Allow All</a>
-					<a href="#" class="btn btn-sm text-danger" data-finput="0" data-btn="btn btn-sm btn-danger" data-icon="fa fa-ban" data-title="Deny All" data-toggle="modal" data-target=".bs-selecteddata"><i class="fa fa-ban"></i> Deny All</a>
+					<a href="#" class="btn btn-sm text-danger" data-finput="0" data-btn="btn btn-sm btn-danger" data-icon="fa fa-trash" data-title="Delete All" data-toggle="modal" data-target=".bs-selecteddata"><i class="fa fa-trash"></i> Delete All</a>
 					</ul>
 			</div>
 		</div>

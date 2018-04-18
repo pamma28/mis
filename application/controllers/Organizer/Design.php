@@ -181,9 +181,7 @@ class Design extends Org_Controller {
 				$enc = $value['iddes'];
 				unset($temp[$key]['iddes']);
 				//set row
-				if (($key%2)==0){
-				$result=$result.'';
-				}
+				if (($key%2)==0){$result=$result.'';}
 				//set default certificate
 				($temp[$key]['cerdefault']==1) ? $cerdef='<div class="design-default">
 							<p class="text-success text-center"><span class="fa fa-check"></span> <b>Default</b></p>
@@ -192,16 +190,13 @@ class Design extends Org_Controller {
 				//set template gallery
 				$result=$result.'<div class="col-sm-6 col-md-4 col-xs-12">
 						<!-- normal -->
-		
 							<div class="pull-left">
 							'.$ctable.$cerdef.'
 							<div class="hidden">'.$temp[$key]['desname'].'</div>
 							</div>
-
 							<div class="pull-left design-toogle">
 							<button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown" aria-expanded="false">
-							<span class="fa fa-gear"></span>
-							<span class="sr-only">Toggle Dropdown</span>
+							<span class="fa fa-gear"></span><span class="sr-only">Toggle Dropdown</span>
 							</button>
 							<div class="dropdown-menu design-setting text-right" role="menu">
 								'.$btndefault.'
@@ -210,7 +205,6 @@ class Design extends Org_Controller {
 								<a href="#" data-href="'.base_url('Organizer/Design/deletedesign?id=').$enc.'" alt="Delete Data" data-toggle="modal" data-target="#confirm-delete" class="btn btn-sm text-danger"><i class="fa fa-trash-o"></i> Delete</a>
 							</div>	
 							</div>
-
 						<div class="design-menu">
 							<div class="col-md-12 col-sm-12 col-xs-12">
 							<div class="ih-item square effect6 from_top_and_bottom">
@@ -224,11 +218,8 @@ class Design extends Org_Controller {
 								</div>
 							</a>
 						</div>
-
 						</div>
 					</div>
-					
-					
 					<!-- end normal -->
 				</div>';
 				
@@ -236,9 +227,7 @@ class Design extends Org_Controller {
 				'<a href="'.base_url('Organizer/Payment/editpay?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Edit Data" class="btn-info btn-sm"><i class="fa fa-edit"></i> Edit</a> | </small>';
 				
 				//set close row
-				if (($key%2)==0){
-				$result=$result;
-				}
+				if (($key%2)==0){$result=$result;}
 				}
 		$data['listdata'] = $result;
 		
@@ -506,12 +495,26 @@ class Design extends Org_Controller {
 	public function updateselected(){
 		if($this->input->post('fid')!=''){
 				$id = $this->input->post('fid');
-				$type = $this->input->post('ftype');
-				$r = $this->Mcerti->updatedefault($id);
-					$this->session->set_flashdata('v','Make Default Success');
-				
+				$dtid= explode(',',$id);
+				$totid = count($dtid); $s = 0; $x = 0;
+			foreach ($dtid as $k => $v) {
+				$filename = $this->Mcerti->getnamedes($v);
+				$default = $this->Mcerti->getDefault($v);
+				if(!$default){
+						//delete file
+						$path = FCPATH.'upload/design/' . $filename;
+						unlink($path);
+					$r = $this->Mcerti->deletedes($v);
+				} else {
+					$r = false;
+				}
+					($r) ? $s++ : $x++;
+			        unlink($path);
+
+			}
+			$this->session->set_flashdata('v','Update '.$totid.' Selected Design Certificate success.<br/>Details: '.$s.' success and '.$x.' error(s)');
 		} else{
-		$this->session->set_flashdata('x','No data selected, update Selected Member Account Failed.');
+		$this->session->set_flashdata('x','No data selected, update Selected Certificate Design Failed.');
 		}
 		redirect(base_url('Organizer/Design'));
 	}

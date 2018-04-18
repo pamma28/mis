@@ -15,6 +15,19 @@
 </div>
 <?php echo form_close();?>
 <script>
+	$(document).ready(function(){
+		$("#password").click(function(){
+			$.post("<?=base_url('Admin/Managelogin/resetpassword');?>",{femail:$("#Email").val()}, function(d){
+				if(d){
+					alert("Reset Password Success");
+					$("#DetailModal").modal('hide');
+				} else {
+					alert("Reset Password Failed");
+				}
+			});
+		});
+	});
+
   $(function() {
     $('#idallow').bootstrapToggle({
 		on: "Allow",

@@ -746,10 +746,8 @@ class Memberaccount extends Org_Controller {
 		$fpass = array('name'=>'fpass',
 						'id'=>'password',
 						'placeholder'=>'New Password',
-						'value'=>'',
-						'class'=>'form-control',
-						'size'=>'50');
-		$r[] = form_input($fpass).'<span class="text-danger"><i class="fa fa-exclamation"></i> Let it blank, to keep old password.</span>';
+						'class'=>'btn btn-sm btn-primary');
+		$r[] = form_button($fpass,'<i class="fa fa-unlock"></i> Reset Password Via Email').'<br/><i><span class="text-info"><i class="fa fa-info-circle"></i> Reset password will only available for next 15 minutes.</span></i>';
 		
 		$fhp = array('name'=>'fhp',
 						'id'=>'return',
@@ -938,6 +936,56 @@ class Memberaccount extends Org_Controller {
 		
 	}
 	
+	public function resetpassword(){
+		$this->load->library(array('encryption','convertcode','gmail'));
+		$this->load->model('Mtmp');
+		if ($this->input->post('femail')!=''){
+		$email = $this->input->post('femail');
+			$exist = $this->Mlogin->checkmail($email);
+			$dtuser = $this->Mlogin->getdetailbyemail(array('unim','uuser'),$email);
+			if($exist>0){
+				$randcode = md5($this->encryption->encrypt($dtuser->uuser.$dtuser->unim.$email.date('Y-m-d H:i:s')));
+				$setreset = array(
+							'urstcode'=>$randcode,
+							'ursttime'=>date('Y-m-d H:i:s')
+							);
+				$r =$this->Mlogin->updatereset($setreset,$email);
+				if ($r){
+					//email handler
+					$period = $this->Msetting->getset('period');
+					$idtmp = htmlspecialchars_decode($this->Msetting->getset('mailtemplate'));
+					$tmpcontent = htmlspecialchars_decode($this->Mtmp->gettmpdata($this->Msetting->getset('mailresetaccount'))->tmpcontent);
+					$rawtext = str_replace("{content_email}", $tmpcontent, $idtmp);
+					$to = $email;
+					$ccmail=null;
+					$bcfrom = $this->Msetting->getset('webtitle').' '.$period;
+					$sub = 'Reset Password - ';
+					$attfile = null;
+				
+					if ((null!=$to) and (null!=$sub)){
+						
+						//====== decode message ============
+						$decode = $this->convertcode->decodemailmsg($rawtext,$to);	
+						
+						//================= gmail send ===========
+						$ret = $this->gmail->sendmail($to,$ccmail,$sub,$bcfrom,$decode,$attfile);
+						
+					} else{
+						$ret = false;
+					}
+				} else {
+					$ret = false;
+				}
+
+			} else{
+				$ret = false;
+			}
+		} else {
+			$ret = false;
+		}
+		echo $ret;
+	}
+
 	public function checkemail(){
 		$em = $this->input->post('email');
 		echo $this->Mlogin->checkmail($em);

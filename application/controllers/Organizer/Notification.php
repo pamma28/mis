@@ -129,7 +129,7 @@ class Notification extends Org_Controller {
 				array_unshift($temp[$key],$ctable);
 				(strlen($temp[$key]['ncontent'])>30) ? $temp[$key]['ncontent'] = mb_substr($temp[$key]['ncontent'],0,30).'.....' : null;
 				$temp[$key]['nicon'] = '<span class="fa '.$temp[$key]['nicon'].'"></span>';
-				$temp[$key]['ncontent'] .= '<span class="idname hidden">'.mb_substr($value['ncontent'],0,10).'</span>'; 
+				$temp[$key]['ncontent'] .= '<span class="idname hidden">'.$temp[$key]['ncontent'].'</span>'; 
 				$temp[$key]['npublish']=date('d-M-Y', strtotime($value['npublish'])).'<br/>'.date('H:i:s', strtotime($value['npublish']));
 					
 				//manipulation menu
@@ -424,13 +424,13 @@ class Notification extends Org_Controller {
 				$dtuser= explode(',',$users);
 				$totuser = count($dtuser);
 		foreach($dtuser as $k=>$v){
-					$r = $this->Mnotif->deletetmp($v);
+					$r = $this->Mnotif->deletenotif($v);
 					
 				($r) ? $tot++ : $failed[]=$v;
 			}
-			$this->session->set_flashdata('v','Delete '.$totuser.' Selected Article success.<br/>Details: '.$tot.' success and '.count($failed).' error(s)');
+			$this->session->set_flashdata('v','Delete '.$totuser.' Selected Notification success.<br/>Details: '.$tot.' success and '.count($failed).' error(s)');
 		} else{
-		$this->session->set_flashdata('x','No data selected, delete Selected Article Failed.');
+		$this->session->set_flashdata('x','No data selected, delete Selected Notification Failed.');
 		}
 		redirect(base_url('Organizer/Notification'));
 	}

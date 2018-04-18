@@ -181,7 +181,7 @@ class Certificate extends Org_Controller {
 							'value'=>$temp[$key]['idcerti']
 							));
 				array_unshift($temp[$key],$ctable);
-				$temp[$key]['uname']='<span class="idname">'.$temp[$key]['uname'].'</span>';
+				$temp[$key]['uname']='<span class="idname hidden">'.$value['nocerti'].' - '.$value['uname'].'</span>'.$temp[$key]['uname'];
 				$temp[$key]['ctaken'] = ($value['ctaken']=='1') ? '<label class="label label-success">Taken</label>' : '<label class="label label-warning">Available</label>';
 				$temp[$key]['certidate']=date('d-M-Y',strtotime($temp[$key]['certidate'])).'<br/>'.date('H:i:s',strtotime($temp[$key]['certidate']));
 				//manipulation menu
@@ -850,10 +850,9 @@ class Certificate extends Org_Controller {
 	public function updateselected(){
 		if($this->input->post('fusers')!=''){
 				$users = $this->input->post('fusers');
-				$type = $this->input->post('ftype');
 				$dtuser= explode(',',$users);
 				$totuser = count($dtuser);
-			$r = $this->Mlogin->updateselected($dtuser,$type);
+			$r = $this->Mcerti->updateselected($dtuser,'1');
 			$this->session->set_flashdata('v','Update '.$totuser.' Selected Certificate Data success.<br/>Details: '.$r['v'].' success and '.$r['x'].' error(s)');
 		} else{
 		$this->session->set_flashdata('x','No data selected, update Selected Certificate Data Failed.');
@@ -1283,9 +1282,9 @@ class Certificate extends Org_Controller {
 				//update member status
 				$this->load->model('Mpds');
 				$member = $this->Mcerti->detailcerti(array('user.uuser'),$idcerti)[0]['uuser'];
-				$this->Mpds->updatestatus('Received Certificate',$member,true);
+				$this->Mpds->updatepds(array('ustatus'=>'Received Certificate'),$member);
 			} else {
-				$this->session->set_flashdata('x','Update Certificate Taken Failed');
+				$this->Mpds->updatepds(array('ustatus'=>'Test Result'),$member);
 			}
 		}else{
 			$this->session->set_flashdata('x','Please make sure you select correct id of Certificate');
