@@ -77,7 +77,7 @@
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
 		</a>
-		<a href="<?php echo base_url(); ?>" class="logo"> <?=webTitle();?></a>
+		<a href="<?php echo base_url(); ?>" class="logo"><img src="<?=webLogo();?>" width="50px" class="img-thumbnail" align="middle" style="vertical-align: middle;" alt="<?=webTitle();?>"> <?=webTitle();?></a>
         <!-- Header Navbar: style can be found in header.less -->
         <nav class="navbar navbar-static-top" role="navigation">
           <!-- Sidebar toggle button-->

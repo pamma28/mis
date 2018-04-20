@@ -80,7 +80,7 @@ class Test extends Mem_Controller {
 		$data['thisperiod']=$this->Msetting->getset('period');
 		
 		//===================== table handler =============
-		$column=['resulttest.idresult','tname','jstart','jroom','q_score'];
+		$column=['resulttest.idresult','tname','q_submitted','jroom','q_score'];
 		$header = $this->returncolomn($column);
 		unset($header[0]);
 		$header[]='Menu';
@@ -93,13 +93,13 @@ class Test extends Mem_Controller {
 		$temp = $this->Mtest->datamyresulttest($column,$perpage,1,null);	
 				foreach($temp as $key=>$value){
 				//manipulation date data
-				$temp[$key]['jstart']=date("D, d-M-Y H:i",strtotime($temp[$key]['jstart']));
+				$temp[$key]['q_submitted']=date("D, d-M-Y H:i",strtotime($temp[$key]['q_submitted']));
 				;
 				$temp[$key]['q_score']= ($value['q_score']<>'') ? '<label class="label label-info">'.$value['q_score'].'</label>' : '<label class="label label-warning">Being Assessed</label>';
 				//manipulation menu
 				$enc = $value['idresult'];
 				$menu = '';	
-				if (strtotime($temp[$key]['jstart']) <= strtotime(date('now')) ) {
+				if (strtotime($temp[$key]['q_submitted']) <= strtotime(date('now')) ) {
 					$menu .= '<div class="btn-group btn-group-vertical">
 							<a href="'.base_url('Member/Test/dotest?id=').$enc.'" alt="Do Test" class="btn btn-primary btn-sm"  title="Do Test"><i class="fa fa-pencil"></i> Start Test</a>';
 					}
@@ -166,7 +166,7 @@ class Test extends Mem_Controller {
 					
 					//update status member
 					$this->load->model('Mpds');
-					$this->Mpds->updatepds(array('ustatus'=>'Done Test',$this->session->userdata('user'));
+					$this->Mpds->updatepds(array('ustatus'=>'Done Test'),$this->session->userdata('user'));
 
 					//send notif org
 					$this->notifications->pushNotifToOrg(
@@ -210,7 +210,7 @@ class Test extends Mem_Controller {
 		$idresult = $this->input->get('id');
 		$checkmyresult = $this->Mresult->countresult(array('idresult'=>$idresult,'a.uuser'=>$this->session->userdata('user')));
 		if ($checkmyresult=='1'){
-				$col =['jdate','jstart','jdwl_tes.idtest','jsesi','tname','tduration','jroom','a.uname','jactive','lvlname','q_score'];
+				$col =['jdate','jstart','jdwl_tes.idtest','jsesi','tname','tduration','jroom','a.uname','jactive','lvlname','q_score','b.uname as pic'];
 				$data['t'] = $this->Mresult->detailresult($col,$idresult)[0];
 				$data['finalscore'] = ($data['t']['q_score']=='') ? 'N/A' : $data['t']['q_score'];
 
@@ -503,8 +503,8 @@ class Test extends Mem_Controller {
 
 	
 	public function returncolomn($header) {
-	$find=['idjdwl','jmdate','jdate','jstart','tname','jdwl_tes.idtest','jsesi','jroom','tduration','jactive','uname','tktrgn','q_score','q_notes'];
-	$replace = ['Schedule ID','Date Choosen','Schedule Date','Test Started','Test Name','Test Name','Session','Room','Test Duration','Status','Assessed by','Additional Info','Final Score','Result Notes'];
+	$find=['idjdwl','jmdate','jdate','jstart','tname','jdwl_tes.idtest','jsesi','jroom','tduration','jactive','uname','tktrgn','q_score','q_notes','q_submitted'];
+	$replace = ['Schedule ID','Date Choosen','Schedule Date','Test Started','Test Name','Test Name','Session','Room','Test Duration','Status','Assessed by','Additional Info','Final Score','Result Notes','Submission Date'];
 		foreach ($header as $key => $value){
 		$header[$key]  = str_replace($find, $replace, $value);
 		}

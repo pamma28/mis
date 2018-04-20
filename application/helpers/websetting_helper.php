@@ -13,6 +13,18 @@ if (!function_exists('webTitle'))
     }
 }
 
+if (!function_exists('webLogo'))
+{
+    function webLogo()
+    {
+        $CI =& get_instance();
+        $CI->load->database();
+        $CI->load->model('Msetting');
+        $CI->load->database();
+        return(base_url('upload/system/'.$CI->Msetting->getset('weblogo')));
+    }
+}
+
 if (!function_exists('webDescription'))
 {
     function webDescription()

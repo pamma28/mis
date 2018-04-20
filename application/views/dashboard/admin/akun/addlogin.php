@@ -4,9 +4,7 @@
    <h4><i class="fa fa-plus"></i> Add Account</h4>
 </div>
 <div class="modal-body">
-	
-	<?=$rdata;?>
-	
+	<?=$rdata;?>	
 </div>
 <div class="modal-footer">
 	<a class="btn btn-default btn-ok btn" data-dismiss="modal">Close</a>

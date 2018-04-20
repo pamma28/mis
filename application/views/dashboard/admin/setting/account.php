@@ -53,7 +53,7 @@
 		
 		
 		<div class="col-md-6"> 
-			<?php echo form_open(base_url('Member/Setting'),array('name'=>'fpass','class'=>'form-horizontal','method'=>'POST'));?>
+			<?php echo form_open(base_url('Admin/Setting'),array('name'=>'fpass','class'=>'form-horizontal','method'=>'POST'));?>
 				<div class="panel panel-primary">
 					<div class="panel-heading panel-heading-sm">
 						<h3 class="panel-title text-center"><span class="fa fa-key"></span> <b><?=$pass['title'];?></b></h3>
@@ -95,7 +95,7 @@
 			   <h4><i class="fa fa-image"></i> <span id="titlepreview"> <b><?=$pho['title'];?></b></span></h4>
 			</div>
 			<div class="modal-body">
-				<?php echo form_open_multipart(base_url('Member/Setting'),array('name'=>'fphoacc','class'=>'form-horizontal','method'=>'POST'));?>
+				<?php echo form_open_multipart(base_url('Admin/Setting'),array('name'=>'fphoacc','class'=>'form-horizontal','method'=>'POST'));?>
 				
 					
 							<?=$pho['table'];?>

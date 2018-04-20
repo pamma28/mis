@@ -29,7 +29,7 @@ class Role extends Admin_Controller {
 							'value'=>'all',
 							'id'=>'c_all'
 							));	
-				array_unshift($header,$checkall);
+				//array_unshift($header,$checkall);
 		$header[]='Menu';
 		$tmpl = array ( 'table_open'  => '<table class="table table-hover">' );
 		$this->table->set_template($tmpl);
@@ -125,13 +125,12 @@ class Role extends Admin_Controller {
 							'class'=>'ciduser',
 							'value'=>$temp[$key]['idrole']
 							));
-				array_unshift($temp[$key],$ctable);
+				//array_unshift($temp[$key],$ctable);
 	
 				//manipulation menu
 				$enc = $value['idrole'];
 				unset($temp[$key]['idrole']);
-				$temp[$key]['menu']='<div class="btn-group"><a href="'.base_url('Admin/Role/editrole?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Edit Data" class="btn btn-info btn-sm"><i class="fa fa-edit"></i> Edit</a>'.
-				'<a href="#" data-href="'.base_url('Admin/Role/delrole?id=').$enc.'" alt="Delete Data" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash"></i> Delete</a></div>';
+				$temp[$key]['menu']='<div class="btn-group"><a href="'.base_url('Admin/Role/editrole?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Edit Data" class="btn btn-info btn-sm"><i class="fa fa-edit"></i> Edit</a></div>';
 				}
 		$data['listdata'] = $this->table->generate($temp);
 		

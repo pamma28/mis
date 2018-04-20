@@ -22,12 +22,6 @@ class Dashboard extends Mem_Controller {
 		$stat = $this->Mlogin->getuserstatus($this->session->userdata('user'));
 		$tmpprog=''; $style = 'primary'; $badge = 'fa-check'; $details ='Completed'; $bgpanel='';
 		foreach($arrprog as $k=>$v){
-			if ($v == $stat) {
-				$badge = 'fa-times'; 
-				$style = 'danger';
-				$details = 'Incomplete';
-				$bgpanel = 'text-gray disabled';
-			}
 			$tmpprog .='<li class="timeline-item">
 							<div class="timeline-badge '.$style.'"><i class="fa '.$badge.'"></i></div>
 							<div class="timeline-panel '.$bgpanel.'">
@@ -38,6 +32,12 @@ class Dashboard extends Mem_Controller {
 								</div>
 							</div>
 						</li>';
+			if ($v == $stat) {
+				$badge = 'fa-times'; 
+				$style = 'danger';
+				$details = 'Incomplete';
+				$bgpanel = 'text-gray disabled';
+			}
 		}
 
 		$data['arrprogress'] = $tmpprog;

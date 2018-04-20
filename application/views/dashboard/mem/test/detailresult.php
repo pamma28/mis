@@ -34,7 +34,7 @@
 									</div>
 									<div class="row">
 										<p class="col-md-6 col-sm-6"><i class="fa fa-user"></i> <b>Member:</b> <?=$t['uname'];?></p>
-										<p class="col-md-6 col-sm-6"><i class="fa fa-unlock"></i> <b>Controlled by:</b> <?=$t['uname'];?></p>
+										<p class="col-md-6 col-sm-6"><i class="fa fa-unlock"></i> <b>Controlled by:</b> <?=$t['pic'];?></p>
 									</div>
 								</div>
 							</div>

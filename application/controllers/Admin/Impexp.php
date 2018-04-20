@@ -30,7 +30,7 @@ class Impexp extends Admin_Controller {
 							'value'=>'all',
 							'id'=>'c_all'
 							));	
-		array_unshift($header,$checkall);
+		//array_unshift($header,$checkall);
 		$header[]='Menu';
 		$tmpl = array ( 'table_open'  => '<table class="table table-hover">' );
 		$this->table->set_template($tmpl);
@@ -95,7 +95,7 @@ class Impexp extends Admin_Controller {
 							'class'=>'ctable',
 							'value'=>$temp2[$key]['table_name']
 							));
-				array_unshift($temp[$key],$ctable);
+				//array_unshift($temp[$key],$ctable);
 				//manipulation menu
 				$enc = $temp2[$key]['table_name'];
 				$temp[$key]['table_name']='<span class="tblname">'.$temp[$key]['table_name'].'</span>';

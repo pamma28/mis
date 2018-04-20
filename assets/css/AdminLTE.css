@@ -47,7 +47,7 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-f
 .main-header .navbar .nav>li.user>a>.fa,.main-header .navbar .nav>li.user>a>.glyphicon,.main-header .navbar .nav>li.user>a>.ion{margin-right:5px}
 .main-header .navbar .nav>li>a>.label{position:absolute;top:25px;right:10px;text-align:center;font-size:10pt;padding:2px 3px;line-height:0.9}
 .main-header .navbar .nav>li>a[aria-expanded="true"]:after {content: " ";position: absolute;left: 30%; opacity: 1;margin: 0 auto; bottom: 0px;border: 10px solid transparent; border-bottom-color: #ffffff;}
-.main-header .logo{display:block;float:left;height:50px;font-size:20px;line-height:50px;text-align:center;width:190px;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:300}
+.main-header .logo{display:block;float:left;height:50px;font-size:15px;line-height:50px;text-align:center;width:190px;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:600}
 .main-header .navbar-brand{color:#fff}
 .content-header{position:relative;padding:15px 15px 0 15px}
 .content-header>h1{margin:0;font-size:24px}

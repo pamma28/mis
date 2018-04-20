@@ -28,7 +28,7 @@ class Setting extends Org_Controller {
 			$arrinputs = explode(',', $this->input->post('finputs'));
 			$s = 0; $x=0;$go = '';
 
-			//========== upload logo handler =========
+			//========== payment handler =========
 				if ($this->input->post('fflash')=='pay'){
 					$arrbanks[] = implode(',', $this->input->post('no_atm'));
 					$arrbanks[] = implode(',', $this->input->post('an_atm'));

@@ -495,26 +495,32 @@ class Design extends Org_Controller {
 	public function updateselected(){
 		if($this->input->post('fid')!=''){
 				$id = $this->input->post('fid');
-				$dtid= explode(',',$id);
-				$totid = count($dtid); $s = 0; $x = 0;
-			foreach ($dtid as $k => $v) {
-				$filename = $this->Mcerti->getnamedes($v);
-				$default = $this->Mcerti->getDefault($v);
-				if(!$default){
-						//delete file
-						$path = FCPATH.'upload/design/' . $filename;
-						unlink($path);
-					$r = $this->Mcerti->deletedes($v);
+				$type = $this->input->post('ftype');
+				if ($type!='2') 
+				{
+					$dtid= explode(',',$id);
+					$totid = count($dtid); $s = 0; $x = 0;
+					foreach ($dtid as $k => $v) {
+						$filename = $this->Mcerti->getnamedes($v);
+						$default = $this->Mcerti->getDefault($v);
+						if(!$default){
+								//delete file
+								$path = FCPATH.'upload/design/' . $filename;
+								unlink($path);
+							$r = $this->Mcerti->deletedes($v);
+						} else {
+							$r = false;
+						}
+							($r) ? $s++ : $x++;
+					        unlink($path);
+					}
+					$this->session->set_flashdata('v','Delete '.$totid.' Selected Design Certificate Success.<br/>Details: '.$s.' success and '.$x.' error(s)');
 				} else {
-					$r = false;
+					$r = $this->Mcerti->updatedefault($id);
+					$this->session->set_flashdata('v','Make Default Success');
 				}
-					($r) ? $s++ : $x++;
-			        unlink($path);
-
-			}
-			$this->session->set_flashdata('v','Update '.$totid.' Selected Design Certificate success.<br/>Details: '.$s.' success and '.$x.' error(s)');
 		} else{
-		$this->session->set_flashdata('x','No data selected, update Selected Certificate Design Failed.');
+		$this->session->set_flashdata('x','No data selected, update Selected Member Account Failed.');
 		}
 		redirect(base_url('Organizer/Design'));
 	}

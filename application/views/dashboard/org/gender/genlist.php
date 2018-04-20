@@ -55,11 +55,7 @@
 					</ul>
 			</div>
 		</div>
-		<div class="btn-group pull-right">
-		
-		</div>
 	<?=$listdata;?>
-		
 	</div>
 		
 		<div class="box-footer clearfix">
