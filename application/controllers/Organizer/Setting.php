@@ -254,7 +254,7 @@ class Setting extends Org_Controller {
 		$this->table->set_template($tmpl);
 		$this->table->set_heading($headerphase);
 		$columnphase=['registphase','paymentphase','schedulephase','certiphase'];
-		$label = ['Registration<br/>Phase','Payment<br/>Phase','Schedule Confirmatin<br/>Phase','Certificate<br/>Phase'];
+		$label = ['Registration<br/>Phase','Payment<br/>Phase','Schedule Confirmation<br/>Phase','Certificate<br/>Phase'];
 		foreach ($columnphase as $k => $v) {		
 		$temp2[$k] =array($label[$k], 
 					form_input(array(

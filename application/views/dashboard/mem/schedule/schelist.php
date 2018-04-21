@@ -10,22 +10,10 @@
 <!-- Main content -->
 <section class="content">
 	<div class="box">
-		<div class="box-header">
-			<?php if ($this->session->flashdata('v')!=null){ ?>
-			<div class="alert alert-success alert-dismissible" role="alert">
-				<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<?=$this->session->flashdata('v');?>
-			</div>
-			<?php } else if ($this->session->flashdata('x')!=null){ ?>
-			<div class="alert alert-danger alert-dismissible" role="alert">
-				<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<?=$this->session->flashdata('x');?>
-			</div>		
-			<?php } ?>
-			
-		</div>
+		
 		<div class="box-body table-responsive">
-			<?php if ($date) { ?>
+		<?php if ($ustatus) { 
+				if ($date) { ?>
 			<div class="panel panel-primary">
 				<div class="panel-heading panel-heading-sm">
 					<h5 class="panel-title text-center"><b>Schedule List</b></h5>
@@ -52,13 +40,23 @@
 			</div>
 			<?php } else { ?>
 			<div class="col-md-12 cols-sm-12">
-			<h3 class="text-center text-primary">Out of Choose Schedule Phase</h3> <hr class="divider"/>
+			<h3 class="text-center text-danger">Cannot Choose Schedule</h3> <hr class="divider"/>
 			<div class="panel panel-default">
 				<div class="panel-body">
-					<h3 class="text-center"><span class="label label-info"><i class="fa fa-info-circle"></i> Please check your schedule on "My Schedule" menu</b></span></h3>
+					<h3 class="text-center"><span class="label label-info"><i class="fa fa-exclamation-triangle"></i> Today is Not Schedule Phase</b></span></h3>
 				</div>
 			</div>
 			</div>
+			<?php } } else { ?>
+			<div class="col-md-12 cols-sm-12">
+			<h3 class="text-center text-danger">Cannot Choose Schedule</h3> <hr class="divider"/>
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<h3 class="text-center"><span class="label label-info"><i class="fa fa-info-circle"></i> Please complete your payment before choosing schedule</b></span></h3>
+				</div>
+			</div>
+			</div>
+
 			<?php } ?>
 		</div>
 		

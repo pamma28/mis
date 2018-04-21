@@ -189,4 +189,10 @@ class Home extends CI_Controller {
 		$data['content'] = $this->load->view('home/about', $data, TRUE);
 		$this->load->view ('template/main', $data);
 	}
+
+	public function cobaprint(){
+		$this->load->library('Mpdf');
+
+		$this->mpdf->generatepdf();
+	}
 }

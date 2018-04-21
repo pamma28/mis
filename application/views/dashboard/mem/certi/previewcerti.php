@@ -10,20 +10,7 @@
 <!-- Main content -->
 <section class="content">
 	<div class="box">
-		<div class="box-header">
-			<?php if ($this->session->flashdata('v')!=null){ ?>
-			<div class="alert alert-success alert-dismissible" role="alert">
-				<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<?=$this->session->flashdata('v');?>
-			</div>
-			<?php } else if ($this->session->flashdata('x')!=null){ ?>
-			<div class="alert alert-danger alert-dismissible" role="alert">
-				<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<?=$this->session->flashdata('x');?>
-			</div>		
-			<?php } ?>
-			
-		</div>
+		<?php if ($date) { ?>
 		<div class="box-body table-responsive">
 				<div class="col-md-6">
 					<div class="box box-info">
@@ -43,6 +30,16 @@
 				
 
 			</div>
+		<?php } else {?>
+			<div class="col-md-12 cols-sm-12">
+				<h3 class="text-center text-danger">Cannot Access Certificate</h3> <hr class="divider"/>
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<h3 class="text-center"><span class="label label-info"><i class="fa fa-info-circle"></i> Today is not certificate phase.</b></span></h3>
+					</div>
+				</div>
+			</div>
+		<?php } ?>
 		
 	</div>
 	

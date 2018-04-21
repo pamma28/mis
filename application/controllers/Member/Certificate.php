@@ -16,19 +16,13 @@ class Certificate extends Mem_Controller {
     }
 
 	public function index(){
-		//===================== check phase date =============
-		$data['thisperiod']=$this->Msetting->getset('period');
-		$certiphase = explode(" - ",$this->Msetting->getset('certiphase'));
-		$startcerti = strtotime(str_replace('/', '-', $certiphase[0]));
-		$endcerti =  strtotime(str_replace('/', '-', $certiphase[1]));
-		$today = strtotime(date("d-m-Y"));
-		$data['date'] = (($today >= $startcerti) and ($today <= $endcerti)) ? true : false;
-		$data['startdate'] = date('d-M-Y',$startcerti);
-		$data['enddate'] = date('d-M-Y', $endcerti);
+		
 		//===================== table handler =============
 		$data['thisperiod']=$this->Msetting->getset('period');
 		$column=['lvlname','nocerti','certidate','ctaken','clisten','cgrammar','cread','cwrite','cspeak'];
-		$certi = $this->Mcerti->datamycerti($column,0,1)[0];
+		$tmpcerti = $this->Mcerti->datamycerti($column,0,1);
+		$data['available'] = (null!=$tmpcerti) ? true: false;
+		$certi = (null!=$tmpcerti) ?  $tmpcerti[0] : null;
 		unset($column[0],$column[1],$column[2],$column[3]);
 		$retcolumn = $this->returncolomn($column);
 		$header = ['<i class="fa fa-book"></i> Subject','<i class="fa fa-check"></i> Mark'];
@@ -47,6 +41,16 @@ class Certificate extends Mem_Controller {
 		$data['certidate'] = date("d M Y", strtotime($certi['certidate']));
 		$data['cstatus'] = ($certi['ctaken']) ? 'Taken' : 'Available in HOS';
 		
+		//===================== check phase date =============
+		$data['thisperiod']=$this->Msetting->getset('period');
+		$certiphase = explode(" - ",$this->Msetting->getset('certiphase'));
+		$startcerti = strtotime(str_replace('/', '-', $certiphase[0]));
+		$endcerti =  strtotime(str_replace('/', '-', $certiphase[1]));
+		$today = strtotime(date("d-m-Y"));
+		$data['date'] = (($today >= $startcerti) and ($today <= $endcerti)) ? true : false;
+		$data['startdate'] = date('d-M-Y',$startcerti);
+		$data['enddate'] = date('d-M-Y', $endcerti);
+
 		//=============== Template ============
 		$data['jsFiles'] = array(
 							'');
@@ -75,6 +79,17 @@ class Certificate extends Mem_Controller {
 	}
 	
 	public function preview(){
+		//===================== check phase date =============
+		$data['thisperiod']=$this->Msetting->getset('period');
+		$certiphase = explode(" - ",$this->Msetting->getset('certiphase'));
+		$startcerti = strtotime(str_replace('/', '-', $certiphase[0]));
+		$endcerti =  strtotime(str_replace('/', '-', $certiphase[1]));
+		$today = strtotime(date("d-m-Y"));
+		$data['date'] = (($today >= $startcerti) and ($today <= $endcerti)) ? true : false;
+		$data['startdate'] = date('d-M-Y',$startcerti);
+		$data['enddate'] = date('d-M-Y', $endcerti);
+
+
 		//=============== Template ============
 		$data['jsFiles'] = array(
 							'elevatezoom/elevatezoom');

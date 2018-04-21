@@ -14,7 +14,8 @@
 	<div class="box-body">
 		<div class="panel panel-default">
 		<div class="panel-body">
-		<?php if ($registperiod) { ?>
+		<?php if ($ustatus) {
+			if ($registperiod) { ?>
 		<div class="row">
 			<?php if ($lunas) { ?>
 				<div class="col-md-12 col-sm-12 col-xs-12">
@@ -28,10 +29,10 @@
 			<?php } else { ?>	
 				<?php if ($totreq>0) { ?>
 				<div class="col-md-12 col-sm-12 col-xs-12">
-				<h3 class="text-center text-primary">Request Unavailable</h3> <hr class="divider"/>
+				<h3 class="text-center text-primary">Request Is Unavailable</h3> <hr class="divider"/>
 				<div class="panel panel-warning">
 					<div class="panel-body">
-						<h3 class="text-center"><span class="label label-warning"><i class="fa fa-exclamation-triangle"></i> Please wait until previous request is being processed.</span></h3>
+						<h3 class="text-center"><span class="label label-warning"><i class="fa fa-exclamation-triangle"></i> Please wait until previous request is processed.</span></h3>
 					</div>
 				</div>
 				</div>
@@ -107,11 +108,20 @@
 				<h3 class="text-center text-primary">Out of Payment Phase</h3> <hr class="divider"/>
 				<div class="panel panel-warning">
 					<div class="panel-body">
-						<h4 class="text-center"><span class="label label-warning"><i class="fa fa-calendar"></i> Today is not payment phase. Payment phase is between <b><?=$startpay;?></b> until <b><?=$endpay;?></b></span></h4>
+						<h3 class="text-center"><span class="label label-warning"><i class="fa fa-calendar"></i> Today is not payment phase. Payment phase is between <b><?=$startpay;?></b> until <b><?=$endpay;?></b></span></h3>
 					</div>
 				</div>
+			</div>
+		<?php } } else { ?>
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<h3 class="text-center text-danger">Cannot Request Payment Validation</h3> <hr class="divider"/>
+				<div class="panel panel-warning">
+					<div class="panel-body">
+						<h3 class="text-center"><span class="label label-info"><i class="fa fa-file-text"></i> You need to complete your registration data in "Registration" Menu</span></h3>
+					</div>
 				</div>
-		<?php }	?>
+			</div>
+		<?php } ?>
 	    </div>
 		</div>
 

@@ -44,7 +44,7 @@
 				
 				</div>
 			</div>
-			<div class="box box-info">
+			<div class="box box-info <?php (!$ustatus) ? print('hidden'):null;?>">
 					<div class="box-body">
 						<h4><b>Setting Your Reminder</b></h4>
 						<?php echo form_open(base_url('Member/Scheduletest/savereminder'),array('class'=>'form-inline','method'=>'POST','id'=>'formreminder'));?>

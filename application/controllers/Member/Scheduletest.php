@@ -16,15 +16,7 @@ class Scheduletest extends Mem_Controller {
     }
 
 	public function index(){
-		//===================== check phase date =============
-		$data['thisperiod']=$this->Msetting->getset('period');
-		$schephase = explode(" - ",$this->Msetting->getset('schedulephase'));
-		$startsche = strtotime(str_replace('/', '-', $schephase[0]));
-		$endsche =  strtotime(str_replace('/', '-', $schephase[1]));
-		$today = strtotime(date("d-m-Y"));
-		$data['date'] = (($today >= $startsche) and ($today <= $endsche)) ? true : false;
-		$data['startdate'] = date('d-M-Y',$startsche);
-		$data['enddate'] = date('d-M-Y', $endsche);
+		
 		//===================== table handler =============
 		$data['thisperiod']=$this->Msetting->getset('period');
 		$column=['jdwl_tes.idjdwl','tname','jdate','jsesi','jroom','jquota'];
@@ -85,7 +77,19 @@ class Scheduletest extends Mem_Controller {
 				$choosen[$key]['menu']= '<a data-id="'.$enc.'" title="Remove" class="btn btn-danger btn-xs btn-remove" alt="Remove" role="button" href="#mylist" data-href="'.base_url('Member/Scheduletest/deletesche').'"><i class="fa fa-times-circle"></i> Remove</a>';
 				}
 		$data['mysche'] = $this->table->generate($choosen);
-		
+
+
+		//===================== check phase date =============
+		$data['thisperiod']=$this->Msetting->getset('period');
+		$schephase = explode(" - ",$this->Msetting->getset('schedulephase'));
+		$startsche = strtotime(str_replace('/', '-', $schephase[0]));
+		$endsche =  strtotime(str_replace('/', '-', $schephase[1]));
+		$today = strtotime(date("d-m-Y"));
+		$data['date'] = (($today >= $startsche) and ($today <= $endsche)) ? true : false;
+		$data['startdate'] = date('d-M-Y',$startsche);
+		$data['enddate'] = date('d-M-Y', $endsche);
+		$data['ustatus'] = ($this->Mlogin->getuserstatus($this->session->userdata('user'))=='Completed Data') ? 1 : 0;
+
 		//=============== Template ============
 		$data['jsFiles'] = array(
 							'');
@@ -296,7 +300,9 @@ class Scheduletest extends Mem_Controller {
 								'required'=>'required',
 								'value' => date("d-m-Y H:i:s",strtotime($reminder))
 							));
-
+		//========= check lunas status ========
+		$this->load->model('Mlogin');
+		$data['ustatus'] = ($this->Mlogin->getuserstatus($this->session->userdata('user'))=='Choosen Schedule') ? 1 : 0;
 		//=============== Template ============
 		$data['jsFiles'] = array(
 							'moment/moment.min','daterange/daterangepicker','toggle/bootstrap2-toggle.min');

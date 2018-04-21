@@ -245,11 +245,19 @@ class Confirmpay extends Mem_Controller {
 			$hsl = $this->Mtransfer->savetransfer($fdata);
 			if ($hsl) {
 				$this->session->set_flashdata('v','Send Request Succes.');
+				//send notif to me
+				$this->notifications->pushmynotif(
+					array(
+						'idnotif'=>$this->Msetting->getset('notifpayproofuploaded'),
+						'uuser' => $this->session->userdata('user'),
+						'use_uuser' => $this->session->userdata('user'),
+						'nlink' => base_url('Member/Confirmpay/validationresult')
+						));
 				
 				//send notif org
 				$this->notifications->pushNotifToOrg(
 					array(
-						'idnotif'=>$this->Msetting->getset('notifpayproofuploaded'),
+						'idnotif'=>$this->Msetting->getset('notifnewpayproof'),
 						'uuser' => $this->session->userdata('user'),
 						'nlink' => base_url('Organizer/Transfer')
 						)
@@ -389,7 +397,7 @@ class Confirmpay extends Mem_Controller {
 		$data['totreq'] = $totreq;
 		$data['lunas'] = $this->Mpds->detailpds(array('ulunas'),$this->session->userdata('user'))[0]['ulunas'];
 		
-		//========== filter regist date ==============
+		//========== filter pay date ==============
 		$payphase = explode(" - ",$this->Msetting->getset('paymentphase'));
 		$startpay = strtotime(str_replace('/', '-', $payphase[0]));
 		$endpay =  strtotime(str_replace('/', '-', $payphase[1]));
@@ -397,6 +405,9 @@ class Confirmpay extends Mem_Controller {
 		$data['registperiod'] = (($today >= $startpay) and ($today <= $endpay)) ? true : false;
 		$data['startpay'] = date('d-M-Y',$startpay);
 		$data['endpay'] = date('d-M-Y', $endpay);
+		$this->load->model('Mlogin');
+		$data['ustatus'] = ($this->Mlogin->getuserstatus($this->session->userdata('user'))=='Completed Data') ? 1 : 0;
+
 		//=============== Template ============
 		$data['jsFiles'] = array('inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions','numeric/numeric.min','validate/jquery.validate.min');
 		$data['cssFiles'] = array('');  
@@ -674,7 +685,7 @@ class Confirmpay extends Mem_Controller {
 				}
 		$data['listdata'] = $this->table->generate($temp);
 		
-		$data['totpaid'] =$this->Mpay->totalmypay();
+		$data['totpaid'] = $this->convertmoney->convert($this->Mpay->totalmypay());
 		$data['tottrans'] = $this->Mpay->countmypay();
 		$statlunas = ($this->Mpay->checkmelunas()) ? 'Fully Paid' : "Not Fully Paid Yet" ; 
 		$data['lunas'] = $statlunas;
