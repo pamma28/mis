@@ -3,8 +3,8 @@
 	<div class="box box-primary box-solid">
         <div class="box-body">
         	<div class="row">
-            <div class="col-md-3 col-sm-2">
-				<img src="<?=base_url('assets/images/UNSOED.png')?>" width="60%" align="center" style="padding: 20px 0px 0px 40px;" class="img-responsive"/>
+            <div class="col-md-3 col-sm-2 text-center">
+				<img src="<?=base_url('assets/images/UNSOED.png')?>" height="150px" class="img-rounded"/>
 			</div>
 			<div class="col-md-6 col-sm-8">
 				<h2 class="text-center">Welcome to <?=$appname;?> <br/><?=$period;?> Period</h2>
@@ -13,8 +13,8 @@
 					<?=$descweb;?>
 				</p>
 			</div>
-			<div class="col-md-3 col-sm-2"> 
-				<img src="<?=base_url('assets/images/SEF.png')?>"   style="padding:35px 0px;" align="center" class="img-responsive"/>
+			<div class="col-md-3 col-sm-2 text-center"> 
+				<img src="<?=base_url('assets/images/SEF.png')?>"  height="150px" class="img-rounded"/>
 			</div>
 			</div>	
 		

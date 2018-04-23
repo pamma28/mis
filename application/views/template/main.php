@@ -52,7 +52,7 @@
 
   <script type="text/javascript">
     $(document).ready(function(){
-        (window.matchMedia('(min-width: 767px)').matches) ? $("#buttonshowsidebar").removeClass('fa-cogs').addClass('fa-times'):null;
+        (window.matchMedia('(min-width: 767px)').matches) ? $("#buttonshowsidebar").removeClass('fa-bars').addClass('fa-times'):null;
         
     });
   </script>
@@ -71,7 +71,7 @@
       
       <header class="main-header">
         <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-          <span class="fa fa-cogs fa-lg" id="buttonshowsidebar"></span>
+          <span class="fa fa-bars fa-lg" id="buttonshowsidebar"></span>
     <span class="sr-only">Toggle navigation</span>
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>

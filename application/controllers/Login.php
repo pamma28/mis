@@ -20,11 +20,13 @@ class Login extends CI_Controller {
 	{
 		if(!$this->session->userdata('logged'))
 		{
-			 $this->auth();
+			($this->input->get('do')=='login') ? $this->session->set_flashdata('v','You are logged out'): null;
+			 
+			 redirect('Login/auth');
         }
-			else{
-                redirect('Accesscontrol/');
-            }					
+		else{
+             redirect('Accesscontrol/');
+           }					
 		
 	}
 	
@@ -188,8 +190,8 @@ class Login extends CI_Controller {
 		}
 
         $this->session->sess_destroy();
-        $this->session->set_flashdata('v','You are logged out');
-        $this->auth();
+        
+        redirect('Login?do=login');
     }
 	
     private function insertlogstat($rdr=null){

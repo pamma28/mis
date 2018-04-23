@@ -171,7 +171,7 @@ class Test extends Mem_Controller {
 					//send notif org
 					$this->notifications->pushNotifToOrg(
 						array(
-							'idnotif'=>$this->Msetting->getset('notiftestsubmitted'),
+							'idnotif'=>$this->Msetting->getset('notifnewtestresult'),
 							'uuser' => $this->session->userdata('user'),
 							'nlink' => base_url('Organizer/Result')
 							)
@@ -438,6 +438,8 @@ class Test extends Mem_Controller {
 			print('false no format');
 		}
 	}
+	
+	
 	
 	public function detailtest(){
 		$idjdwl = $this->input->get('id');

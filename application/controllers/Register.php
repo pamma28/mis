@@ -95,19 +95,20 @@ class Register extends CI_Controller {
 		
 		$fbirthdate = array('name'=>'fbd',
 						'id'=>'birthdate',
-						'title'=>'Your Birthdate eg. 22/02/1998',
-						'placeholder'=>'Birthdate format (dd/mm/yyyy), eg: 22/02/1998',
+						'title'=>'Your Birthdate eg. 22-02-1998',
+						'placeholder'=>'Birthdate format (dd-mm-yyyy), eg: 22-02-2008',
 						'value'=>set_value('fbd'),
 						'class'=>'form-control',
 						'type'=>'text',
 						'size'=>'10',
-						'data-inputmask' => "'alias': 'dd/mm/yyyy'",
+						'data-inputmask' => "'alias': 'dd-mm-yyyy'",
 						'datamask' => ''
 						);
 		$data['inbdt'] = form_input($fbirthdate);
 		
 		$fnohp = array('name'=>'fnohp',
 						'id'=>'nohp',
+						'type'=>'text',
 						'placeholder'=>'Phone Number',
 						'title'=>'Your Phone Number',
 						'required'=>'required',
@@ -223,7 +224,7 @@ class Register extends CI_Controller {
 		$data['registdate'] = date("d-M-Y",$startregist)." until ".date('d-M-Y',$endregist);
 		//=============== Template ============
 		$data['jsFiles'] = array(
-							'inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions','inputmask/inputmask.numeric.extensions','validate/jquery.validate.min','icheck.min');
+							'inputmask/inputmask','inputmask/jquery.inputmask','inputmask/inputmask.date.extensions','numeric/numeric.min','validate/jquery.validate.min','icheck.min');
 		$data['cssFiles'] = array(
 							'form-wizard','icheck/blue'
 							);
@@ -243,7 +244,7 @@ class Register extends CI_Controller {
 		
 		if(($this->session->userdata('captcha')==$this->input->post('fcaptcha'))) 
 		{
-			($this->input->post('fbd')!=null) ? $bdate = $this->input->post('fbd') : $bdate = '2000-12-12 00:00:00';
+			($this->input->post('fbd')!=null) ? $bdate = date("Y-m-d", strtotime($this->input->post('fbd'))) : $bdate = '2000-12-12 00:00:00';
 			$fuser = $this->input->post('fuser');
 			$fnim = $this->input->post('fnim');
 			$qpds = array (
@@ -253,7 +254,7 @@ class Register extends CI_Controller {
 				'ucreated' => date('Y-m-d h:i:s'),
 				'uname' => $this->input->post('fname'),
 				'unim' => $fnim,
-				'ubbm' => $this->input->post('fktp'),
+				'ubbm' => $this->input->post('fsocmed'),
 				'ubplace' => $this->input->post('fbplc'),
 				'ubdate' => $bdate,
 				'uhp' => $this->input->post('fnohp'),
@@ -297,7 +298,7 @@ class Register extends CI_Controller {
 			}
 		} else{
 			$this->session->set_flashdata('failedregist','Your captcha is incorrect');
-			redirect("Register");
+			$this->index();
 		}
 		
 	}
@@ -314,9 +315,9 @@ class Register extends CI_Controller {
 		// ============= email handler ===============
 		$to = $formdata['uemail'];
 		$ccmail=null;
-		$bcfrom = "SEF Membership";
 		$progname = $this->Msetting->getset('webtitle');
-		$sub = $progname.' '.$period.' - Email Verification';
+		$bcfrom = $progname.' '.$period;
+		$sub = 'Email Verification';
 		$attfile = null;
 		
 		if ((null!=$to) and (null!=$sub)){

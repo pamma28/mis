@@ -195,7 +195,9 @@ class Mpay extends CI_Model{
 	public function totalmoney(){
 		$y= $this->Msetting->getset('period');
 		$this->db->where('DATE_FORMAT(tdate,"%Y")',$y);
+		$this->db->where('idrole','3');
 		$this->db->select_sum('tpaid');
+		$this->db->join('user','user.uuser=transaksi.uuser','left');
 		return $this->db->get('transaksi')->row()->tpaid;
 		
 	}

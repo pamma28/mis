@@ -270,7 +270,8 @@
 	}
 
 	$("#birthdate").inputmask();
-	$("#nohp").inputmask('08[99999999999]');
+	$("#nohp").numeric();
+
 	 $(function () {
         $('#agree').iCheck({
           checkboxClass: 'icheckbox_flat-blue',

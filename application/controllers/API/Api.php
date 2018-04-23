@@ -15,7 +15,7 @@ class Api extends CI_Controller {
     }
 
 	public function index(){
-		$user = 'org2';
+		/*$user = 'org2';
 		$tags = array(
 			
 			'type'=>'backupdb'
@@ -29,6 +29,7 @@ class Api extends CI_Controller {
         $startdate = "2018-03-30 14:18:20";
 		//$this->cronjob->createcron($user,$tags,$startdate,$postdata,'-1','1month');
 		$this->cronjob->deletecron($user,$tags);
+		*/
 
 	}
 
@@ -43,7 +44,7 @@ class Api extends CI_Controller {
 			if (md5($user)==$pass){
 				$do = $this->input->post('do');
 
-				$res = $this->switchdo($do,'085728828648');
+				$res = $this->switchdo($do,$user);
 				$return = array(
 					'status'=>$res,
 					'valid'=>1,
@@ -84,7 +85,7 @@ class Api extends CI_Controller {
 					//====== decode message ============
 					$decode = $this->convertcode->decodesmsmsg($to,$smscontent);	
 						
-					//================= gmail send ===========
+					//================= sms send ===========
 					$ret = $this->sms->sendsms();		
 				}
 				return $ret;
