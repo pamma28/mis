@@ -428,7 +428,7 @@ class Confirmpay extends Mem_Controller {
 		
 		$data['status'] = ($dbres[0]['ttapprove']=='1') ? '<span class="label label-success">Approved</span>' : (($dbres[0]['ttapprove']=='0') ? '<span class="label label-danger">Rejected</span>' : '<span class="label label-warning">Pending</span>');
 		$data['code'] = $dbres[0]['upaycode'];
-		$data['dateproc'] = date("d-M-Y H:i", strtotime($dbres[0]['ttdateapp']));
+		$data['dateproc'] = (null!= $dbres[0]['ttdateapp']) ? date("d-M-Y H:i", strtotime($dbres[0]['ttdateapp'])) : '';
 		unset($col[6],$col[7],$col[8]);
 		
 

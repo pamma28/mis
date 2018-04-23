@@ -121,7 +121,7 @@
 		<div class="col-md-4">
 			<div class="panel panel-primary">
 				<div class="panel-heading text-center">
-					Latest Login Users
+					Latest Login Member
 				</div>
 				<div class="panel-body">
 					<?=$donline;?>

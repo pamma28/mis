@@ -19,7 +19,7 @@ class Managepds extends Mem_Controller {
 	
 		//===================== table handler =============
 		$data['thisperiod']=$this->Msetting->getset('period');
-		$column=['ufoto','ucreated','uname','jkname','ubplace','ubdate','unim','fname','uemail','uhp','ubbm','uaddrnow','uaddhome','umin','ustatus'];
+		$column=['ufoto','ucreated','uname','jkname','ubplace','ubdate','unim','fname','uemail','uhp','ubbm','uaddrnow','uaddhome','ustatus'];
 		$header=$this->returncolomn($column);
 		//set table template
 		$tmpl = array ( 'table_open'  => '',
@@ -49,14 +49,20 @@ class Managepds extends Mem_Controller {
 			if (($key=='Photo')){
 					$foto = ($tmpdata[0][$column[$a]]!='') ? $tmpdata[0][$column[$a]] : 'avatar.png';
 					$dtable[$a] = array(
-						"dtcol"=>'<div class="row"><label for="photo'.$key.'" class="col-md-4 col-sm-4 control-label"><b>'.$key.'</b></label>',
-						"dtval"=>'<div class="col-md-8 col-sm-8"> : <img src="'.base_url('upload/foto/'.$foto).'" class="img-thumbnail" style="height:100px" align="center"></div></div>'
+						"dtcol"=>'',
+						"dtval"=>'<div class="row"><div class="col-md-6 col-sm-6 text-center"><img src="'.base_url('upload/foto/'.$foto).'" class="img-thumbnail" style="height:150px" align="center"></div></div>'
 						);
 					}
 			if (($key=='Birthdate')){
 					$dtable[$a] = array(
 						"dtcol"=>'<div class="row"><div class="col-sm-4 col-md-4"><b>'.$key.'</b></div>',
-						"dtval"=>'<div class="col-md-8 col-sm-8"> : '.date('d-M-Y',strtotime($tmpdata[0][$column[$a]])).'</div></div>'
+						"dtval"=>'<div class="col-md-8 col-sm-8"> : '.date('d F Y',strtotime($tmpdata[0][$column[$a]])).'</div></div>'
+						);
+					}
+			if (($key=='Date Registered')){
+					$dtable[$a] = array(
+						"dtcol"=>'<div class="row"><div class="col-sm-4 col-md-4"><b>'.$key.'</b></div>',
+						"dtval"=>'<div class="col-md-8 col-sm-8"> : '.date('d F Y',strtotime($tmpdata[0][$column[$a]])).'</div></div>'
 						);
 					}
 			if(($column[$a]<>'umin') and ($column[$a]<>'ufoto')){
@@ -75,7 +81,7 @@ class Managepds extends Mem_Controller {
 		
 		//=============== Template ============
 		$data['jsFiles'] = array(
-							'');
+							'print/printThis');
 		$data['cssFiles'] = array(
 							'');  
 		// =============== view handler ============
@@ -90,7 +96,7 @@ class Managepds extends Mem_Controller {
 	
 	public function detailpds(){
 		//fecth data from db
-		$col = ['ufoto','ucreated','uupdate','uuser','uname','jkname','ubplace','ubdate','unim','fname','uemail','uhp','ubbm','uaddrnow','uaddhome','umin','ustatus','ulunas'];
+		$col = ['ufoto','ucreated','uupdate','uuser','uname','jkname','ubplace','ubdate','unim','fname','uemail','uhp','ubbm','uaddrnow','uaddhome','ustatus','ulunas'];
 		$id = $this->input->get('id');
 		$dbres = $this->Mpds->detailpds($col,$id);
 		
@@ -132,10 +138,15 @@ class Managepds extends Mem_Controller {
 			if (($key=='Birthdate')){
 					$dtable[$a] = array(
 						"dtcol"=>'<b>'.$key.'</b>',
-						"dtval"=>' : '.date('d-M-Y',strtotime($dbres[0][$col[$a]]))
+						"dtval"=>' : '.date('d F Y',strtotime($dbres[0][$col[$a]]))
 						);
 					}
-			
+			if (($key=='Date Registered')){
+					$dtable[$a] = array(
+						"dtcol"=>'<b>'.$key.'</b>',
+						"dtval"=>' : '.date('d F Y',strtotime($dbres[0][$col[$a]]))
+						);
+					}
 			if (($key=='Full Payment') and ($dbres[0][$col[$a]]=='1')){
 					$dtable[$a] = array(
 						"dtcol"=>'<b>'.$key.'</b>',
@@ -209,13 +220,13 @@ class Managepds extends Mem_Controller {
 		
 			$fbdate = array('name'=>'fbdate',
 						'id'=>'bdate',
-						'placeholder'=>'Birthdate format (dd/mm/yyyy), eg: 21/05/1998',
-						'value'=>date("d/m/Y",strtotime($g[0]['ubdate'])),
+						'placeholder'=>'Birthdate format (dd-mm-yyyy), eg: 21-05-1998',
+						'value'=>date("d-m-Y",strtotime($g[0]['ubdate'])),
 						'class'=>'form-control',
 						'type'=>'text',
 						'size'=>'10',
 						'required'=>'required',
-						'data-inputmask' => "'alias': 'dd/mm/yyyy'",
+						'data-inputmask' => "'alias': 'dd-mm-yyyy'",
 						'datamask' => ''
 						);
 		$r[] = form_input($fbdate);
@@ -352,51 +363,57 @@ class Managepds extends Mem_Controller {
 	
 
 	public function printpds(){
-		//catch column value
-		if ($this->input->post('fcolomn')!=null){
-		foreach($this->input->post('fcolomn') as $selected)
-		{$dtcol[] = $selected;}
-		} else {
-		$dtcol = ['ucreated','uname','jkname','ubplace','ubdate','unim','fname','uemail','uhp','ubbm','uaddrnow','uaddhome','ulunas'];
-		}
-		
-		//check use date range
-		if (null!=$this->input->post('fusedate')){
-			$dtrange = $this->input->post('fdtrange');
-			$dtstart = mb_substr($dtrange,0,10,'utf-8');
-			$dtend = substr($dtrange,13);
-			$dexp = $this->Mpds->exportlogin($dtstart,$dtend,$dtcol);
-			$title=$dtrange;
-		}else {
-			$dexp = $this->Mpds->exportlogin(null,null,$dtcol);
-			$title = Date('d-m-Y');
-		}
-		
-		// config table
-		$header = $this->returncolomn($dtcol);
-		$tmpl = array ( 'table_open'  => '<table class="table table-bordered">' );
+		$data['thisperiod']=$this->Msetting->getset('period');
+		$column=['ufoto','ucreated','uname','jkname','ubplace','ubdate','unim','fname','uemail','uhp','ubbm','uaddrnow','uaddhome','ustatus','upaycode'];
+		$header=$this->returncolomn($column);
+		//set table template
+		$tmpl = array ( 'table_open'  => '<table class="table table-stripped>"',
+					'heading_cell_start'   => '<th colspan="2">',
+					'cell_start'          => '<td width="50%">'
+					);
 		$this->table->set_template($tmpl);
-		$this->table->set_heading($header);
-		//fetch data	
-				foreach($dexp as $key=>$val){
-					//manipulation allow data
-					if(array_key_exists('uallow',$val)){
-						if ($val['uallow']==1){
-						$dexp[$key]['uallow']='Allowed';
-						}else{
-						$dexp[$key]['uallow']='Denied';
-						}
+		//========== data manipulation =========
+	
+		$tmpdata = $this->Mpds->detailpds($column,$this->session->userdata('user'));	
+		$a = 0; $totmis=0; $arrmis=array();
+		foreach($header as $key)
+		{
+			$dtable[$a] = array(
+					"dtcol"=>'<label for="l'.$key.'" class=""><b>'.$key.'</b></label>',
+					"dtval"=> $tmpdata[0][$column[$a]]
+					);
+			if (($key=='Photo')){
+					$foto = ($tmpdata[0][$column[$a]]!='') ? $tmpdata[0][$column[$a]] : 'avatar.png';
+					$dtable[$a] = array(
+						"dtcol"=>'<div class="text-center"><img src="'.base_url('upload/foto/'.$foto).'" class="img-thumbnail" style="height:200px"></div>',
+						"dtval" =>''
+						);
 					}
-				}
-		$data['printlistlogin'] = $this->table->generate($dexp);
+			if (($key=='Birthdate')){
+					$dtable[$a] = array(
+						"dtcol"=>'<label for="l'.$key.'" class=""><b>'.$key.'</b></label>',
+						"dtval"=>date('d F Y',strtotime($tmpdata[0][$column[$a]]))
+						);
+					}
+			if (($key=='Date Registered')){
+					$dtable[$a] = array(
+						"dtcol"=>'<label for="l'.$key.'" class=""><b>'.$key.'</b></label>',
+						"dtval"=>date('d F Y',strtotime($tmpdata[0][$column[$a]]))
+						);
+					}
+			$a++;
+		}
+
+		$data['printmypds'] = $this->table->generate($dtable);
 		$this->session->set_flashdata('v',"Print success");
 		$this->index();
 		$this->session->set_flashdata('v',null);
 		
 		//create title
 		$period = $this->Msetting->getset('period');
-		$data['title']="Member Account Data ".$period." Period<br/><small>".$title."</small>";
-		$this->load->view('dashboard/org/akun/printacc', $data);
+		$webtitle = $this->Msetting->getset('webtitle');
+		$data['title']="Personal Data Sheet ".$period.'<br/>'.$webtitle;
+		$this->load->view('dashboard/mem/pds/printpds', $data);
 		
 	}
 	

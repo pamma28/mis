@@ -267,7 +267,7 @@
 				</div>
 
 				<div class="tab-pane table-responsive" id="notiflist">
-						<div class="col-md-4 col-sm-6">
+						<div class="col-md-6 col-sm-6">
 							<?php echo form_open(base_url('Organizer/setting#notiflist'),array('name'=>'fnotifform','class'=>'form-horizontal','method'=>'POST'));?>
 							<div class="panel panel-primary">
 								<div class="panel-heading panel-heading-sm">
@@ -297,7 +297,7 @@
 							echo form_close();
 							?> 
 						</div>
-						<div class="col-md-4 col-sm-6"> 
+						<div class="col-md-6 col-sm-6"> 
 							<?php echo form_open(base_url('Organizer/setting#notiflist'),array('name'=>'fnotifform','class'=>'form-horizontal','method'=>'POST'));?>
 							<div class="panel panel-primary">
 								<div class="panel-heading panel-heading-sm">
@@ -326,8 +326,7 @@
 							<?php  
 							echo form_close();
 							?> 
-						</div>
-						<div class="col-md-4 col-sm-6"> 
+					
 							<?php echo form_open(base_url('Organizer/setting#notiflist'),array('name'=>'fnotifform','class'=>'form-horizontal','method'=>'POST'));?>
 							<div class="panel panel-primary">
 								<div class="panel-heading panel-heading-sm">

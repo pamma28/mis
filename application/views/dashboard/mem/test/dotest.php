@@ -49,7 +49,7 @@
 									<h4 class="text-center"><b>Detail Test Information</b></h4>
 									<hr class="divider"/>
 									<div class="row">
-										<p class="col-md-6 col-sm-6"><i class="fa fa-calendar"></i> <b>Date:</b> <?=$t['jdate'];?></p>
+										<p class="col-md-6 col-sm-6"><i class="fa fa-calendar"></i> <b>Date:</b> <?=date("d F Y", strtotime($t['jdate']));?></p>
 										<p class="col-md-6 col-sm-6"><i class="fa fa-clock-o"></i> <b>Session:</b> <?=$t['jsesi'];?></p>
 									</div>
 									<div class="row">
@@ -304,14 +304,19 @@
 				allqans : allqans}, 
 				function (data) {
 					if (data){
-						if (($('textarea[name=ans'+dataid+']').val()!='') || ($('input[name=ans'+dataid+']').is(":checked")) )
+						$('input[name=ans'+dataid+']').on("ifChecked", function(){
+							$('.label'+dataid).removeClass('label-danger');
+   							$('.label'+dataid).addClass('label-success');
+						});
+						if (($('textarea[name=ans'+dataid+']').val()!=null) && ($('textarea[name=ans'+dataid+']').val()!=''))
 						{
-						$('.label'+dataid).removeClass('label-danger');
-   						$('.label'+dataid).addClass('label-success');      
+							$('.label'+dataid).removeClass('label-danger');
+	   						$('.label'+dataid).addClass('label-success');      
 						} else {
-						$('.label'+dataid).removeClass('label-success');
-   						$('.label'+dataid).addClass('label-danger');
+							$('.label'+dataid).removeClass('label-success');
+	   						$('.label'+dataid).addClass('label-danger');
 						}
+					
  						   						
    						$("#loading-content").text("Update Answer Success.");
    						$("#loading-report").addClass("alert-success");

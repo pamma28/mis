@@ -189,8 +189,10 @@ class Result extends Org_Controller {
 				//manipulation score data
 				if($value['q_score']==null){
 					$temp[$key]['q_score']='<span class="label label-warning">Not Assessed Yet</span>';
+					$btnassess = '<a href="'.base_url('Organizer/Result/assessresult?id=').$value['idresult'].'" alt="Asess Data" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i> Asess</a>';
 				} else{
 					$temp[$key]['q_score']=$value['q_score'];
+					$btnassess = '<a href="'.base_url('Organizer/Result/assessresult?id=').$value['idresult'].'" alt="Asess Data" class="btn btn-info btn-sm"><i class="fa fa-edit"></i> Edit<br>Assessment</a>';
 				}
 				//manipulation assesor data
 				if($value['org']==null){
@@ -211,8 +213,7 @@ class Result extends Org_Controller {
 				//manipulation menu
 				$enc = $value['idresult'];
 				unset($temp[$key]['idresult']);
-				$temp[$key]['menu']='<div class="btn-group-vertical"><a href="'.base_url('Organizer/Result/detailresult?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Full Data" class="btn btn-default btn-sm"><i class="fa fa-list-alt"></i> Details</a>'.
-				'<a href="'.base_url('Organizer/Result/assessresult?id=').$enc.'" alt="Asess Data" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Asess</a>'.
+				$temp[$key]['menu']='<div class="btn-group-vertical"><a href="'.base_url('Organizer/Result/detailresult?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Full Data" class="btn btn-default btn-sm"><i class="fa fa-list-alt"></i> Details</a>'.$btnassess.
 				'<a href="#" data-href="'.base_url('Organizer/Result/deleteresult?id=').$enc.'" alt="Delete Data" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash"></i> Delete</a></div>';
 				}
 		$data['listlogin'] = $this->table->generate($temp);

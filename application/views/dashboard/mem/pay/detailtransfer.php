@@ -12,14 +12,18 @@
 			<div class="box box-primary">
 				<div class="box-body text-center">
 					<h4 class="text-primary"> <b>Validation Result </b> <?=$status;?></h4>
+					<?php if (null!=$dateproc) {?>
 					<sub>Your request has been processed at <b> <?=$dateproc;?></b></sub>
+					<?php } else {?>
+					<sub>Your request is being proccessed</sub>
+					<?php } ?>
 				</div>
 			</div>
 		<small>
 			<ul>
 			<li><i>Total amount paid includes <b> Your Payment Code</b> <?=$code;?></i></li>
 			<li><i>if your payment is confirmed/approved, please check your payment proof in your email</i></li>
-			<li><i>If your payment is rejected/declined, please contact us directly by bringing payment proof/receipt you have in Secretariat Builidng House of SEF</i></li>
+			<li><i>If your payment is rejected/declined, please contact us directly by bringing payment proof/receipt you have to Secretariat Builidng House of SEF</i></li>
 			</ul>
 		</small>
 		</div>

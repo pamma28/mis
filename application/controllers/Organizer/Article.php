@@ -401,7 +401,7 @@ class Article extends Org_Controller {
 		}
 		$data['rdata']=$this->table->generate($dtable);
 		
-		$this->load->view('dashboard/org/Article/addatcl', $data);
+		$this->load->view('dashboard/org/article/addatcl', $data);
 	}
 	
 	public function editarticle(){
@@ -482,7 +482,7 @@ class Article extends Org_Controller {
 		}
 		$data['rdata']=$this->table->generate($dtable);
 		
-		$this->load->view('dashboard/org/Article/editatcl', $data);
+		$this->load->view('dashboard/org/article/editatcl', $data);
 	}
 	
 	public function readarticle(){
@@ -535,7 +535,7 @@ class Article extends Org_Controller {
 		$data['rdata']=$this->table->generate($dtable);
 		
 		// =============== view handler ============
-		$this->load->view('dashboard/org/Article/readatcl', $data);
+		$this->load->view('dashboard/org/article/readatcl', $data);
 		
 		
 	}

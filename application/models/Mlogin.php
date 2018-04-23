@@ -94,6 +94,7 @@ class Mlogin extends CI_Model{
 		$this->db->select($col);
 		}
 		$this->db->where('ulastlog<>',null);
+		($this->session->userdata('role')=='2') ? $this->db->where('user.idrole','3') : null ;
 		$this->db->join('role','role.idrole=user.idrole','left');
 		$this->db->limit(5,0); //5 latest
 		$this->db->order_by('ulastlog','desc');

@@ -206,7 +206,7 @@ class SmsBroadcast extends Org_Controller {
 				
 				//manipulation menu
 				$enc = $value['idbcast'];
-				$temp[$key]['bctitle']='<a href="'.base_url('Organizer/Smsbroadcast/readsms?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Read SMS"><b>'.$value['bctitle'].'</b></a>';
+				$temp[$key]['bctitle']='<a href="'.base_url('Organizer/SmsBroadcast/readsms?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Read SMS"><b>'.$value['bctitle'].'</b></a>';
 				unset($temp[$key]['idbcast']);
 				$temp[$key]['menu'] = '<div class="btn-group-vertical">
 										<a href="'.base_url('Organizer/SmsBroadcast/composesms?id=').$enc.'" alt="Forward Data" class="btn btn-primary btn-xs" title="Forward"><i class="fa fa-share"></i> </a>
@@ -1327,7 +1327,7 @@ class SmsBroadcast extends Org_Controller {
 				//manipulation menu
 				$enc = $value['idtmplte'];
 				unset($temp[$key]['idtmplte']);
-				$temp[$key]['tmpname']='<a href="'.base_url('Organizer/Smsbroadcast/readtmp?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Read SMS Template"><b>'.$value['tmpname'].'</b></a>';
+				$temp[$key]['tmpname']='<a href="'.base_url('Organizer/SmsBroadcast/readtmp?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Read SMS Template"><b>'.$value['tmpname'].'</b></a>';
 				$temp[$key]['menu']='<div class="btn-group" aria-label="Template Menu" role="group"><a href="'.base_url('Organizer/SmsBroadcast/readtmp?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Full Data" class="btn btn-primary btn-sm"><i class="fa fa-list-alt"></i></a>'.
 				'<a href="'.base_url('Organizer/SmsBroadcast/edittemplate?id=').$enc.'" data-target="#DetailModal" data-toggle="modal" role="button" alt="Edit Data" class="btn btn-info btn-sm"><i class="fa fa-edit"></i></a>'.
 				'<a href="#" data-href="'.base_url('Organizer/SmsBroadcast/deletetmp?id=').$enc.'" alt="Delete Data" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash"></i></a></div>';

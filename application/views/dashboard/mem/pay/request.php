@@ -153,6 +153,7 @@
 		});
 	$(document).on('click','#confirmsubmit',function(){
 		$("#formrequest").submit();
+		$("#confirmsubmit").attr('disabled','disabled');
 		});
 	});
 	</script>

@@ -440,7 +440,7 @@ class Agenda extends Org_Controller {
 		}
 		$data['rdata']=$this->table->generate($dtable);
 		
-		$this->load->view('dashboard/org/Agenda/addagn', $data);
+		$this->load->view('dashboard/org/agenda/addagn', $data);
 	}
 	
 	public function editagenda(){
@@ -565,7 +565,7 @@ class Agenda extends Org_Controller {
 		}
 		$data['rdata']=$this->table->generate($dtable);
 		
-		$this->load->view('dashboard/org/Agenda/editagn', $data);
+		$this->load->view('dashboard/org/agenda/editagn', $data);
 	}
 	
 	public function readagenda(){
@@ -607,7 +607,7 @@ class Agenda extends Org_Controller {
 		$data['rdata']=$this->table->generate($dtable);
 		
 		// =============== view handler ============
-		$this->load->view('dashboard/org/Agenda/readagn', $data);
+		$this->load->view('dashboard/org/agenda/readagn', $data);
 		
 		
 	}
